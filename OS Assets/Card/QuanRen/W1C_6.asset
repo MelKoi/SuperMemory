@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b0e92eb3102b1c4a850edf515ed212c, type: 3}
+  m_Name: W1C_6
+  m_EditorClassIdentifier: 
+  WeaponAsset: {fileID: 0}
+  CardName: "\u6F5C\u5FC3"
+  description: "\u4ECE\u724C\u5E93\u62BD\u53D6\u4E24\u5F20\u5361\u724C"
+  cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}
+  TypePic: {fileID: 21300000, guid: 8b4447e6d1ae5214d9fe7c22b09fc7f1, type: 3}
+  cost: 8

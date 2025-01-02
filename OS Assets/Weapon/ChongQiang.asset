@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec2c6f075506f24692861188c660d1e, type: 3}
+  m_Name: ChongQiang
+  m_EditorClassIdentifier: 
+  WeaponName: "\u8DC3\u9CA4"
+  Wight: 8
+  description: "\u94F3\u67AA"
+  OnceAccumulation: 1
+  Accumulation:
+  - Acc: 4
+    Value: 7
+  - Acc: 5
+    Value: 10
+  - Acc: 6
+    Value: 14
+  Allcard:
+  - {fileID: 11400000, guid: f58cefe5e363ce041a3e7e3532ad64cb, type: 2}
+  - {fileID: 11400000, guid: f58cefe5e363ce041a3e7e3532ad64cb, type: 2}
+  - {fileID: 11400000, guid: f58cefe5e363ce041a3e7e3532ad64cb, type: 2}
+  - {fileID: 11400000, guid: f58cefe5e363ce041a3e7e3532ad64cb, type: 2}
+  - {fileID: 11400000, guid: 4201fbf0fa3a71444af55e04c115cae0, type: 2}
+  - {fileID: 11400000, guid: 4201fbf0fa3a71444af55e04c115cae0, type: 2}
+  - {fileID: 11400000, guid: f5a12826e62530e43b75e8763de26f57, type: 2}
+  - {fileID: 11400000, guid: f5a12826e62530e43b75e8763de26f57, type: 2}
+  - {fileID: 11400000, guid: fc4e0254b0c8c4346b6ab9d741ae5353, type: 2}
+  - {fileID: 11400000, guid: fc4e0254b0c8c4346b6ab9d741ae5353, type: 2}
+  - {fileID: 11400000, guid: fc4e0254b0c8c4346b6ab9d741ae5353, type: 2}
+  - {fileID: 11400000, guid: 615908bb4359018468dd86ce4e4dfb0d, type: 2}
+  - {fileID: 11400000, guid: 615908bb4359018468dd86ce4e4dfb0d, type: 2}
+  - {fileID: 11400000, guid: 615908bb4359018468dd86ce4e4dfb0d, type: 2}
+  - {fileID: 11400000, guid: 0ff9cb54b7113854aa0bed1b8bffcee7, type: 2}
+  - {fileID: 11400000, guid: 0ff9cb54b7113854aa0bed1b8bffcee7, type: 2}
+  - {fileID: 11400000, guid: 0ff9cb54b7113854aa0bed1b8bffcee7, type: 2}
+  - {fileID: 11400000, guid: b626570cdc6e0fb4cadcf299fbacd20c, type: 2}
+  - {fileID: 11400000, guid: b626570cdc6e0fb4cadcf299fbacd20c, type: 2}
+  - {fileID: 11400000, guid: b626570cdc6e0fb4cadcf299fbacd20c, type: 2}

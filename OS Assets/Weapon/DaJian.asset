@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec2c6f075506f24692861188c660d1e, type: 3}
+  m_Name: DaJian
+  m_EditorClassIdentifier: 
+  WeaponName: "\u68A6\u706B"
+  Wight: 6
+  description: "\u5927\u5251"
+  OnceAccumulation: 3
+  Accumulation:
+  - Acc: 3
+    Value: 2
+  - Acc: 5
+    Value: 5
+  - Acc: 6
+    Value: 7
+  Allcard:
+  - {fileID: 11400000, guid: 0323d401ae3162d40a6e68a69d8835a3, type: 2}
+  - {fileID: 11400000, guid: 0323d401ae3162d40a6e68a69d8835a3, type: 2}
+  - {fileID: 11400000, guid: 0323d401ae3162d40a6e68a69d8835a3, type: 2}
+  - {fileID: 11400000, guid: 0323d401ae3162d40a6e68a69d8835a3, type: 2}
+  - {fileID: 11400000, guid: 0323d401ae3162d40a6e68a69d8835a3, type: 2}
+  - {fileID: 11400000, guid: 0323d401ae3162d40a6e68a69d8835a3, type: 2}
+  - {fileID: 11400000, guid: 1b11e24d7250f2f498513ce38ede0b1a, type: 2}
+  - {fileID: 11400000, guid: 1b11e24d7250f2f498513ce38ede0b1a, type: 2}
+  - {fileID: 11400000, guid: 1b11e24d7250f2f498513ce38ede0b1a, type: 2}
+  - {fileID: 11400000, guid: 1b11e24d7250f2f498513ce38ede0b1a, type: 2}
+  - {fileID: 11400000, guid: f8c318d7b1d7e7746b015ac6c34e8a9a, type: 2}
+  - {fileID: 11400000, guid: f8c318d7b1d7e7746b015ac6c34e8a9a, type: 2}
+  - {fileID: 11400000, guid: 0e19ef6fe7661a541a64aaa03c6e265e, type: 2}
+  - {fileID: 11400000, guid: 0e19ef6fe7661a541a64aaa03c6e265e, type: 2}
+  - {fileID: 11400000, guid: 0e19ef6fe7661a541a64aaa03c6e265e, type: 2}
+  - {fileID: 11400000, guid: 42bf74ddcb4d30645af4e8bf506b6cf4, type: 2}
+  - {fileID: 11400000, guid: 42bf74ddcb4d30645af4e8bf506b6cf4, type: 2}
+  - {fileID: 11400000, guid: 29f65c7b5d6a16f4db9787411ed5a85e, type: 2}
+  - {fileID: 11400000, guid: ceb315a4a550a7a4ab018eb926551f56, type: 2}
+  - {fileID: 11400000, guid: ceb315a4a550a7a4ab018eb926551f56, type: 2}

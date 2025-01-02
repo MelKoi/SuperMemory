@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec2c6f075506f24692861188c660d1e, type: 3}
+  m_Name: GongJian
+  m_EditorClassIdentifier: 
+  WeaponName: "\u5E7D\u591C"
+  Wight: 4
+  description: "\u5F13\u7BAD"
+  OnceAccumulation: 1
+  Accumulation:
+  - Acc: 1
+    Value: 2
+  - Acc: 2
+    Value: 4
+  - Acc: 3
+    Value: 5
+  Allcard:
+  - {fileID: 11400000, guid: e9203ace7037c8a4a9074091cd81ad8f, type: 2}
+  - {fileID: 11400000, guid: e9203ace7037c8a4a9074091cd81ad8f, type: 2}
+  - {fileID: 11400000, guid: e9203ace7037c8a4a9074091cd81ad8f, type: 2}
+  - {fileID: 11400000, guid: e9203ace7037c8a4a9074091cd81ad8f, type: 2}
+  - {fileID: 11400000, guid: e9203ace7037c8a4a9074091cd81ad8f, type: 2}
+  - {fileID: 11400000, guid: ad601f025e4022648a817aa20fff1e1d, type: 2}
+  - {fileID: 11400000, guid: ad601f025e4022648a817aa20fff1e1d, type: 2}
+  - {fileID: 11400000, guid: ad601f025e4022648a817aa20fff1e1d, type: 2}
+  - {fileID: 11400000, guid: 4e49d4cc9c26c7349a2786cfa4f870be, type: 2}
+  - {fileID: 11400000, guid: 4e49d4cc9c26c7349a2786cfa4f870be, type: 2}
+  - {fileID: 11400000, guid: c5602c1151c36bc45a9922cdee83f4d6, type: 2}
+  - {fileID: 11400000, guid: c5602c1151c36bc45a9922cdee83f4d6, type: 2}
+  - {fileID: 11400000, guid: c5602c1151c36bc45a9922cdee83f4d6, type: 2}
+  - {fileID: 11400000, guid: c5602c1151c36bc45a9922cdee83f4d6, type: 2}
+  - {fileID: 11400000, guid: 977fb4ad49807a047ad38bb41eab57c4, type: 2}
+  - {fileID: 11400000, guid: 977fb4ad49807a047ad38bb41eab57c4, type: 2}
+  - {fileID: 11400000, guid: 977fb4ad49807a047ad38bb41eab57c4, type: 2}
+  - {fileID: 11400000, guid: 7d67f54fdfa815e4fa45ce154dd6c2bb, type: 2}
+  - {fileID: 11400000, guid: 7d67f54fdfa815e4fa45ce154dd6c2bb, type: 2}
+  - {fileID: 11400000, guid: 7d67f54fdfa815e4fa45ce154dd6c2bb, type: 2}
