@@ -1,13 +1,14 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UI;
 
 public enum GamePhase
 {
-    gameStart,playerAction,enemyAction
+    gameStart,playerAction,playerReady,enemyAction
 }
 public class BattleManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class BattleManager : MonoBehaviour
     public CharactorAsset charactor;//储存玩家的人物
     public WeaponAsset Weapon1;//存储玩家的第一个武器
     public WeaponAsset Weapon2;//存储玩家的第二个武器
-    public  List<CardAsset> shuffledCards;//第一个武器的卡组
+    public  List<CardAsset> shuffledCards;//武器的卡组
 
     [Header("玩家详细数据")]
     public string power;//玩家选择的人物技能
@@ -56,18 +57,29 @@ public class BattleManager : MonoBehaviour
  
 
     [Header("脚本内部数据")]
-    private int CardNum = 20;//单个卡组总数量
+    public int CardNum = 20;//单个卡组总数量
     public GamePhase gamePhase = GamePhase.gameStart;//初始为游戏开始
     private WeaponAsset FirstDrewWeapon;//第一个抽取的武器
     public int AttackManage;//发动攻击的数值
+    public EnemyManager enemyManager;
     void Start()
     {
        GameStart();
     }
-    public void DrowCards(WeaponAsset Weapon)//还需添加抽卡前检查玩家有几张手牌的功能（玩家只能大于等于当前的手牌数）
+    void Update()
     {
-        shuffledCards = new List<CardAsset>(Weapon.Allcard);
-        for (int i = 0; i < HandCardNum; i++)
+        if (gamePhase == GamePhase.playerReady)
+            PlayerReady();
+        else if (gamePhase == GamePhase.enemyAction)
+            EnemyAction();
+    }
+    public int DrowCards(GameObject hand,int CardNum,int HandCardNum, List<CardAsset> shuffledCards)//每回合开始抽卡功能
+        //参数分别为：角色手牌区域（我方&敌方）、卡组中的手牌数量、手牌上限、当前拥有的手牌链表
+    {
+        int HandNum =HandCardNum - hand.transform.childCount;//获取需要抽上手的卡牌个数
+        if(HandNum < 0)//留存手牌超过上限时不抽牌
+            HandNum = 0;
+        for (int i = 0; i < HandNum; i++)
         {
             System.Random rng = new System.Random();//获取随机数
             int k = rng.Next(CardNum);
@@ -78,7 +90,10 @@ public class BattleManager : MonoBehaviour
             {
                 GameObject handcard = Instantiate(cardPrefeb, hand.transform, false);
             }
+            if (shuffledCards.Count == 0)//如果卡牌快要抽完，抽掉剩余的牌就停止抽牌
+                break;
         }
+        return CardNum;
     }
     //游戏开始，回合开始，回合中，回合结束
     //游戏开始：抽取武器牌，玩家选择三张；玩家获得牌库，选择其中之一；抽取x张手牌。
@@ -91,7 +106,7 @@ public class BattleManager : MonoBehaviour
         Mp = 0;
         speed = charactor.speed;
     }
-    public void GameStart()//游戏开始的各项工作
+    public void GameStart()//游戏开始关于玩家数据的各项工作
     {
         //玩家从对手的三个武器中选出一个禁用（这里暂时使用自己的进行选择）
         for(int i = 0;i < 3; i++)
@@ -106,7 +121,26 @@ public class BattleManager : MonoBehaviour
         Weapon1Attacked = false;
         Weapon2Attacked = false;
         AttackManage = 0;
+        EnemyStart();
         gamePhase = GamePhase.playerAction;
+    }
+    public void EnemyStart()//游戏开始关于敌人数据的各项工作
+    {
+        enemyManager.HandCardNum = enemyManager.charactor.HandCardNum;
+        enemyManager.Hp = enemyManager.charactor.MaxHealth;
+        enemyManager.Def = enemyManager.charactor.StartDef;
+        enemyManager.Sp = enemyManager.charactor.MaxSp;
+        enemyManager.Mp = 0;
+        enemyManager.speed = enemyManager.charactor.speed;
+        enemyManager.Hptext.text = enemyManager.Hp.ToString();
+        enemyManager.Deftext.text = enemyManager.Def.ToString();
+        enemyManager.Sptext.text = enemyManager.Sp.ToString();
+        enemyManager.Mptext.text = enemyManager.Mp.ToString();
+        enemyManager.Weapon1Attacked = false;
+        enemyManager.Weapon2Attacked = false;
+        enemyManager.AttackManage = 0;
+        enemyManager.shuffledCards = new List<CardAsset>(enemyManager.Weapon1.Allcard);
+        enemyManager.CardNum = DrowCards(enemyManager.enemyHand, enemyManager.CardNum, enemyManager.HandCardNum,enemyManager.shuffledCards);
     }
     public void TurnEnd()//回合结束处理
     {
@@ -119,8 +153,26 @@ public class BattleManager : MonoBehaviour
             Weapon1Attacked = false;
             Weapon2Attacked = false;
             AttackManage = 0;
-            gamePhase = GamePhase.playerAction;
+            gamePhase = GamePhase.playerReady;
         }
+    }
+    public void EnemyAction()//敌人回合（需要编写敌人AI）
+    {
+       TurnEnd();
+    }
+    public void PlayerReady()//玩家回合
+    {
+        if (shuffledCards.Count == 0)//第一个武器的牌库没空就抽第一个武器的,空了就抽第二个武器的.
+        {
+            if(FirstDrewWeapon.WeaponName.Equals(Weapon1.WeaponName))
+                shuffledCards = new List<CardAsset>(Weapon2.Allcard);
+            else
+                shuffledCards = new List<CardAsset>(Weapon1.Allcard);
+        }
+        Sp = charactor.MaxSp;//更新体力条
+        Sptext.text = Sp.ToString();
+        CardNum =  DrowCards(hand,CardNum, HandCardNum, shuffledCards);
+        gamePhase = GamePhase.playerAction;
     }
     public void ChooseWeapons(Text text)
     {
@@ -139,16 +191,17 @@ public class BattleManager : MonoBehaviour
         Weapon1Object.GetComponent<WeaponCardManager>().weaponAsset = Weapon1;
         Weapon2Object.GetComponent<WeaponCardManager>().weaponAsset= Weapon2;
         WeaponChoosePanel.SetActive(false);
-    }
+    }//选择武器
     public void ChooseFirstDrew(Text text)//选择先抽取的卡组
     {
         string name = text.text;//获取当前按钮对应的武器名
         if (name.Equals(Weapon1.WeaponName)) FirstDrewWeapon = Weapon1;
         else FirstDrewWeapon = Weapon2;
-        DrowCards(FirstDrewWeapon);
+        shuffledCards = new List<CardAsset>(FirstDrewWeapon.Allcard);
+        CardNum = DrowCards(hand, CardNum, HandCardNum, shuffledCards);
         DrewChoosePanel.SetActive(false);
     }
-    public void UseCard()
+    public void UseCard()//使用卡牌
     {
         if(ChooseCards.Count == 1)
         {
@@ -192,7 +245,7 @@ public class BattleManager : MonoBehaviour
         }
 
     }
-    public void WeaponAttack(GameObject AccWeapon)
+    public void WeaponAttack(GameObject AccWeapon)//卡牌攻击
     {
         //按下攻击按钮后，先检测蓄能数量，与WeaponAsset中的蓄能等级匹配，选出≥的最后一档蓄能等级，
         //随后进行攻击，蓄能值归零，刷新文本内容，已攻击bool值变为true
@@ -206,12 +259,15 @@ public class BattleManager : MonoBehaviour
                     {
                         AttackManage = AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Value;
                     }
+                AttackToEnemy(AttackManage);
                 Debug.Log("你打出了" + AttackManage + "点伤害");
                 if (AttackManage == 0)//当蓄能不足时打不出伤害
                 {
                     Debug.Log("蓄能不足，无法造成伤害");
                     return;
                 }
+                Mp = Mp + AccNum1;
+                Mptext.text = Mp.ToString();
                 AccNum1 = 0;//调整必要数值，且设置为本回合以攻击状态
                 AccNum1Text.text = AccNum1.ToString();
                 Weapon1Attacked = true;
@@ -231,12 +287,15 @@ public class BattleManager : MonoBehaviour
                     {
                         AttackManage = AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Value;
                     }
+                AttackToEnemy(AttackManage);
                 Debug.Log("你打出了" + AttackManage + "点伤害");
                 if (AttackManage == 0)
                 {
                     Debug.Log("蓄能不足，无法造成伤害");
                     return;
                 }
+                Mp = Mp + AccNum2;
+                Mptext.text = Mp.ToString();
                 AccNum2 = 0;
                 AccNum2Text.text = AccNum2.ToString();
                 Weapon2Attacked = true;
@@ -248,4 +307,33 @@ public class BattleManager : MonoBehaviour
             }
         }
      }
+    public void AttackToEnemy(int attack)//击中后判定伤害
+    {
+        if(gamePhase == GamePhase.playerAction)
+        {
+            if(enemyManager.Def >= attack)
+            {
+                enemyManager.Def -= attack;
+                enemyManager.Deftext.text = enemyManager.Def.ToString();
+            }
+            else
+            {
+                enemyManager.Hp -= attack;
+                enemyManager.Hptext.text = enemyManager.Hp.ToString();
+            }
+        }
+        else if(gamePhase == GamePhase.enemyAction)
+        {
+            if (Def >= attack)
+            {
+                Def -= attack;
+                Deftext.text = Def.ToString();
+            }
+            else
+            {
+                Hp -= attack;
+                Hptext.text = Hp.ToString();
+            }
+        }
+    }
 }
