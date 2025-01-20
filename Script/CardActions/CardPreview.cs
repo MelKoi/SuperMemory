@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class CardPreview : MonoBehaviour
 {
-    bool choosed = false;
+    public bool choosed = false;
     private BattleManager battleManager;
     private GameObject gj;
     public void OnPointerEnter()

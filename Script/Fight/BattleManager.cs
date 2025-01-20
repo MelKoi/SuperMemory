@@ -62,8 +62,10 @@ public class BattleManager : MonoBehaviour
     private WeaponAsset FirstDrewWeapon;//第一个抽取的武器
     public int AttackManage;//发动攻击的数值
     public EnemyManager enemyManager;
+    private FirstHandManager FirstHandManager;
     void Start()
     {
+        FirstHandManager = GetComponent<FirstHandManager>();
        GameStart();
     }
     void Update()
@@ -111,7 +113,7 @@ public class BattleManager : MonoBehaviour
         //玩家从对手的三个武器中选出一个禁用（这里暂时使用自己的进行选择）
         for(int i = 0;i < 3; i++)
         {
-             ChooseWeaponButton[i].GetComponentInChildren<Text>().text = ChooseWeapon[i].WeaponName;
+             ChooseWeaponButton[i].GetComponentInChildren<Text>().text = enemyManager.ChooseWeapon[i].WeaponName;
         }
         ReadDeck();
         Hptext.text = Hp.ToString();
@@ -121,7 +123,6 @@ public class BattleManager : MonoBehaviour
         Weapon1Attacked = false;
         Weapon2Attacked = false;
         AttackManage = 0;
-        EnemyStart();
         gamePhase = GamePhase.playerAction;
     }
     public void EnemyStart()//游戏开始关于敌人数据的各项工作
@@ -158,6 +159,7 @@ public class BattleManager : MonoBehaviour
     }
     public void EnemyAction()//敌人回合（需要编写敌人AI）
     {
+        FirstHandManager.EnemyAction();
        TurnEnd();
     }
     public void PlayerReady()//玩家回合
@@ -179,19 +181,18 @@ public class BattleManager : MonoBehaviour
         string name = text.text;//获取当前按钮对应的武器名
         for(int i = 0; i < 3; i++)//查找到玩家选项中对应的武器
         {
-            if (!ChooseWeapon[i].WeaponName.Equals(name))
+            if (!enemyManager.ChooseWeapon[i].WeaponName.Equals(name))
             {
-                if (Weapon1 == null) Weapon1 = ChooseWeapon[i];
-                else if (Weapon1 != null) Weapon2 = ChooseWeapon[i];
+                if (enemyManager.Weapon1 == null) enemyManager.Weapon1 = enemyManager.ChooseWeapon[i];
+                else if (enemyManager.Weapon1 != null) enemyManager.Weapon2 = enemyManager.ChooseWeapon[i];
             }
-            else if (ChooseWeapon[i].WeaponName.Equals(name)) continue;
+            else if (enemyManager.ChooseWeapon[i].WeaponName.Equals(name)) continue;
         }
-        ChooseFirstDrewButton[0].GetComponentInChildren<Text>().text = Weapon1.WeaponName;
-        ChooseFirstDrewButton[1].GetComponentInChildren<Text>().text = Weapon2.WeaponName;
-        Weapon1Object.GetComponent<WeaponCardManager>().weaponAsset = Weapon1;
-        Weapon2Object.GetComponent<WeaponCardManager>().weaponAsset= Weapon2;
+        //玩家ban对手手牌
+        //对手ban玩家手牌，且获取自己的手牌
+        EnemyStart();
         WeaponChoosePanel.SetActive(false);
-    }//选择武器
+    }//选择ban掉对方一件武器
     public void ChooseFirstDrew(Text text)//选择先抽取的卡组
     {
         string name = text.text;//获取当前按钮对应的武器名

@@ -60,4 +60,14 @@ public class EnemyManager : MonoBehaviour
     {
         
     }
+    public void UseCard()//使用卡牌
+    {
+        if (ChooseCards.Count == 1)
+        {
+            foreach (var i in ChooseCards)
+                //执行卡牌效果，随后卡牌销毁（进入弃牌）
+                Destroy(i);
+            ChooseCards.Clear();
+        }
+    }
 }
