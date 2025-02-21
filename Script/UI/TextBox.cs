@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Unity.VisualScripting;
@@ -7,15 +7,15 @@ using UnityEngine.UI;
 using System.Linq;
 
 public class TextBox : MonoBehaviour
-    //ÎÄ±¾ÏÔÊ¾½Å±¾£¬·ÅÔÚÎÄ±¾¿ò¸¸ÎïÌå£¬ÊµÏÖÁËÎÄ×ÖÖğ×ÖÏÔÊ¾£¬
-    //°´ÏÂÊó±ê×ó¼üÈ«²¿ÏÔÊ¾£¬ÒÔ¼°ÏÔÊ¾Íê±Ïºó°´ÏÂÊó±ê×ó¼ü¿ªÊ¼ÏÔÊ¾ÏÂÒ»¾ä
+    //æ–‡æœ¬æ˜¾ç¤ºè„šæœ¬ï¼Œæ”¾åœ¨æ–‡æœ¬æ¡†çˆ¶ç‰©ä½“ï¼Œå®ç°äº†æ–‡å­—é€å­—æ˜¾ç¤ºï¼Œ
+    //æŒ‰ä¸‹é¼ æ ‡å·¦é”®å…¨éƒ¨æ˜¾ç¤ºï¼Œä»¥åŠæ˜¾ç¤ºå®Œæ¯•åæŒ‰ä¸‹é¼ æ ‡å·¦é”®å¼€å§‹æ˜¾ç¤ºä¸‹ä¸€å¥
 {
     public Text text;
     public TextAsset textAsset;
 
     public int index;
-    private bool TextShowFinish;//ÊÇ·ñÍê³É´ò×Ö
-    private bool cancelTyping = false;//È¡Ïû´ò×Ö    
+    private bool TextShowFinish;//æ˜¯å¦å®Œæˆæ‰“å­—
+    private bool cancelTyping = false;//å–æ¶ˆæ‰“å­—    
 
     List<string> strings = new List<string>();
     void  Awake()
@@ -29,12 +29,12 @@ public class TextBox : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetMouseButtonDown(0) && index == strings.Count)//ÎÄ±¾²¥·ÅÍê¾Í½áÊø
+        if(Input.GetMouseButtonDown(0) && index == strings.Count)//æ–‡æœ¬æ’­æ”¾å®Œå°±ç»“æŸ
         {
             index = 0;
             return;
         }
-        if (Input.GetMouseButtonDown(0))//Ã»ÓĞ²¥·ÅÍê¾Í²¥·ÅÏÂÒ»¾ä
+        if (Input.GetMouseButtonDown(0))//æ²¡æœ‰æ’­æ”¾å®Œå°±æ’­æ”¾ä¸‹ä¸€å¥
         {
             if(TextShowFinish && !cancelTyping)
                 StartCoroutine(ShowText());
@@ -42,7 +42,7 @@ public class TextBox : MonoBehaviour
                 cancelTyping = !cancelTyping;
         }
     }
-    public void GetTxt(TextAsset textAsset)//»ñÈ¡ÎÄ±¾
+    public void GetTxt(TextAsset textAsset)//è·å–æ–‡æœ¬
     {
         index = 0;
 
@@ -53,7 +53,7 @@ public class TextBox : MonoBehaviour
             strings.Add(list);
         }
     }
-    IEnumerator ShowText()//ÊµÏÖÎÄ×ÖÖğ×ÖÏÔÊ¾µÄĞ§¹û
+    IEnumerator ShowText()//å®ç°æ–‡å­—é€å­—æ˜¾ç¤ºçš„æ•ˆæœ
     {
         TextShowFinish = false;
         text.text = "";

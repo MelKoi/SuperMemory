@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+ï»¿using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,19 +12,22 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MyWeapon", menuName = "New Weapon", order = 3)]
 public class WeaponAsset : ScriptableObject
 {
-    [Header("General info")]//ÆÕ±éĞÅÏ¢
-    public string WeaponName;//ÎäÆ÷µÄÃû×Ö
+    [Header("General info")]//æ™®éä¿¡æ¯
+    public string WeaponName;//æ­¦å™¨çš„åå­—
     public int Wight;
-    [TextArea(2, 3)]//ÌîĞ´¿ò£¬×îÉÙ2ĞĞ£¬×î¶à3ĞĞ
-    public string description;//¿¨ÅÆÃèÊö
-    public int OnceAccumulation;//µ¥´ÎĞîÁ¦
+    [TextArea(2, 3)]//å¡«å†™æ¡†ï¼Œæœ€å°‘2è¡Œï¼Œæœ€å¤š3è¡Œ
+    public string description;//å¡ç‰Œæè¿°
+    public int OnceAccumulation;//å•æ¬¡è“„åŠ›
     [System.Serializable]
-    public struct AccumulationPair//ĞîÁ¦ÉËº¦
+    public struct AccumulationPair//è“„åŠ›ä¼¤å®³,å“ˆå¸Œç»“æ„ï¼ˆï¼Ÿï¼‰
     {
-        public int Acc; //ĞîÁ¦
-        public int Value; //ÉËº¦
+        public int Acc; //è“„åŠ›
+        public int Value; //ä¼¤å®³
     }
     public List<AccumulationPair> Accumulation;
 
     public List<CardAsset> Allcard;
+
+    [Header("Inside Imformation")]//å†…éƒ¨ä¿¡æ¯
+    public bool WeaponAttacked = false;
 }

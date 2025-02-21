@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,16 +8,16 @@ public class SameDistanceChildren : MonoBehaviour
     void Awake()
     {
         Vector3 firstElementPos = Children[0].transform.position;
-        Vector3 lastElementPos = Children[Children.Length - 1].transform.position;//»ñÈ¡ÊÖÅÆµÚÒ»¸öÎ»ÖÃºÍ×îºóÒ»¸öÎ»ÖÃ
+        Vector3 lastElementPos = Children[Children.Length - 1].transform.position;//è·å–æ‰‹ç‰Œç¬¬ä¸€ä¸ªä½ç½®å’Œæœ€åä¸€ä¸ªä½ç½®
 
-        //¼ÆËãÁ½¸öÎ»ÖÃ×ø±êÖ®¼äµÄÆ½¾ùÖµ
+        //è®¡ç®—ä¸¤ä¸ªä½ç½®åæ ‡ä¹‹é—´çš„å¹³å‡å€¼
         float XDist = (lastElementPos.x - firstElementPos.x) / (float)(Children.Length - 1) + 2;
         float YDist = (lastElementPos.y - firstElementPos.y - 1) / (float)(Children.Length - 1);
         float ZDist = (lastElementPos.z - firstElementPos.z + 2) / (float)(Children.Length - 1);
 
         Vector3 Dist = new Vector3(XDist, YDist, ZDist);
 
-        //½«ÆäËûÊÖÅÆÎ»ÖÃÆ½¾ù·Ö²¼
+        //å°†å…¶ä»–æ‰‹ç‰Œä½ç½®å¹³å‡åˆ†å¸ƒ
         for(int i = 1; i < Children.Length; i++)
         {
             Children[i].transform.position = Children[i - 1].transform.position + Dist;

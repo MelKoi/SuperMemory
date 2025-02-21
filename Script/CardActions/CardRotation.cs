@@ -1,18 +1,18 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class CardRotation : MonoBehaviour//Õ¹Ê¾¿¨±³µÄ½Å±¾£¬·Åµ½¿¨ÅÆÉÏ
+public class CardRotation : MonoBehaviour//å±•ç¤ºå¡èƒŒçš„è„šæœ¬ï¼Œæ”¾åˆ°å¡ç‰Œä¸Š
 {
-    [Header("ÔÚ¼àÊÓÃæ°åÖĞÉèÖÃ")]
-    public Transform cardFront;//¿¨ÅÆÕıÃæµÄÎ»ÖÃ
-    public Transform cardBack;//¿¨ÅÆ±³ÃæÎ»ÖÃ
-    public Transform targetFacePonint;//Ä¿±êÃæÎ»ÖÃ
-    public Collider col;//Åö×²Ïä
+    [Header("åœ¨ç›‘è§†é¢æ¿ä¸­è®¾ç½®")]
+    public Transform cardFront;//å¡ç‰Œæ­£é¢çš„ä½ç½®
+    public Transform cardBack;//å¡ç‰ŒèƒŒé¢ä½ç½®
+    public Transform targetFacePonint;//ç›®æ ‡é¢ä½ç½®
+    public Collider col;//ç¢°æ’ç®±
 
-    [Header("ÔÚ³ÌĞòÖĞÉèÖÃ")]
-    private bool showingBack = false;//Õ¹Ê¾±³Ãæ
+    [Header("åœ¨ç¨‹åºä¸­è®¾ç½®")]
+    private bool showingBack = false;//å±•ç¤ºèƒŒé¢
     // Start is called before the first frame update
     void Start()
     {
@@ -22,15 +22,15 @@ public class CardRotation : MonoBehaviour//Õ¹Ê¾¿¨±³µÄ½Å±¾£¬·Åµ½¿¨ÅÆÉÏ
     // Update is called once per frame
     void Update()
     {
-        RaycastHit[] hits;//Éè¶¨Ò»¸öÉæÏÓ
+        RaycastHit[] hits;//è®¾å®šä¸€ä¸ªæ¶‰å«Œ
         hits = Physics.RaycastAll(Camera.main.transform.position,
             (-Camera.main.transform.position + targetFacePonint.position).normalized,
-            ((-Camera.main.transform.position + targetFacePonint.position).magnitude));//µÚÒ»¸ö²ÎÊıÊÇÏà»úÎ»ÖÃ£¬µÚ¶ş¸ö²ÎÊıÊÇÄ¿±êµãµ½ÉãÏñ»úµÄµ¥Î»ÏòÁ¿£¬µÚÈı¸ñÊÇÄ¿±êµãµ½ÉãÏñ»úµÄ³¤¶È
+            ((-Camera.main.transform.position + targetFacePonint.position).magnitude));//ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯ç›¸æœºä½ç½®ï¼Œç¬¬äºŒä¸ªå‚æ•°æ˜¯ç›®æ ‡ç‚¹åˆ°æ‘„åƒæœºçš„å•ä½å‘é‡ï¼Œç¬¬ä¸‰æ ¼æ˜¯ç›®æ ‡ç‚¹åˆ°æ‘„åƒæœºçš„é•¿åº¦
         bool passedThorough = false;
 
-        foreach(RaycastHit h in hits)//ÉäÏßÅĞ¶Ï
+        foreach(RaycastHit h in hits)//å°„çº¿åˆ¤æ–­
         {
-            if(h.collider == col)//Èç¹ûÉäÏß´©¹ıÁËÅö×²Ïä
+            if(h.collider == col)//å¦‚æœå°„çº¿ç©¿è¿‡äº†ç¢°æ’ç®±
                 passedThorough = true;
         }
         

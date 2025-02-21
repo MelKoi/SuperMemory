@@ -1,9 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class UIDrag : MonoBehaviour//»ùÓÚwarldplace »­²¼µÄÍÏ¶¯
+public class UIDrag : MonoBehaviour//åŸºäºŽwarldplace ç”»å¸ƒçš„æ‹–åŠ¨
 {
     bool startdrag;
     // Start is called before the first frame update

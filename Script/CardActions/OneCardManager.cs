@@ -1,27 +1,27 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OneCardManager : MonoBehaviour
 {
-    public CardAsset cardAsset;//ÒıÓÃ¿¨ÅÆ
-    [Header("Text Compoment References")]//ÎÄ±¾¿ò
+    public CardAsset cardAsset;//å¼•ç”¨å¡ç‰Œ
+    [Header("Text Compoment References")]//æ–‡æœ¬æ¡†
     public Text nameText;
     public Text CostText;
     public Text DescriptionText;
 
-    [Header("Image References")]//Í¼Æ¬
+    [Header("Image References")]//å›¾ç‰‡
     public Image CardPic;
     public Image CardType;
     void Awake()
     {
-        if(cardAsset != null)//¿¨ÅÆ´æÔÚ
+        if(cardAsset != null)//å¡ç‰Œå­˜åœ¨
         {
-            ReadCardFromAsset();
+            ReadCardFromAsset(cardAsset);
         }
     }
-    private bool canBePlayedNow = false;//ÊÇ·ñ¿ÉÒÔ±»Ê¹ÓÃ
+    private bool canBePlayedNow = false;//æ˜¯å¦å¯ä»¥è¢«ä½¿ç”¨
     public bool CanBePlayedNow
     {
         get {
@@ -33,7 +33,7 @@ public class OneCardManager : MonoBehaviour
 
         }
     }
-    public void ReadCardFromAsset()
+    public void ReadCardFromAsset(CardAsset cardAsset)
     {
         CardType.sprite = cardAsset.TypePic;
 

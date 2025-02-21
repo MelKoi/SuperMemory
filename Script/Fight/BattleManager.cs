@@ -1,340 +1,267 @@
-using JetBrains.Annotations;
+ï»¿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public enum GamePhase
 {
-    gameStart,playerAction,playerReady,enemyAction
+    gameStart,playerAction,enemyAction,playerReady,enemyReady
 }
 public class BattleManager : MonoBehaviour
 {
-    [Header("Íæ¼ÒÇøÓòµÄÊı¾İ")]
-    public GameObject hand;//ÊÖÅÆÇø
-    public GameObject cardPrefeb;//ÊÖÅÆÔ¤Éè
-    public WeaponAsset[] ChooseWeapon = new WeaponAsset[3];//Íæ¼ÒÈüÇ°Ô¤Ñ¡µÄ3¸öÎäÆ÷
-    public List<GameObject> ChooseCards;//Íæ¼ÒÖ´ĞĞÖ÷Òª¶¯×÷Ê±Ñ¡ÔñµÄ¿¨ÅÆ
+    private Dictionary<CardAsset, CardState> cardStates = new Dictionary<CardAsset, CardState>();
 
-    [Header("Íæ¼Ò¿¨ÅÆµÄ»ù±¾Êı¾İ")]
-    public CharactorAsset charactor;//´¢´æÍæ¼ÒµÄÈËÎï
-    public WeaponAsset Weapon1;//´æ´¢Íæ¼ÒµÄµÚÒ»¸öÎäÆ÷
-    public WeaponAsset Weapon2;//´æ´¢Íæ¼ÒµÄµÚ¶ş¸öÎäÆ÷
-    public  List<CardAsset> shuffledCards;//ÎäÆ÷µÄ¿¨×é
+    [Header("åŒæ–¹è§’è‰²")]
+    public PlayerAsset Player;//æˆ‘æ–¹
+    public PlayerAsset Enemy;//æ•Œæ–¹
 
-    [Header("Íæ¼ÒÏêÏ¸Êı¾İ")]
-    public string power;//Íæ¼ÒÑ¡ÔñµÄÈËÎï¼¼ÄÜ
-    public int speed;//Íæ¼ÒµÄËÙ¶È
-    public int HandCardNum;//Íæ¼ÒµÄÊÖÅÆÉÏÏŞ
-    public int Hp;
-    public int Def;
-    public int Sp;
-    public int Mp;
-    public int Weapon1Acc;//ÎäÆ÷1ĞîÄÜÊıÁ¿
-    public int Weapon2Acc;//ÎäÆ÷2ĞîÄÜÊıÁ¿
+    [Header("ç©å®¶æ•°æ®")]
+    public CharactorAsset PlayerData;//è§’è‰²å¡
+    public WeaponAsset[] PlayerWeapons = new WeaponAsset[2];//ç¦ç”¨åæ­¦å™¨å¡
+    public WeaponAsset[] PlayerAllWeapons = new WeaponAsset[3];//åˆå§‹æ­¦å™¨å¡
+    public WeaponAsset DrewWeapon;//ç¬¬ä¸€ä¸ªæŠ½çš„æ­¦å™¨
 
-    [Header("ÎäÆ÷×é¼ş")]
-    public Text AccNum1Text;//ÏÖÔÚµÄÎäÆ÷ĞîÄÜÎÄ±¾
-    public Text AccNum2Text;//ÏÖÔÚµÄÎäÆ÷ĞîÄÜÎÄ±¾
-    public int AccNum1;//ÏÖÔÚÎäÆ÷µÄĞîÄÜ
-    public int AccNum2;//ÏÖÔÚÎäÆ÷µÄĞîÄÜ
-    public GameObject Weapon1Object;//µÚÒ»¸öÎäÆ÷
-    public GameObject Weapon2Object;//µÚ¶ş¸öÎäÆ÷
-    public bool Weapon1Attacked;//µÚÒ»¸öÎäÆ÷±¾»ØºÏÒÑ¾­¹¥»÷
-    public bool Weapon2Attacked;//µÚ¶ş¸öÎäÆ÷±¾»ØºÏÒÑ¾­¹¥»÷
+    [Header("æ•Œæ–¹æ•°æ®å¼•ç”¨")]
+    public EnemyManager EnemyManager;//æ•Œæ–¹ç®¡ç†å™¨
+    
+    [Header("å¡ç‰Œç»„ä»¶")]
+    public GameObject HandArea;//æ‰‹ç‰ŒåŒºåŸŸ
+    public GameObject CardPrefab;//å¡ç‰Œé¢„åˆ¶ä½“
+    public Transform SkillArea;//æˆ˜æŠ€å±•å¼€åŒºåŸŸ
 
-    [Header("ÏÔÊ¾Êı¾İ×é¼ş")]
-    public GameObject WeaponChoosePanel;//Ñ¡ÔñÎäÆ÷½çÃæµÄ»­²¼
-    public GameObject DrewChoosePanel;//Ñ¡ÔñµÚÒ»´Î³éÈ¡µÄ»­²¼
-    public Button[] ChooseWeaponButton = new Button[3];//ÎäÆ÷ÈıÑ¡¶şµÄ°´Å¥
-    public Button[] ChooseFirstDrewButton = new Button[2];//Ñ¡¿¨×é°´Å¥
-    public Text Hptext;//¾çÄ¿ÖµÎÄ±¾
-    public Text Deftext;//¸ñµ²ÖµÎÄ±¾
-    public Text Sptext;//¾«Á¦ÖµÎÄ±¾
-    public Text Mptext;//·¨Á¦ÖµÎÄ±¾
- 
+    [Header("UIç»„ä»¶")]
+    public Text HpText;//æˆ‘æ–¹ç”Ÿå‘½
+    public Text SpText;//æˆ‘æ–¹ä½“åŠ›
+    public Text MpText;//æˆ‘æ–¹èƒ½é‡
+    public Text Weapon1Acc;//æ­¦å™¨1è“„èƒ½
+    public Text Weapon2Acc;//æ­¦å™¨2è“„èƒ½
 
-    [Header("½Å±¾ÄÚ²¿Êı¾İ")]
-    public int CardNum = 20;//µ¥¸ö¿¨×é×ÜÊıÁ¿
-    public GamePhase gamePhase = GamePhase.gameStart;//³õÊ¼ÎªÓÎÏ·¿ªÊ¼
-    private WeaponAsset FirstDrewWeapon;//µÚÒ»¸ö³éÈ¡µÄÎäÆ÷
-    public int AttackManage;//·¢¶¯¹¥»÷µÄÊıÖµ
-    public EnemyManager enemyManager;
-    private FirstHandManager FirstHandManager;
-    void Start()
+    public GameObject BanEnemyWeapon;//banæ­¦å™¨ç•Œé¢
+    public GameObject FirstDrew;//é€‰æ‹©æŠ½å–æ­¦å™¨ç•Œé¢
+    public GameObject ChooseCardsPanel;//åˆå§‹æˆ˜æ–—åœºåœ°
+
+    public List<CardAsset> _currentDeck;//ç‰Œåº“
+    public GamePhase _currentPhase;//å›åˆæƒ…å†µ
+    public GameObject ChooseCards;//é€‰ä¸­çš„å¡ç‰Œ
+    public CardPool PlayerPool;//å¯¹è±¡æ± 
+
+    public void DrowCards(int amount)//æŠ½å–å¡ç‰Œ
     {
-        FirstHandManager = GetComponent<FirstHandManager>();
-       GameStart();
-    }
-    void Update()
-    {
-        if (gamePhase == GamePhase.playerReady)
-            PlayerReady();
-        else if (gamePhase == GamePhase.enemyAction)
-            EnemyAction();
-    }
-    public int DrowCards(GameObject hand,int CardNum,int HandCardNum, List<CardAsset> shuffledCards)//Ã¿»ØºÏ¿ªÊ¼³é¿¨¹¦ÄÜ
-        //²ÎÊı·Ö±ğÎª£º½ÇÉ«ÊÖÅÆÇøÓò£¨ÎÒ·½&µĞ·½£©¡¢¿¨×éÖĞµÄÊÖÅÆÊıÁ¿¡¢ÊÖÅÆÉÏÏŞ¡¢µ±Ç°ÓµÓĞµÄÊÖÅÆÁ´±í
-    {
-        int HandNum =HandCardNum - hand.transform.childCount;//»ñÈ¡ĞèÒª³éÉÏÊÖµÄ¿¨ÅÆ¸öÊı
-        if(HandNum < 0)//Áô´æÊÖÅÆ³¬¹ıÉÏÏŞÊ±²»³éÅÆ
-            HandNum = 0;
-        for (int i = 0; i < HandNum; i++)
+        for (int i = 0; i < amount; i++)
         {
-            System.Random rng = new System.Random();//»ñÈ¡Ëæ»úÊı
-            int k = rng.Next(CardNum);
-            cardPrefeb.GetComponent<OneCardManager>().cardAsset = shuffledCards[k];
-            shuffledCards.RemoveAt(k);
-            CardNum--;
-            if (hand != null)
+            if (_currentDeck.Count == 0)
             {
-                GameObject handcard = Instantiate(cardPrefeb, hand.transform, false);
+                Debug.LogWarning("ç‰Œåº“å·²ç©º");
+                return;
             }
-            if (shuffledCards.Count == 0)//Èç¹û¿¨ÅÆ¿ìÒª³éÍê£¬³éµôÊ£ÓàµÄÅÆ¾ÍÍ£Ö¹³éÅÆ
-                break;
+
+            int randomIndex = UnityEngine.Random.Range(0, _currentDeck.Count);
+            CreateCard(_currentDeck[randomIndex], HandArea.transform);
+            _currentDeck.RemoveAt(randomIndex);
         }
-        return CardNum;
     }
-    //ÓÎÏ·¿ªÊ¼£¬»ØºÏ¿ªÊ¼£¬»ØºÏÖĞ£¬»ØºÏ½áÊø
-    //ÓÎÏ·¿ªÊ¼£º³éÈ¡ÎäÆ÷ÅÆ£¬Íæ¼ÒÑ¡ÔñÈıÕÅ£»Íæ¼Ò»ñµÃÅÆ¿â£¬Ñ¡ÔñÆäÖĞÖ®Ò»£»³éÈ¡xÕÅÊÖÅÆ¡£
-    public void ReadDeck()//¶ÁÈ¡Íæ¼ÒÊı¾İ
+    private void CreateCard(CardAsset asset, Transform parent)
     {
-        HandCardNum = charactor.HandCardNum;
-        Hp = charactor.MaxHealth;
-        Def = charactor.StartDef;
-        Sp = charactor.MaxSp;
-        Mp = 0;
-        speed = charactor.speed;
+        GameObject newCard = Instantiate(CardPrefab, parent);
+        newCard.GetComponent<OneCardManager>().ReadCardFromAsset(asset);
     }
-    public void GameStart()//ÓÎÏ·¿ªÊ¼¹ØÓÚÍæ¼ÒÊı¾İµÄ¸÷Ïî¹¤×÷
+
+    //UIæ›´æ–°
+    public void UpdateUI(Text Hptext, Text Mptext, Text Sptext, Text Weapon1Acc, Text Weapon2Acc ,PlayerAsset player)
     {
-        //Íæ¼Ò´Ó¶ÔÊÖµÄÈı¸öÎäÆ÷ÖĞÑ¡³öÒ»¸ö½ûÓÃ£¨ÕâÀïÔİÊ±Ê¹ÓÃ×Ô¼ºµÄ½øĞĞÑ¡Ôñ£©
+        Hptext.text = player.hp.ToString();
+        Mptext.text = player.mp.ToString();
+        Sptext.text = player.maxSp.ToString();
+        Weapon1Acc.text = player.Weapon1Acc.ToString();
+        Weapon2Acc.text = player.Weapon2Acc.ToString();
+    }
+    public void GameStart()//æ¸¸æˆå¼€å§‹
+    {
+        
+        //è¯»å–ç©å®¶å„ç§æ•°æ®
+        PlayerData = Player.CharacterAsset;
+        for(int i = 0; i < 3; i++)
+        {
+            PlayerAllWeapons[i] = Player.WeaponAsset[i];
+        }
+        Player.hp = PlayerData.MaxHealth;
+        Player.maxSp = PlayerData.MaxSp;
+        Player.NowSp = Player.maxSp;
+        Player.mp = 0;
+        PlayerPool = new CardPool();
+        _currentDeck = new List<CardAsset>();
+
+        //è¯»å–æ•Œæ–¹å„ç§æ•°æ®
+        EnemyManager._PlayerData = Enemy.CharacterAsset;
+        for (int i = 0; i < 3; i++)
+        {
+           EnemyManager._PlayerAllWeapons[i] = Enemy.WeaponAsset[i];
+        }
+        Enemy.hp = EnemyManager._PlayerData.MaxHealth;
+        Enemy.maxSp = EnemyManager._PlayerData.MaxSp;
+        Enemy.NowSp = Enemy.maxSp;
+        Enemy.mp = 0;
+        EnemyManager.EnemyPool = new CardPool();
+        EnemyManager._currentDeck = new List<CardAsset>();
+
+        //ç»Ÿä¸€æ›´æ–°UI
+        UpdateUI(HpText, MpText, SpText,Weapon1Acc,Weapon2Acc,Player);
+        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc, 
+            EnemyManager.Weapon2Acc,Enemy);
         for(int i = 0;i < 3; i++)
         {
-             ChooseWeaponButton[i].GetComponentInChildren<Text>().text = enemyManager.ChooseWeapon[i].WeaponName;
-        }
-        ReadDeck();
-        Hptext.text = Hp.ToString();
-        Deftext.text = Def.ToString();
-        Sptext.text = Sp.ToString();
-        Mptext.text = Mp.ToString();
-        Weapon1Attacked = false;
-        Weapon2Attacked = false;
-        AttackManage = 0;
-        gamePhase = GamePhase.playerAction;
+            BanEnemyWeapon.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i].WeaponName;
+        } 
     }
-    public void EnemyStart()//ÓÎÏ·¿ªÊ¼¹ØÓÚµĞÈËÊı¾İµÄ¸÷Ïî¹¤×÷
-    {
-        enemyManager.HandCardNum = enemyManager.charactor.HandCardNum;
-        enemyManager.Hp = enemyManager.charactor.MaxHealth;
-        enemyManager.Def = enemyManager.charactor.StartDef;
-        enemyManager.Sp = enemyManager.charactor.MaxSp;
-        enemyManager.Mp = 0;
-        enemyManager.speed = enemyManager.charactor.speed;
-        enemyManager.Hptext.text = enemyManager.Hp.ToString();
-        enemyManager.Deftext.text = enemyManager.Def.ToString();
-        enemyManager.Sptext.text = enemyManager.Sp.ToString();
-        enemyManager.Mptext.text = enemyManager.Mp.ToString();
-        enemyManager.Weapon1Attacked = false;
-        enemyManager.Weapon2Attacked = false;
-        enemyManager.AttackManage = 0;
-        enemyManager.shuffledCards = new List<CardAsset>(enemyManager.Weapon1.Allcard);
-        enemyManager.CardNum = DrowCards(enemyManager.enemyHand, enemyManager.CardNum, enemyManager.HandCardNum,enemyManager.shuffledCards);
-    }
-    public void TurnEnd()//»ØºÏ½áÊø´¦Àí
-    {
-        if(gamePhase == GamePhase.playerAction)
-        {
-            gamePhase = GamePhase.enemyAction;
-        }
-        else if(gamePhase == GamePhase.enemyAction)
-        {
-            Weapon1Attacked = false;
-            Weapon2Attacked = false;
-            AttackManage = 0;
-            gamePhase = GamePhase.playerReady;
-        }
-    }
-    public void EnemyAction()//µĞÈË»ØºÏ£¨ĞèÒª±àĞ´µĞÈËAI£©
-    {
-        FirstHandManager.EnemyAction();
-       TurnEnd();
-    }
-    public void PlayerReady()//Íæ¼Ò»ØºÏ
-    {
-        if (shuffledCards.Count == 0)//µÚÒ»¸öÎäÆ÷µÄÅÆ¿âÃ»¿Õ¾Í³éµÚÒ»¸öÎäÆ÷µÄ,¿ÕÁË¾Í³éµÚ¶ş¸öÎäÆ÷µÄ.
-        {
-            if(FirstDrewWeapon.WeaponName.Equals(Weapon1.WeaponName))
-                shuffledCards = new List<CardAsset>(Weapon2.Allcard);
-            else
-                shuffledCards = new List<CardAsset>(Weapon1.Allcard);
-        }
-        Sp = charactor.MaxSp;//¸üĞÂÌåÁ¦Ìõ
-        Sptext.text = Sp.ToString();
-        CardNum =  DrowCards(hand,CardNum, HandCardNum, shuffledCards);
-        gamePhase = GamePhase.playerAction;
-    }
-    public void ChooseWeapons(Text text)
-    {
-        string name = text.text;//»ñÈ¡µ±Ç°°´Å¥¶ÔÓ¦µÄÎäÆ÷Ãû
-        for(int i = 0; i < 3; i++)//²éÕÒµ½Íæ¼ÒÑ¡ÏîÖĞ¶ÔÓ¦µÄÎäÆ÷
-        {
-            if (!enemyManager.ChooseWeapon[i].WeaponName.Equals(name))
-            {
-                if (enemyManager.Weapon1 == null) enemyManager.Weapon1 = enemyManager.ChooseWeapon[i];
-                else if (enemyManager.Weapon1 != null) enemyManager.Weapon2 = enemyManager.ChooseWeapon[i];
-            }
-            else if (enemyManager.ChooseWeapon[i].WeaponName.Equals(name)) continue;
-        }
-        //Íæ¼Òban¶ÔÊÖÊÖÅÆ
-        //¶ÔÊÖbanÍæ¼ÒÊÖÅÆ£¬ÇÒ»ñÈ¡×Ô¼ºµÄÊÖÅÆ
-        EnemyStart();
-        WeaponChoosePanel.SetActive(false);
-    }//Ñ¡Ôñbanµô¶Ô·½Ò»¼şÎäÆ÷
-    public void ChooseFirstDrew(Text text)//Ñ¡ÔñÏÈ³éÈ¡µÄ¿¨×é
-    {
-        string name = text.text;//»ñÈ¡µ±Ç°°´Å¥¶ÔÓ¦µÄÎäÆ÷Ãû
-        if (name.Equals(Weapon1.WeaponName)) FirstDrewWeapon = Weapon1;
-        else FirstDrewWeapon = Weapon2;
-        shuffledCards = new List<CardAsset>(FirstDrewWeapon.Allcard);
-        CardNum = DrowCards(hand, CardNum, HandCardNum, shuffledCards);
-        DrewChoosePanel.SetActive(false);
-    }
-    public void UseCard()//Ê¹ÓÃ¿¨ÅÆ
-    {
-        if(ChooseCards.Count == 1)
-        {
-            foreach (var i in ChooseCards)
-                //Ö´ĞĞ¿¨ÅÆĞ§¹û£¬Ëæºó¿¨ÅÆÏú»Ù£¨½øÈëÆúÅÆ£©
-                Destroy(i);
-            ChooseCards.Clear();
-        }
-    }
-    public void WeaponAccmulation(GameObject AccWeapon)//¿¨ÅÆĞîÄÜ
-    {
-        if(AccWeapon == Weapon1Object)
-        {
-            if(ChooseCards.Count <= Weapon1Object.GetComponent<WeaponCardManager>().weaponAsset.OnceAccumulation)//Èç¹ûÑ¡ÔñµÄÊÖÅÆĞ¡ÓÚµÈÓÚÔÊĞíµÄµ¥´ÎĞîÄÜ
-            {
-                AccNum1 = AccNum1 + ChooseCards.Count;//¼ÓÈëĞîÄÜÊıÁ¿µÄ¿¨ÅÆ
-                AccNum1Text.text = AccNum1.ToString();//¸üĞÂĞîÄÜÎÄ±¾
-                foreach (var i in ChooseCards)//´İ»Ù±»ÓÃÀ´ĞîÄÜµÄ¿¨ÅÆ
-                    Destroy(i);
-                ChooseCards.Clear();//Ñ¡ÔñµÄÊÖÅÆÇå¿Õ
-            }
-            else
-            {
-                Debug.Log("´ËÎäÆ÷ÎŞ·¨µ¥´ÎĞîÄÜµ±Ç°ÊıÁ¿");
-            }
-        }
-        else if(AccWeapon == Weapon2Object)
-        {
-            if (ChooseCards.Count <= Weapon2Object.GetComponent<WeaponCardManager>().weaponAsset.OnceAccumulation)//Èç¹ûÑ¡ÔñµÄÊÖÅÆĞ¡ÓÚµÈÓÚÔÊĞíµÄµ¥´ÎĞîÄÜ
-            {
-                AccNum2 = AccNum2 + ChooseCards.Count;
-                AccNum2Text.text = AccNum2.ToString();
-                foreach (var i in ChooseCards)
-                    Destroy(i);
-                ChooseCards.Clear();
-            }
-            else
-            {
-                Debug.Log("´ËÎäÆ÷ÎŞ·¨µ¥´ÎĞîÄÜµ±Ç°ÊıÁ¿");
-            }
-        }
 
+    public void PlayerReady()//ç©å®¶å‡†å¤‡é˜¶æ®µ
+    {
+        Debug.Log(_currentPhase);
+        Player.maxSp = PlayerData.MaxSp;
+        UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
+        _currentPhase = GamePhase.playerAction;
+        DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount);
     }
-    public void WeaponAttack(GameObject AccWeapon)//¿¨ÅÆ¹¥»÷
+    
+    public void EndTurn()//å›åˆç»“æŸ
     {
-        //°´ÏÂ¹¥»÷°´Å¥ºó£¬ÏÈ¼ì²âĞîÄÜÊıÁ¿£¬ÓëWeaponAssetÖĞµÄĞîÄÜµÈ¼¶Æ¥Åä£¬Ñ¡³ö¡İµÄ×îºóÒ»µµĞîÄÜµÈ¼¶£¬
-        //Ëæºó½øĞĞ¹¥»÷£¬ĞîÄÜÖµ¹éÁã£¬Ë¢ĞÂÎÄ±¾ÄÚÈİ£¬ÒÑ¹¥»÷boolÖµ±äÎªtrue
+        if (_currentPhase == GamePhase.playerAction)
+        {
+            _currentPhase = GamePhase.enemyReady;
+        }
+        else if(_currentPhase == GamePhase.enemyAction)
+        {
+            _currentPhase = GamePhase.playerReady;
+        }
+    }
 
-        if(AccWeapon == Weapon1Object)//Á½¸öif½«¶ÔÓ¦µÄÎäÆ÷ĞîÄÜÊı¾İºÍÎÄ±¾¸üĞÂÎª0
-        {
-            if(!Weapon1Attacked)
-            {
-                for (int i = 0; i < 3; i++)//Æ¥ÅäĞîÄÜ£¬²¢ÇÒ´ò³öÉËº¦
-                    if (AccNum1 >= AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Acc)
-                    {
-                        AttackManage = AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Value;
-                    }
-                AttackToEnemy(AttackManage);
-                Debug.Log("Äã´ò³öÁË" + AttackManage + "µãÉËº¦");
-                if (AttackManage == 0)//µ±ĞîÄÜ²»×ãÊ±´ò²»³öÉËº¦
-                {
-                    Debug.Log("ĞîÄÜ²»×ã£¬ÎŞ·¨Ôì³ÉÉËº¦");
-                    return;
-                }
-                Mp = Mp + AccNum1;
-                Mptext.text = Mp.ToString();
-                AccNum1 = 0;//µ÷Õû±ØÒªÊıÖµ£¬ÇÒÉèÖÃÎª±¾»ØºÏÒÔ¹¥»÷×´Ì¬
-                AccNum1Text.text = AccNum1.ToString();
-                Weapon1Attacked = true;
-                AttackManage = 0;
-            }
-            else
-            {
-                Debug.Log("´ËÎäÆ÷±¾»ØºÏÒÑ¾­ÓÃÓÚ¹¥»÷");
-            }
-        }
-        else if(AccWeapon == Weapon2Object) 
-        { 
-            if (!Weapon2Attacked)
-            {
-                for (int i = 0; i < 3; i++)//Æ¥ÅäĞîÄÜ£¬²¢ÇÒ´ò³öÉËº¦
-                    if (AccNum2 >= AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Acc)
-                    {
-                        AttackManage = AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Value;
-                    }
-                AttackToEnemy(AttackManage);
-                Debug.Log("Äã´ò³öÁË" + AttackManage + "µãÉËº¦");
-                if (AttackManage == 0)
-                {
-                    Debug.Log("ĞîÄÜ²»×ã£¬ÎŞ·¨Ôì³ÉÉËº¦");
-                    return;
-                }
-                Mp = Mp + AccNum2;
-                Mptext.text = Mp.ToString();
-                AccNum2 = 0;
-                AccNum2Text.text = AccNum2.ToString();
-                Weapon2Attacked = true;
-                AttackManage = 0;
-            }
-            else
-            {
-                Debug.Log("´ËÎäÆ÷±¾»ØºÏÒÑ¾­ÓÃÓÚ¹¥»÷");
-            }
-        }
-     }
-    public void AttackToEnemy(int attack)//»÷ÖĞºóÅĞ¶¨ÉËº¦
+    public void EnemyReady()
     {
-        if(gamePhase == GamePhase.playerAction)
+        Debug.Log(_currentPhase);
+        Enemy.NowSp = Enemy.maxSp;
+        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
+            EnemyManager.Weapon2Acc, Enemy);
+        _currentPhase = GamePhase.enemyAction;
+    }
+    public void ChooseWeapons(Text text)//æˆ‘æ–¹banå¯¹æ–¹ä¸€ä¸ªæ­¦å™¨ç‰Œ
+    {
+        foreach(WeaponAsset i in EnemyManager._PlayerAllWeapons)
         {
-            if(enemyManager.Def >= attack)
+            int j = 0;
+            if (!i.WeaponName.Equals(text.text))
             {
-                enemyManager.Def -= attack;
-                enemyManager.Deftext.text = enemyManager.Def.ToString();
-            }
-            else
-            {
-                enemyManager.Hp -= attack;
-                enemyManager.Hptext.text = enemyManager.Hp.ToString();
+                EnemyManager._PlayerWeapons[j] = i;
+                j++;
             }
         }
-        else if(gamePhase == GamePhase.enemyAction)
+        FirstDrew.SetActive(true);
+        for (int i = 0; i < 2; i++)
         {
-            if (Def >= attack)
+            FirstDrew.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i].WeaponName;
+        }
+        BanEnemyWeapon.SetActive(false);
+    }
+    public void ChooseFirstDrew(Text text)//é€‰æ‹©ç¬¬ä¸€æŠ½å–çš„æ­¦å™¨
+    {
+        foreach(WeaponAsset weapon in PlayerWeapons)
+        {
+            if (weapon.WeaponName.Equals(text.text))
             {
-                Def -= attack;
-                Deftext.text = Def.ToString();
+                DrewWeapon = weapon;
+                break;
             }
-            else
+        }
+        foreach(CardAsset card in DrewWeapon.Allcard)//æ‹·è´å¡ç‰Œ
+        {
+            _currentDeck.Add(card);
+            cardStates[card] = new CardState
             {
-                Hp -= attack;
-                Hptext.text = Hp.ToString();
-            }
+                TemporaryCost = int.Parse(card.cost),
+                IsInPlayArea = false
+            };
+        }
+        DrowCards(PlayerData.HandCardNum);
+        FirstDrew.SetActive(false);
+        ChooseCardsPanel.SetActive(false);
+        _currentPhase = GamePhase.playerReady;
+    }
+  
+    public void UseCard(CardAsset card, GameObject cardObject)//ä½¿ç”¨å¡ç‰Œ
+    {
+        var behaviour = CardBehaviourFactory.Create(card);
+        behaviour.Onplay(this, EnemyManager, cardObject);
+
+        int nowsp = 0;
+        if (nowsp < 0)
+        {
+            Debug.Log("å½“å‰ä½“åŠ›ä¸å¤Ÿä½¿ç”¨æ­¤ç‰Œ");
+            return;
+        }
+        
+        //PlayerData.Sp = nowsp;
+        //SpText.text = PlayerData.Sp.ToString();
+        Destroy(cardObject); //é”€æ¯å¡ç‰Œ
+    }
+    public void WeaponAttack(GameObject AccWeapon)//æ­¦å™¨æ”»å‡»
+    {
+        GameObject accText = AccWeapon.transform.GetChild(3).gameObject;
+        int AccNum = int.Parse(accText.GetComponent<Text>().text);
+        //æœ¬å›åˆæ”»å‡»è¿‡çš„æ­¦å™¨ï¼Œboolå€¼ä¸ºtrue
+        if (!AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.WeaponAttacked)
+        {
+            for (int i = 0; i < 3; i++)//åŒ¹é…è“„èƒ½ç­‰çº§
+                if (AccNum >= AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Acc)
+                {
+                    //AttackManage = AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.Accumulation[i].Value;
+                }
+            //Debug.Log("ä½ æ‰“å‡ºäº†" + AttackManage + "ç‚¹ä¼¤å®³");
+            //if (AttackManage == 0)//å¦‚æœæ²¡åˆ°è“„èƒ½ç­‰çº§ï¼Œæ— æ³•æ‰“å‡ºä¼¤å®³
+            //{
+            //    Debug.Log("æ­¤æ­¦å™¨è“„èƒ½ä¸è¶³ä»¥å‘åŠ¨æ”»å‡»");
+            //    return;
+            //}
+            //Mp = Mp + AccNum;
+            //Mptext.text = Mp.ToString();
+            AccNum = 0;//é‡ç½®è“„èƒ½
+            accText.GetComponent<Text>().text = AccNum.ToString();
+            AccWeapon.GetComponent<WeaponCardManager>().weaponAsset.WeaponAttacked = true;
+            //AttackManage = 0;
+        }
+        else
+        {
+            Debug.Log("æ­¤æ­¦å™¨æœ¬å›åˆå·²ç»æ”»å‡»è¿‡äº†");
+        }
+    }
+}
+
+public static class CardBehaviourFactory
+{
+    public static CardBehaviour Create(CardAsset cardAsset)
+    {
+        // ç›´æ¥ä½¿ç”¨ScriptableObjectä¸­çš„Typeå­—æ®µ
+        switch (cardAsset.Type)
+        {
+            case Type.æ”»å‡»:
+                return new AttackCardBehaviour(cardAsset);
+            case Type.æˆ˜æŠ€:
+                return new SkillCardBehaviour(cardAsset);
+            case Type.è¡ŒåŠ¨:
+                return new ActionCardBehaviour(cardAsset);
+            case Type.å¯¹åº”:
+                return new CounterCardBehaviour(cardAsset);
+            default:
+                throw new ArgumentException("æœªçŸ¥å¡ç‰Œç±»å‹");
         }
     }
 }

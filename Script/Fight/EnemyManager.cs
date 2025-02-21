@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -7,67 +8,24 @@ using UnityEngine.UI;
 
 public class EnemyManager : MonoBehaviour
 {
-    [Header("µĞÈËÇøÓòÊı¾İ")]
-    public GameObject enemyHand;//µĞÈËÊÖÅÆÇø
-    public WeaponAsset[] ChooseWeapon;//ÈüÇ°Ô¤Ñ¡µÄ3¸öÎäÆ÷
-    public List<GameObject> ChooseCards;//Íæ¼ÒÖ´ĞĞÖ÷Òª¶¯×÷Ê±Ñ¡ÔñµÄ¿¨ÅÆ
+    [Header("æ•Œæ–¹æ•°æ®")]
+    public CharactorAsset _PlayerData;//è§’è‰²å¡
+    public WeaponAsset[] _PlayerWeapons = new WeaponAsset[2];//ç¦ç”¨åæ­¦å™¨å¡
+    public WeaponAsset[] _PlayerAllWeapons = new WeaponAsset[3];//åˆå§‹æ­¦å™¨å¡
+    public WeaponAsset DrewWeapon;//ç¬¬ä¸€ä¸ªæŠ½çš„æ­¦å™¨
 
-    [Header("µĞÈË¿¨ÅÆ»ù±¾Êı¾İ")]
-    public CharactorAsset charactor;//µĞÈËµÄ½ÇÉ«
-    public WeaponAsset Weapon1;//µÚÒ»¸öÎäÆ÷
-    public WeaponAsset Weapon2;//µÚ¶ş¸öÎäÆ÷
-    public List<CardAsset> shuffledCards;//ÎäÆ÷µÄ¿¨×é
-    
+    [Header("æ•Œæ–¹åŒºåŸŸ")]
+    public GameObject HandArea;//æ‰‹ç‰ŒåŒºåŸŸ
+    public GameObject CardPrefab;//å¡ç‰Œé¢„åˆ¶ä½“
+    public Transform SkillArea;//æˆ˜æŠ€å±•å¼€åŒºåŸŸ
 
-    [Header("µĞÈËÏêÏ¸Êı¾İ")]
-    public string power;//µĞÈËµÄ½ÇÉ«¼¼ÄÜ
-    public int speed;//µĞÈË½ÇÉ«µÄËÙ¶È
-    public int HandCardNum;//ÊÖÅÆÉÏÏŞ
-    public int Hp;
-    public int Def;
-    public int Sp;
-    public int Mp;
-    public int Weapon1Acc;//ÎäÆ÷1ĞîÄÜÊıÁ¿
-    public int Weapon2Acc;//ÎäÆ÷2ĞîÄÜÊıÁ¿
+    [Header("UIç»„ä»¶")]
+    public Text HpText;//ç”Ÿå‘½
+    public Text SpText;//ä½“åŠ›
+    public Text MpText;//èƒ½é‡
+    public Text Weapon1Acc;//æ­¦å™¨1è“„èƒ½
+    public Text Weapon2Acc;//æ­¦å™¨2è“„èƒ½
 
-    [Header("ÎäÆ÷×é¼ş")]
-    public Text AccNum1Text;//ÏÖÔÚµÄÎäÆ÷ĞîÄÜÎÄ±¾
-    public Text AccNum2Text;//ÏÖÔÚµÄÎäÆ÷ĞîÄÜÎÄ±¾
-    public int AccNum1;//ÏÖÔÚÎäÆ÷µÄĞîÄÜ
-    public int AccNum2;//ÏÖÔÚÎäÆ÷µÄĞîÄÜ
-    public GameObject Weapon1Object;//µÚÒ»¸öÎäÆ÷
-    public GameObject Weapon2Object;//µÚ¶ş¸öÎäÆ÷
-    public bool Weapon1Attacked;//µÚÒ»¸öÎäÆ÷±¾»ØºÏÒÑ¾­¹¥»÷
-    public bool Weapon2Attacked;//µÚ¶ş¸öÎäÆ÷±¾»ØºÏÒÑ¾­¹¥»÷
-
-    [Header("ÏÔÊ¾Êı¾İ×é¼ş")]
-    public Text Hptext;//¾çÄ¿ÖµÎÄ±¾
-    public Text Deftext;//¸ñµ²ÖµÎÄ±¾
-    public Text Sptext;//¾«Á¦ÖµÎÄ±¾
-    public Text Mptext;//·¨Á¦ÖµÎÄ±¾
-
-    [Header("½Å±¾ÄÚ²¿Êı¾İ")]
-    public int CardNum = 20;//µ¥¸ö¿¨×é×ÜÊıÁ¿
-    public int AttackManage;//·¢¶¯¹¥»÷µÄÊıÖµ
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    public void UseCard()//Ê¹ÓÃ¿¨ÅÆ
-    {
-        if (ChooseCards.Count == 1)
-        {
-            foreach (var i in ChooseCards)
-                //Ö´ĞĞ¿¨ÅÆĞ§¹û£¬Ëæºó¿¨ÅÆÏú»Ù£¨½øÈëÆúÅÆ£©
-                Destroy(i);
-            ChooseCards.Clear();
-        }
-    }
+    public List<CardAsset> _currentDeck;//ç‰Œåº“
+    public CardPool EnemyPool;//å¯¹è±¡æ± 
 }

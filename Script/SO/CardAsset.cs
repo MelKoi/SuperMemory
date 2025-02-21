@@ -1,25 +1,27 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum TargetingOptions//¿¨ÅÆÄÜÖ¸¶¨µÄÄ¿±ê
+public enum Type
 {
-    NoTarget,
-    All,
-    Enemy,
-    Self
+    æ”»å‡»,è¡ŒåŠ¨,å¯¹åº”,æˆ˜æŠ€
 }
-[CreateAssetMenu(fileName = "MyCard", menuName = "New Card",order = 2)]//´´½¨½á¹ûÎÄ¼ş¼ĞÎªMC£¬±»ÀûÓÃµÄÎÄ¼ş¼ĞÎªNC
-
+[CreateAssetMenu(fileName = "MyCard", menuName = "New Card", order = 2)]//åˆ›å»ºç»“æœæ–‡ä»¶å¤¹ä¸ºMCï¼Œè¢«åˆ©ç”¨çš„æ–‡ä»¶å¤¹ä¸ºNC
 public class CardAsset : ScriptableObject
 {
-    [Header("General info")]//ÆÕ±éĞÅÏ¢
-    public WeaponAsset WeaponAsset; //¿¨ÅÆµÄ¹éÊô,Ã»ÓĞ¾ÍËµÃ÷ÊÇ³¡¾°¿¨ÅÆ
-    public string CardName;//¿¨ÅÆµÄÃû×Ö
-    [TextArea(2, 3)]//ÌîĞ´¿ò£¬×îÉÙ2ĞĞ£¬×î¶à3ĞĞ
-    public string description;//¿¨ÅÆÃèÊö
-    public Sprite cardPic;//¿¨ÅÆÍ¼°¸
-    public Sprite TypePic;//¿¨ÅÆÖÖÀà
-    public string cost;//»¨·Ñ   
+    [Header("General info")]//æ™®éä¿¡æ¯
+    public WeaponAsset WeaponAsset; //å¡ç‰Œçš„å½’å±,æ²¡æœ‰å°±è¯´æ˜æ˜¯åœºæ™¯å¡ç‰Œ
+    public string CardName;//å¡ç‰Œçš„åå­—
+    [TextArea(2, 3)]//å¡«å†™æ¡†ï¼Œæœ€å°‘2è¡Œï¼Œæœ€å¤š3è¡Œ
+    public string description;//å¡ç‰Œæè¿°
+    public Sprite cardPic;//å¡ç‰Œå›¾æ¡ˆ
+    public Type Type;
+    public Sprite TypePic;//å¡ç‰Œç§ç±»å›¾æ¡ˆ
+    public string cost;//èŠ±è´¹
+}
+public class CardState
+{
+    public int TemporaryCost; // ä¸´æ—¶æ¶ˆè€— 
+    public bool IsInPlayArea; // æ˜¯å¦åœ¨å±•å¼€åŒº
 }

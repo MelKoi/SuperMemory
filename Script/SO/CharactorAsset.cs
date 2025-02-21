@@ -1,31 +1,26 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "My Character", menuName ="New Charactor", order = 1)]
+[CreateAssetMenu(fileName = "MyCharacter", menuName ="New Charactor", order = 4)]
 
 public class CharactorAsset : ScriptableObject
 {
-    public int MaxHealth;//ÉúÃü
+    public int MaxHealth;//ç”Ÿå‘½
 
-    public int StartDef;//¸ñµ²Öµ
+    public int MaxSp;//æœ€å¤§ç²¾åŠ›
 
-    public int MaxSp;//×î´ó¾«Á¦
+    public int speed;//é€Ÿåº¦
 
-    public int speed;//ËÙ¶È
+    [TextArea(2, 3)]//å¡«å†™æ¡†ï¼Œæœ€å°‘2è¡Œï¼Œæœ€å¤š3è¡Œ
+    public string description;//äººç‰©æè¿°
 
-    [TextArea(2, 3)]//ÌîĞ´¿ò£¬×îÉÙ2ĞĞ£¬×î¶à3ĞĞ
-    public string description;//ÈËÎïÃèÊö
+    public int HandCardNum;//æ‰‹ç‰Œæ•°
 
-    [TextArea(2, 3)]//ÌîĞ´¿ò£¬×îÉÙ2ĞĞ£¬×î¶à3ĞĞ
-    public string Skill;//ÈËÎïĞÔÄÜ
+    public string[] Power;//æŠ€èƒ½
 
-    public int HandCardNum;//ÊÖÅÆÊı
+    public Sprite HeroImage;//å›¾ç‰‡
 
-    public string[] Power;//¼¼ÄÜ
-
-    public Sprite HeroImage;//Í¼Æ¬
-
-    public Sprite[] PowerImage;//¼¼ÄÜÍ¼Æ¬
+    public Sprite[] PowerImage;//æŠ€èƒ½å›¾ç‰‡
 }
