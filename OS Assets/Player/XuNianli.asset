@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf5830348aabc646acfb470780db150, type: 3}
+  m_Name: XuNianli
+  m_EditorClassIdentifier: 
+  Player: 0
+  CharacterAsset: {fileID: 11400000, guid: 000e5d88b1cd0ef48b0c5b0385540fce, type: 2}
+  WeaponAsset:
+  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
+  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
+  - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
