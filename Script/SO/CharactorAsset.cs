@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "MyCharacter", menuName ="New Charactor", order = 4)]
 
 public class CharactorAsset : ScriptableObject
 {
+    public string Cardname;//角色名字
+
+    public Sprite BianKuang;//卡牌边框
+
     public int MaxHealth;//生命
 
     public int MaxSp;//最大精力

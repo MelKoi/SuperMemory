@@ -16,8 +16,12 @@ public class EnemyManager : MonoBehaviour
 
     [Header("敌方区域")]
     public GameObject HandArea;//手牌区域
-    public GameObject CardPrefab;//卡牌预制体
     public Transform SkillArea;//战技展开区域
+    public GameObject CharacterArea;//人物牌区域
+
+    [Header("卡牌预制体")]
+    public GameObject CardPrefab;//卡牌预制体
+    public GameObject CharacterPrefab;//卡牌预制体
 
     [Header("UI组件")]
     public Text HpText;//生命
@@ -25,7 +29,17 @@ public class EnemyManager : MonoBehaviour
     public Text MpText;//能量
     public Text Weapon1Acc;//武器1蓄能
     public Text Weapon2Acc;//武器2蓄能
+    public GameObject Purple;//对应卡是否使用
 
     public List<CardAsset> _currentDeck;//牌库
     public CardPool EnemyPool;//对象池
+
+    public void EnemyAcc()//敌方蓄能函数
+    {
+
+    }
+    public void EnemyRolling()//敌方翻滚对应
+    {
+
+    }
 }

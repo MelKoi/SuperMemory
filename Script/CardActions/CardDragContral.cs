@@ -8,6 +8,7 @@ using DG.Tweening;
 public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     // 在CardDragContral.cs顶部添加引用
+    public bool canDrug = true;
     [Header("武器蓄能部分")]
     private Transform Weapon1;
     private Transform Weapon2;
@@ -37,24 +38,30 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // 提升层级至Canvas顶层
-        transform.SetParent(handArea.parent); // 假设handArea在Canvas下
-        transform.SetAsLastSibling();
+        if(canDrug)
+        {
+            // 提升层级至Canvas顶层
+            transform.SetParent(handArea.parent); // 假设handArea在Canvas下
+            transform.SetAsLastSibling();
 
-        // 记录初始状态
-        originalPosition = rectTransform.anchoredPosition;
-        canvasGroup.alpha = 0.6f;
-        canvasGroup.blocksRaycasts = false;
+            // 记录初始状态
+            originalPosition = rectTransform.anchoredPosition;
+            canvasGroup.alpha = 0.6f;
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if(canDrug)
         // 跟随鼠标移动
         rectTransform.anchoredPosition += eventData.delta / GetComponentInParent<Canvas>().scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!canDrug)
+            return;
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
@@ -106,6 +113,9 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             Debug.LogError("卡牌缺少OneCardManager组件");
             return;
         }
+        BattleManager battleManager = transform.parent.parent.GetComponent<BattleManager>();
+        battleManager.UseCard(cardManager.cardAsset,gameObject);
         Destroy(gameObject);
     }
+
 }

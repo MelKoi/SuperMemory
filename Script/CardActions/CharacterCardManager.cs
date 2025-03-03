@@ -1,18 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class CharacterCardManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public CharactorAsset charactorasset;
+    [Header("文本框")]
+    public Text nameText;
 
-    // Update is called once per frame
-    void Update()
+    [Header("图片")]
+    public Image BianKuang;
+    public Image CardFace;
+    void Awake()
     {
-        
+        if (charactorasset != null)//卡牌存在
+        {
+            ReadCardFromAsset(charactorasset);
+        }
+    }
+    private bool canBePlayedNow = false;//是否可以被使用
+    public bool CanBePlayedNow
+    {
+        get
+        {
+            return canBePlayedNow;
+        }
+        set
+        {
+            canBePlayedNow = value;
+
+        }
+    }
+    public void ReadCardFromAsset(CharactorAsset charactor)
+    {
+        nameText.text = charactor.Cardname;
+
+        BianKuang.sprite = charactor.BianKuang;
+
+        CardFace.sprite = charactor.HeroImage;
+
     }
 }

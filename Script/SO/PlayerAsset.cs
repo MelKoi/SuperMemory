@@ -1,20 +1,22 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [CreateAssetMenu(fileName = "MyPlayer", menuName = "NewPlayer", order = 1)]
 public class PlayerAsset : ScriptableObject
 {
-    public int Player;//½ÇÉ«£¬0´ú±íÖ÷½Ç
+    public int Player;//è§’è‰²ï¼Œ0ä»£è¡¨ä¸»è§’
 
-    public CharactorAsset CharacterAsset;//ÈËÎï
+    public CharactorAsset CharacterAsset;//äººç‰©
 
     public int hp;
     public int mp;
     public int maxSp;
     public int NowSp;
 
-    public WeaponAsset[] WeaponAsset = new WeaponAsset[3];//Ö÷ÒªÊ¹ÓÃµÄÎäÆ÷
+    public WeaponAsset[] WeaponAsset = new WeaponAsset[3];//ä¸»è¦ä½¿ç”¨çš„æ­¦å™¨
 
-    public int Weapon1Acc;//ÎäÆ÷1ĞîÄÜ
-    public int Weapon2Acc;//ÎäÆ÷2ĞîÄÜ
+    public int Weapon1Acc;//æ­¦å™¨1è“„èƒ½
+    public int Weapon2Acc;//æ­¦å™¨2è“„èƒ½
+    public bool Weapon1;//æ­¦å™¨ä¸€å·²ç»æ”»å‡»
+    public bool Weapon2;//æ­¦å™¨äºŒå·²ç»æ”»å‡»
 }

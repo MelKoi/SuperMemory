@@ -27,7 +27,5 @@ public class WeaponAsset : ScriptableObject
     public List<AccumulationPair> Accumulation;
 
     public List<CardAsset> Allcard;
-
-    [Header("Inside Imformation")]//内部信息
-    public bool WeaponAttacked = false;
+   
 }
