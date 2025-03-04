@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro.EditorUtilities;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class NoONE : BattleManager
@@ -49,10 +50,15 @@ public class NoONE : BattleManager
                 continue;
             }
             //检索牌库内的手牌
-            Transform[] EnemyCards = EnemyManager.HandArea.transform.GetComponentsInChildren<Transform>();
+            List<Transform> EnemyCards = new List<Transform>();
+            Transform parent = EnemyManager.HandArea.transform;
+            for(int i = 0; i < parent.childCount; i++)
+            {
+                EnemyCards.Add(parent.GetChild(i));
+            }
             foreach(var card in EnemyCards)
             {
-                CardAsset cardAsset = card.GetComponent<OneCardManager>().cardAsset;
+                CardAsset cardAsset = card.gameObject.GetComponent<OneCardManager>().cardAsset;
                 if (cardAsset.Type == Type.攻击)//攻击牌直接使用
                 {
                     UseCard(cardAsset, card.gameObject);
