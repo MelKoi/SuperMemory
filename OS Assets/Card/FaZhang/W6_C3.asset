@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b0e92eb3102b1c4a850edf515ed212c, type: 3}
-  m_Name: W3C_ 4
+  m_Name: W6_C3
   m_EditorClassIdentifier: 
-  WeaponAsset: {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
-  CardName: "\u6ED1\u6B65"
-  description: "\u6211\u65B9\u53EF\u4EE5\u9009\u62E9\u6D88\u8017\u4E0E\u4F24\u5BB3\u7B49\u91CF\u7684\u7CBE\u529B\u503C\u6765\u89C4\u907F\u5BF9\u65B9\u7684\u4F24\u5BB3"
+  WeaponAsset: {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
+  CardName: "\u9B54\u6CD5\u62A4\u76FE"
+  description: "\u5982\u679C\u672C\u6B21\u653B\u51FB\u4F24\u5BB3\u5C0F\u4E8E3\uFF0C\u5219\u672C\u6B21\u653B\u51FB\u65E0\u6548\u3002"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}
   Type: 2
   TypePic: {fileID: 21300000, guid: 53773231fc6e9024da85c24b620c3522, type: 3}
-  cost: 0
+  cost: 5

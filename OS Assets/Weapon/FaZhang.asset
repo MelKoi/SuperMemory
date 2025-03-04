@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec2c6f075506f24692861188c660d1e, type: 3}
+  m_Name: FaZhang
+  m_EditorClassIdentifier: 
+  WeaponName: "\u79C9\u70DB"
+  Wight: 0
+  description: "\u8D85\u7EA7\u6CD5\u6756\u3002"
+  OnceAccumulation: 2
+  Accumulation:
+  - Acc: 2
+    Value: 2
+  - Acc: 3
+    Value: 3
+  - Acc: 4
+    Value: 4
+  Allcard:
+  - {fileID: 11400000, guid: dab338dbd7347004f84883fc007492b7, type: 2}
+  - {fileID: 11400000, guid: dab338dbd7347004f84883fc007492b7, type: 2}
+  - {fileID: 11400000, guid: dab338dbd7347004f84883fc007492b7, type: 2}
+  - {fileID: 11400000, guid: dab338dbd7347004f84883fc007492b7, type: 2}
+  - {fileID: 11400000, guid: 5680072734c7beb46b0ddd3d9e358273, type: 2}
+  - {fileID: 11400000, guid: 5680072734c7beb46b0ddd3d9e358273, type: 2}
+  - {fileID: 11400000, guid: 5680072734c7beb46b0ddd3d9e358273, type: 2}
+  - {fileID: 11400000, guid: 5680072734c7beb46b0ddd3d9e358273, type: 2}
+  - {fileID: 11400000, guid: efcf03ca9cee1cc4d9d86d9c61da34a0, type: 2}
+  - {fileID: 11400000, guid: efcf03ca9cee1cc4d9d86d9c61da34a0, type: 2}
+  - {fileID: 11400000, guid: efcf03ca9cee1cc4d9d86d9c61da34a0, type: 2}
+  - {fileID: 11400000, guid: c4104166c2b9bef4aa83842da19bf28c, type: 2}
+  - {fileID: 11400000, guid: c4104166c2b9bef4aa83842da19bf28c, type: 2}
+  - {fileID: 11400000, guid: c4104166c2b9bef4aa83842da19bf28c, type: 2}
+  - {fileID: 11400000, guid: c4104166c2b9bef4aa83842da19bf28c, type: 2}
+  - {fileID: 11400000, guid: e4701ed0537fa314094a9d2261a8b6c7, type: 2}
+  - {fileID: 11400000, guid: e4701ed0537fa314094a9d2261a8b6c7, type: 2}
+  - {fileID: 11400000, guid: e4701ed0537fa314094a9d2261a8b6c7, type: 2}
+  - {fileID: 11400000, guid: e4701ed0537fa314094a9d2261a8b6c7, type: 2}
+  - {fileID: 11400000, guid: 54226446cd22ade448975ad2cc4fdd74, type: 2}

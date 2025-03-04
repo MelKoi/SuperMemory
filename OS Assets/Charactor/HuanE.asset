@@ -10,15 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5aa6ec622014452468a38c61d8ef6a5d, type: 3}
-  m_Name: Long
+  m_Name: HuanE
   m_EditorClassIdentifier: 
-  Cardname: "\u9F99"
+  Cardname: "\u5E7B\u86FE"
   BianKuang: {fileID: 21300000, guid: af9104d496a7de045ad3446f6707d34a, type: 3}
-  MaxHealth: 35
-  MaxSp: 25
-  speed: 4
-  description: "\u7537\u4EBA"
-  HandCardNum: 4
-  Power: []
-  HeroImage: {fileID: 21300000, guid: 3d75d98f5bd0ee545bd750a93438e782, type: 3}
+  MaxHealth: 30
+  MaxSp: 30
+  speed: 5
+  description: "\u5931\u4E50\u56ED\u4E8B\u4EF6\u7684\u82F1\u96C4\u4E4B\u4E00\uFF0C\u518D\u73B0\u4E86\u5176\u5728\u6E38\u620F\u4E2D\u547C\u706B\u5524\u96F7\u7684\u5F62\u8C61"
+  HandCardNum: 3
+  Power:
+  - 
+  - 
+  - 
+  HeroImage: {fileID: 21300000, guid: 403b8b5422253aa4fa64c53896571f95, type: 3}
   PowerImage: []

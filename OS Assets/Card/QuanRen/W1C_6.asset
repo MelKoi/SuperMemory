@@ -16,5 +16,6 @@ MonoBehaviour:
   CardName: "\u6F5C\u5FC3"
   description: "\u4ECE\u724C\u5E93\u62BD\u53D6\u4E24\u5F20\u5361\u724C"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}
+  Type: 1
   TypePic: {fileID: 21300000, guid: 8b4447e6d1ae5214d9fe7c22b09fc7f1, type: 3}
   cost: 8
