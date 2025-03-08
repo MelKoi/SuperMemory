@@ -67,38 +67,40 @@ public class SkillCardBehaviour : CardBehaviour
        if(bm._currentPhase == GamePhase.playerAction)
         {
             Debug.Log("玩家战技牌已经使用！");
-            Transform Area = bm.gameObject.transform.Find("Place/GreenCard");
-            if(Area.childCount == 0)
-            {
-                SkillCardChange(Card, Area);
-            }
-            else
-            {
-                Destroy(Area.GetChild(0));
-                SkillCardChange(Card, Area);
-            }
+            Transform Area = bm.SkillArea;
+            if (Card == null)
+                Debug.Log("Card");
+            if (Area == null)
+                Debug.Log("Area");
+            SkillCardChange(Card, Area);
         }
        else if (bm._currentPhase == GamePhase.enemyAction)
         {
             Debug.Log("敌方战技牌已经使用！");
-            Transform Area = bm.gameObject.transform.Find("Place/Enemy/GreenCard");
-            if (Area.childCount == 0)
-            {
-                SkillCardChange(Card, Area);
-            }
-            else
-            {
-                Destroy(Area.GetChild(0));
-                SkillCardChange(Card, Area);
-            }
+            Transform Area = em.SkillArea;
+            // 销毁 Area 中的第一个子物体
+            SkillCardChange(Card, Area);
         }
     }
-    public void SkillCardChange(GameObject Card,Transform Area)
+    private void SkillCardChange(GameObject Card,Transform Area)
     {
+
+        foreach (Transform child in Area)
+        {
+            if (child != null)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
         GameObject Skill = Instantiate(Card, Area.position, Quaternion.identity, Area);
         Skill.GetComponent<CardDragContral>().canDrug = false;
         Skill.transform.localPosition = Vector3.zero;
-        Skill.transform.localScale = Vector3.one;
-        Destroy(Card);
+        Skill.transform.localScale =new Vector3(0.75f,0.75f,1f);
+        // 销毁原始 Card
+        if (Card != null)
+        {
+            Destroy(Card);
+        }
     }
 }

@@ -34,10 +34,6 @@ public class EnemyManager : MonoBehaviour
     public List<CardAsset> _currentDeck;//牌库
     public CardPool EnemyPool;//对象池
 
-    public void EnemyAcc()//敌方蓄能函数
-    {
-
-    }
     public void EnemyRolling()//敌方翻滚对应
     {
 

@@ -77,6 +77,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 return;
             attacked.hp = attacked.hp - Damage;
             Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Damage +"点伤害！");
+            attack.mp = attack.mp + Acc;
             Acc = 0;
             Damage = 0;
             if (gameObject.name.Equals("WeaponCard1"))

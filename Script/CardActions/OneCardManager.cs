@@ -14,6 +14,7 @@ public class OneCardManager : MonoBehaviour
     [Header("Image References")]//图片
     public Image CardPic;
     public Image CardType;
+    public GameObject CardBack;
     void Awake()
     {
         if(cardAsset != null)//卡牌存在

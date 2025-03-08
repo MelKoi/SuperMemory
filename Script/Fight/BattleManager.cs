@@ -105,11 +105,51 @@ public class BattleManager : MonoBehaviour
     }
     public void DrowCards(int amount,GameObject HandArea, List<CardAsset> _currentDeck)//抽取卡牌
     {
+        if (_currentDeck.Count == 0)//本次抽卡时发现牌库为空
+            if (_currentPhase == GamePhase.playerReady)//如果是玩家抽卡发现的
+            {
+                foreach (WeaponAsset second in PlayerWeapons)
+                    if (!second.WeaponName.Equals(DrewWeapon.WeaponName))//检索玩家拥有的第二把武器
+                    {
+                        DrewWeapon = second;//更新抽取的武器
+                        break;
+                    }
+                foreach (CardAsset card in DrewWeapon.Allcard)//拷贝卡牌
+                {
+                    _currentDeck.Add(card);
+                    cardStates[card] = new CardState
+                    {
+                        TemporaryCost = int.Parse(card.cost),
+                        IsInPlayArea = false
+                    };
+                }
+            }
+            else if(_currentPhase == GamePhase.enemyReady)//如果是敌人抽卡发现的
+            {
+                foreach (WeaponAsset second in EnemyManager._PlayerWeapons)
+                    if(!second.WeaponName.Equals(EnemyManager.DrewWeapon.WeaponName))//检索敌人拥有的第二把武器
+                    {
+                        EnemyManager.DrewWeapon = second;//更新抽取的武器
+                        break;
+                    }
+                foreach (CardAsset card in EnemyManager.DrewWeapon.Allcard)//拷贝卡牌
+                {
+                    EnemyManager._currentDeck.Add(card);
+                    EnemycardStates[card] = new CardState
+                    {
+                        TemporaryCost = int.Parse(card.cost),
+                        IsInPlayArea = false
+                    };
+                }
+
+            }
+
         for (int i = 0; i < amount; i++)
         {
             if (_currentDeck.Count == 0)
             {
                 Debug.LogWarning("牌库已空");
+
                 return;
             }
 
@@ -135,7 +175,7 @@ public class BattleManager : MonoBehaviour
     {
         Hptext.text = player.hp.ToString();
         Mptext.text = player.mp.ToString();
-        Sptext.text = player.maxSp.ToString();
+        Sptext.text = player.NowSp.ToString();
         Weapon1Acc.text = player.Weapon1Acc.ToString();
         Weapon2Acc.text = player.Weapon2Acc.ToString();
     }
@@ -184,13 +224,13 @@ public class BattleManager : MonoBehaviour
     public void PlayerReady()//玩家准备阶段
     {
         Debug.Log(_currentPhase);
-        Player.maxSp = PlayerData.MaxSp;//恢复体力
+        Player.NowSp = Player.maxSp;//恢复体力
         //重置武器攻击状态
         Player.Weapon1 = false;
         Player.Weapon2 = false;
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
-        _currentPhase = GamePhase.playerAction;
         DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);
+        _currentPhase = GamePhase.playerAction;
     }
     public void EndTurn()//回合结束
     {
@@ -212,14 +252,14 @@ public class BattleManager : MonoBehaviour
         Enemy.Weapon2 = false;
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
-        _currentPhase = GamePhase.enemyAction;
         DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount,EnemyManager.HandArea, EnemyManager._currentDeck);
+        _currentPhase = GamePhase.enemyAction;
     }
     public void ChooseWeapons(Text text)//我方ban对方一个武器牌
     {
+        int j = 0;
         foreach(WeaponAsset i in EnemyManager._PlayerAllWeapons)
         {
-            int j = 0;
             if (!i.WeaponName.Equals(text.text))
             {
                 EnemyManager._PlayerWeapons[j] = i;
@@ -274,21 +314,25 @@ public class BattleManager : MonoBehaviour
         EndTurn();
         //实现敌方逻辑
     }
-    public void UseCard(CardAsset card, GameObject cardObject)//使用卡牌
+    public virtual void EnemyAcc(GameObject Card)
     {
-        var behaviour = CardBehaviourFactory.Create(card);
-        behaviour.Onplay(this, EnemyManager, cardObject);
-
-        int nowsp = 0;
+        Debug.Log("蓄能！");
+        EndTurn();
+        //实现敌方逻辑
+    }
+    public void UseCard(CardAsset card, GameObject cardObject,PlayerAsset User)//使用卡牌
+    {
+        int nowsp = User.NowSp - int.Parse(card.cost);
         if (nowsp < 0)
         {
             Debug.Log("当前体力不够使用此牌");
             return;
         }
-        
-        Player.NowSp = nowsp;
-        SpText.text = Player.NowSp.ToString(); 
+        var behaviour = CardBehaviourFactory.Create(card);
+        behaviour.Onplay(this, EnemyManager, cardObject);
+        User.NowSp = nowsp;
     }
+   
 }
 
 public static class CardBehaviourFactory

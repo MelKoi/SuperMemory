@@ -6,7 +6,6 @@ using DG.Tweening;
 
 public class CardPreview : MonoBehaviour
 {
-    private GameObject gj;
     public void OnPointerEnter()
     {
          mRect.DOKill();  

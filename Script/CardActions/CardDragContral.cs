@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using System;
 
 [RequireComponent(typeof(RectTransform))]
 public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -34,20 +35,24 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         //获取武器
         Weapon1 = transform.parent.parent.Find("WeaponCard1");
         Weapon2 = transform.parent.parent.Find("WeaponCard2");
+        if(transform.parent.name.Equals("EnemyHand"))
+        {
+            canDrug = false;
+            //gameObject.GetComponent<OneCardManager>().CardBack.SetActive(true);
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if(canDrug)
         {
-            // 提升层级至Canvas顶层
-            transform.SetParent(handArea.parent); // 假设handArea在Canvas下
-            transform.SetAsLastSibling();
-
             // 记录初始状态
             originalPosition = rectTransform.anchoredPosition;
             canvasGroup.alpha = 0.6f;
             canvasGroup.blocksRaycasts = false;
+            // 提升层级至Canvas顶层
+            transform.SetParent(handArea.parent); // 假设handArea在Canvas下
+            transform.SetAsLastSibling();
         }
     }
 
@@ -55,7 +60,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         if(canDrug)
         // 跟随鼠标移动
-        rectTransform.anchoredPosition += eventData.delta / GetComponentInParent<Canvas>().scaleFactor;
+            rectTransform.anchoredPosition += eventData.delta / transform.root.localScale.x;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -87,7 +92,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             Destroy(gameObject);
             //触发武器蓄能
         }
-        else if (!RectTransformUtility.RectangleContainsScreenPoint(
+        else if (!RectTransformUtility.RectangleContainsScreenPoint(//发现了无法移动原处的bug
             handArea.GetComponent<RectTransform>(),
             eventData.position,
             eventData.pressEventCamera))
@@ -98,14 +103,16 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
         else
         {
-            // 返回原位动画
-            rectTransform.DOAnchorPos(originalPosition, 0.3f).SetEase(Ease.OutBack)
-                .OnComplete(() => transform.SetParent(originalParent));
+            // 直接瞬移到初始位置
+            rectTransform.anchoredPosition = originalPosition;
+            transform.SetParent(originalParent); // 恢复父物体
+            Debug.Log("卡牌已返回原位！");
         }
     }
 
     private void HandleCardUsage()
     {
+        int UserSp = CardUser.NowSp;//记录玩家现在的sp
         // 在此处实现卡牌效果逻辑
         OneCardManager cardManager = GetComponent<OneCardManager>();
         if(cardManager == null)
@@ -114,8 +121,12 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             return;
         }
         BattleManager battleManager = transform.parent.parent.GetComponent<BattleManager>();
-        battleManager.UseCard(cardManager.cardAsset,gameObject);
-        Destroy(gameObject);
+        if (battleManager._currentPhase == GamePhase.playerAction)
+            battleManager.UseCard(cardManager.cardAsset,gameObject,battleManager.Player);
+        else if(battleManager._currentPhase == GamePhase.enemyAction)
+            battleManager.UseCard(cardManager.cardAsset, gameObject, battleManager.Enemy);
+        if(UserSp != CardUser.NowSp)
+            rectTransform.DOAnchorPos(originalPosition, 0.3f).SetEase(Ease.OutBack)
+                .OnComplete(() => transform.SetParent(originalParent));
     }
-
 }
