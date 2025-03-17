@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,27 +21,27 @@ public class CardEffectManager : MonoBehaviour
         }
     }
 
-    //Ìí¼ÓÑÓ³ÙĞ§¹û
+    //æ·»åŠ å»¶è¿Ÿæ•ˆæœ
     public void AddDelayedEffect(DelayedCardEffect effect)
     {
         delayedEffects.Add(effect);
-        Debug.Log($"Ìí¼ÓÑÓ³ÙĞ§¹û£º{effect.effectName}");
+        Debug.Log($"æ·»åŠ å»¶è¿Ÿæ•ˆæœï¼š{effect.effectName}");
     }
 
-    // ´¥·¢ËùÓĞÑÓ³ÙĞ§¹û
+    // è§¦å‘æ‰€æœ‰å»¶è¿Ÿæ•ˆæœ
     public void TirggerDelayedEffects()
     {
         if (delayedEffects.Count == 0) return;
 
         foreach (var effect in delayedEffects)
         {
-            Debug.Log($"´¥·¢ÑÓ³ÙĞ§¹û£º{effect.effectName}");
+            Debug.Log($"è§¦å‘å»¶è¿Ÿæ•ˆæœï¼š{effect.effectName}");
             ApplyEffect(effect);
         }
-        delayedEffects.Clear(); // Çå¿ÕĞ§¹ûÁĞ±í
+        delayedEffects.Clear(); // æ¸…ç©ºæ•ˆæœåˆ—è¡¨
     }
 
-    // Ó¦ÓÃĞ§¹û
+    // åº”ç”¨æ•ˆæœ
     private void ApplyEffect(DelayedCardEffect effect)
     {
        

@@ -332,8 +332,8 @@ public class BattleManager : MonoBehaviour
         behaviour.Onplay(this, EnemyManager, cardObject);
         User.NowSp = nowsp;
     }
-   
 }
+
 
 public static class CardBehaviourFactory
 {
