@@ -18,3 +18,5 @@ MonoBehaviour:
   Type: 0
   TypePic: {fileID: 21300000, guid: 010c5bcce7a0a2e449b7ed878001d16d, type: 3}
   cost: 4
+  Effects:
+  - {fileID: 11400000, guid: 32cd7d52cb4091b489adeeb88abfa3f0, type: 2}

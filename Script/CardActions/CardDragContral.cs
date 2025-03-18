@@ -22,6 +22,13 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Transform originalParent;
     private Vector3 originalPosition;
 
+    public float rotationSpeed = 5f; // 旋转速度
+    public float tweenDuration = 0.5f; // Tween动画持续时间
+    public float maxRotationAngle = 90f; // 最大旋转角度（正负45°）
+
+    private Vector3 _lastMousePosition;
+
+
     [Header("References")]
     [SerializeField] private Transform handArea; // 拖入手牌区父物体
 
@@ -40,6 +47,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             canDrug = false;
             //gameObject.GetComponent<OneCardManager>().CardBack.SetActive(true);
         }
+
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -58,11 +66,28 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(canDrug)
-        // 跟随鼠标移动
+        if (canDrug)
+        {
+            // 跟随鼠标移动
             rectTransform.anchoredPosition += eventData.delta / transform.root.localScale.x;
-    }
+            //旋转
+            // 计算鼠标移动方向
+            Vector3 currentMousePosition = Input.mousePosition;
+            Vector3 mouseDelta = currentMousePosition - _lastMousePosition;
 
+            // 计算目标旋转角度
+            float targetRotationZ = -mouseDelta.x * rotationSpeed;
+
+            // 限制旋转角度在正负45°内
+            targetRotationZ = Mathf.Clamp(targetRotationZ, -maxRotationAngle, maxRotationAngle);
+
+            // 使用DOTween平滑旋转卡牌
+            transform.DORotate(new Vector3(0, 0, targetRotationZ), tweenDuration);
+
+            // 更新上一帧鼠标位置
+            _lastMousePosition = currentMousePosition;
+        }
+    }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!canDrug)
@@ -105,6 +130,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             // 直接瞬移到初始位置
             rectTransform.anchoredPosition = originalPosition;
+            transform.DORotate(new Vector3(0, 0, 0), tweenDuration);
             transform.SetParent(originalParent); // 恢复父物体
             Debug.Log("卡牌已返回原位！");
         }

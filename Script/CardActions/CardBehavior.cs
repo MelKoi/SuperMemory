@@ -17,7 +17,13 @@ public class AttackCardBehaviour : CardBehaviour
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
     {
         Debug.Log("攻击牌的效果将作用于下一次攻击！");
-        
+        foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+        {
+            if (bm._currentPhase == GamePhase.playerAction)
+                bm.AttackEffect.Add(effect);
+            else if (bm._currentPhase == GamePhase.enemyAction)
+                em.AttackEffect.Add(effect);
+        }
         Destroy(Card);//销毁卡牌
     }
 }
@@ -33,10 +39,7 @@ public class ActionCardBehaviour : CardBehaviour
         Debug.Log("该行动牌已经使用！");
         foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
         {
-            if (bm._currentPhase == GamePhase.playerAction)
-                effect.ApplyEffect(bm, em, bm.Player);
-            else if (bm._currentPhase == GamePhase.enemyAction)
-                effect.ApplyEffect(bm, em, bm.Enemy);
+            effect.ApplyEffect(bm, em);
         }
         Destroy(Card);
     }
@@ -51,13 +54,7 @@ public class CounterCardBehaviour : CardBehaviour
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
     {
         bm.Purple.SetActive(true);
-        DelayedCardEffect effect = new DelayedCardEffect
-        {
-            effectName = "延迟效果已经发动！"
-        };
-
-        //将效果添加到管理器
-        CardEffectManager.Instance.AddDelayedEffect(effect);
+        
 
         //销毁卡牌
         Destroy(Card);

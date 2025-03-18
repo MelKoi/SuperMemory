@@ -33,6 +33,9 @@ public class EnemyManager : MonoBehaviour
 
     public List<CardAsset> _currentDeck;//牌库
     public CardPool EnemyPool;//对象池
+    public List<CardEffectAsset> AttackEffect = new List<CardEffectAsset>();//攻击牌效果池
+    public List<CardEffectAsset> SkillEffect = new List<CardEffectAsset>();//战技牌效果
+    public List<CardEffectAsset> CounterEffect = new List<CardEffectAsset>();//对应牌效果池
 
     public void EnemyRolling()//敌方翻滚对应
     {

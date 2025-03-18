@@ -24,7 +24,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // Start is called before the first frame update
     void Start()
     {
-        Weapon = gameObject.GetComponent<WeaponCardManager>().weaponAsset; 
+        Weapon = gameObject.GetComponent<WeaponCardManager>().weaponAsset;
     }
     // Update is called once per frame
     void Update()
@@ -46,6 +46,8 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // 攻击敌方
     private void AttackEnemy(PlayerAsset attacked,PlayerAsset attack)
     {
+        BattleManager battleManager = transform.parent.parent.GetComponent<BattleManager>();
+        EnemyManager enemyManager = transform.parent.parent.GetComponent<EnemyManager>();
         if (gameObject.name.Equals("WeaponCard1"))
         {
             if(attack.Weapon1)
@@ -77,6 +79,10 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 return;
             attacked.hp = attacked.hp - Damage;
             Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Damage +"点伤害！");
+            foreach(var effect in battleManager.AttackEffect)
+            {
+                effect.ApplyEffect(battleManager, enemyManager);
+            }
             attack.mp = attack.mp + Acc;
             Acc = 0;
             Damage = 0;

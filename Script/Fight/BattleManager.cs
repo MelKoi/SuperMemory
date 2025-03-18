@@ -47,7 +47,6 @@ public class BattleManager : MonoBehaviour
     public GameObject CardPrefab;//卡牌预制体
     public GameObject CharacterPrefab;//卡牌预制体
 
-
     [Header("UI组件")]
     public Text HpText;//我方生命
     public Text SpText;//我方体力
@@ -56,10 +55,13 @@ public class BattleManager : MonoBehaviour
     public Text Weapon2Acc;//武器2蓄能
     public GameObject Purple;//对应卡是否使用
 
+    [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
     public GameObject FirstDrew;//选择抽取武器界面
     public GameObject ChooseCardsPanel;//初始战斗场地
-
+    public List<CardEffectAsset> AttackEffect = new List<CardEffectAsset>();//攻击牌效果池
+    public List<CardEffectAsset> SkillEffect = new List<CardEffectAsset>();//战技牌效果
+    public List<CardEffectAsset> CounterEffect = new List<CardEffectAsset>();//对应牌效果池
     public List<CardAsset> _currentDeck;//牌库
     public GamePhase _currentPhase;//回合情况
     public CardPool PlayerPool;//对象池

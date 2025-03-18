@@ -24,7 +24,8 @@ public class CardAsset : ScriptableObject
     public string cost;//花费
 
     [Header("卡面效果")]
-     public List<CardEffectAsset> Effects = new List<CardEffectAsset>();  
+    public List<CardEffectAsset> Effects = new List<CardEffectAsset>();
+    
 }
 public class CardState
 {
