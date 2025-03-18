@@ -3504,6 +3504,9 @@ MonoBehaviour:
   Weapon2Acc: {fileID: 1957045173}
   Purple: {fileID: 1231228806}
   _currentDeck: []
+  AttackEffect: []
+  SkillEffect: []
+  CounterEffect: []
 --- !u!114 &1255767322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3542,6 +3545,9 @@ MonoBehaviour:
   BanEnemyWeapon: {fileID: 621546621}
   FirstDrew: {fileID: 609494736}
   ChooseCardsPanel: {fileID: 763333139}
+  AttackEffect: []
+  SkillEffect: []
+  CounterEffect: []
   _currentDeck: []
   _currentPhase: 0
 --- !u!114 &1255767323

@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: "\u6211\u65B9\u62BD\u53D62\u5F20\u5361"
-  m_EditorClassIdentifier: Assembly-CSharp::DrewCardEffect
-  User: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
-  Used: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
+  m_Script: {fileID: 11500000, guid: f9b7891cb42d5fe45b6fba3a9843d8f1, type: 3}
+  m_Name: "\u6211\u65B9\u62BD\u53D62\u5F20\u724C"
+  m_EditorClassIdentifier: 
+  User: {fileID: 0}
+  Used: {fileID: 0}
   who: 0
   DrewNum: 2

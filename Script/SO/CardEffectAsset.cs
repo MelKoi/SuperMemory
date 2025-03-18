@@ -1,16 +1,16 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class CardEffectAsset : ScriptableObject
 {
-    public PlayerAsset User;//Ê¹ÓÃÕß
-    public PlayerAsset Used;//±»Ê¹ÓÃÕß
-    public int who;//¶ÔË­Ê¹ÓÃ£¬0Îª¶Ô×Ô¼º£¬1Îª¶ÔµĞ·½
+    public PlayerAsset User;//ä½¿ç”¨è€…
+    public PlayerAsset Used;//è¢«ä½¿ç”¨è€…
+    public int who;//å¯¹è°ä½¿ç”¨ï¼Œ0ä¸ºå¯¹è‡ªå·±ï¼Œ1ä¸ºå¯¹æ•Œæ–¹
     public PlayerAsset GetUser(BattleManager battleManager)
     {
-        if (battleManager._currentPhase == GamePhase.playerAction)//Èç¹ûÊÇÍæ¼ÒÊ¹ÓÃÅÆ
+        if (battleManager._currentPhase == GamePhase.playerAction)//å¦‚æœæ˜¯ç©å®¶ä½¿ç”¨ç‰Œ
             return battleManager.Player;
         else
             return battleManager.Enemy;
@@ -35,7 +35,7 @@ public abstract class CardEffectAsset : ScriptableObject
     }
     public abstract void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager);
 }
-[CreateAssetMenu(fileName = "ÊôĞÔ±ä¶¯Ğ§¹û", menuName = "Card Effects/ÊôĞÔ¼Ó¼õ")]
+[CreateAssetMenu(fileName = "å±æ€§å˜åŠ¨æ•ˆæœ", menuName = "Card Effects/å±æ€§åŠ å‡")]
 public class AttributeModifierEffect : CardEffectAsset
 {
     public enum AttributeType { Hp, Sp, Mp, Weapon1Acc, Weapon2Acc }
@@ -46,7 +46,7 @@ public class AttributeModifierEffect : CardEffectAsset
     {
         User = GetUser(battleManager);
         Used = GetUsed(battleManager);
-        // ÊµÏÖĞ§¹ûÂß¼­
+        // å®ç°æ•ˆæœé€»è¾‘
         switch (TargetAttribute)
         {
             case AttributeType.Hp:
@@ -65,7 +65,7 @@ public class AttributeModifierEffect : CardEffectAsset
                     Used.mp = 0;
                 break;
         }
-        // ¸üĞÂUI
+        // æ›´æ–°UI
         if (Used == battleManager.Player)
         {
             battleManager.UpdateUI(battleManager.HpText, battleManager.MpText, battleManager.SpText,
@@ -78,7 +78,7 @@ public class AttributeModifierEffect : CardEffectAsset
         }
     }
 }
-[CreateAssetMenu(fileName = "¼õÉÙÏûºÄ", menuName = "Card Effects/¼õÉÙ¿¨ÅÆÏûºÄ")]
+[CreateAssetMenu(fileName = "å‡å°‘æ¶ˆè€—", menuName = "Card Effects/å‡å°‘å¡ç‰Œæ¶ˆè€—")]
 public class CostReductionEffect : CardEffectAsset
 {
     public int ReductionAmount;
@@ -87,11 +87,11 @@ public class CostReductionEffect : CardEffectAsset
     {
         User = GetUser(battleManager);
         Used = GetUsed(battleManager);
-        // ÓĞÒ»¸öÈ«¾Ö±äÁ¿´æ´¢ÁÙÊ±ÏûºÄ¼õÉÙ
+        // æœ‰ä¸€ä¸ªå…¨å±€å˜é‡å­˜å‚¨ä¸´æ—¶æ¶ˆè€—å‡å°‘
         Used.TemporaryCostReduction = ReductionAmount;
     }
 }
-[CreateAssetMenu(fileName = "»ØºÏ½×¶Î½ûÓÃ", menuName = "Card Effects/»ØºÏ½×¶Î½ûÓÃ")]
+[CreateAssetMenu(fileName = "å›åˆé˜¶æ®µç¦ç”¨", menuName = "Card Effects/å›åˆé˜¶æ®µç¦ç”¨")]
 public class DisableActionEffect : CardEffectAsset
 {
     public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
@@ -117,7 +117,7 @@ public class DisableActionEffect : CardEffectAsset
         }
     }
 }
-[CreateAssetMenu(fileName = "ÆúÅÆ", menuName = "Card Effects/ÆúÅÆ")]
+[CreateAssetMenu(fileName = "å¼ƒç‰Œ", menuName = "Card Effects/å¼ƒç‰Œ")]
 public class DiscardCardEffect : CardEffectAsset
 {
     public int CardNum;
@@ -125,7 +125,7 @@ public class DiscardCardEffect : CardEffectAsset
     {
         User = GetUser(battleManager);
         Used = GetUsed(battleManager);
-        // Ëæ»úÆúÖÃÒ»ÕÅÊÖÅÆ
+        // éšæœºå¼ƒç½®ä¸€å¼ æ‰‹ç‰Œ
         for (int i = 0; i < CardNum; i++)
             if (Used == battleManager.Player)
             {
@@ -145,23 +145,5 @@ public class DiscardCardEffect : CardEffectAsset
                     Destroy(cardToDiscard);
                 }
             }
-    }
-}
-[CreateAssetMenu(fileName = "³éÅÆ", menuName = "Card Effects/³éÅÆ")]
-public class DrewCardEffect : CardEffectAsset
-{
-    public int DrewNum;
-    
-    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
-    {
-        User = GetUser(battleManager);
-        Used = GetUsed(battleManager);
-        for (int i = 0; i < DrewNum; i++)
-        {
-            if (Used.Player == 0)
-                battleManager.DrowCards(1, battleManager.HandArea, battleManager._currentDeck);
-            else
-                battleManager.DrowCards(1, enemyManager.HandArea, enemyManager._currentDeck);
-        }
     }
 }

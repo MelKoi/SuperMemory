@@ -326,7 +326,10 @@ public class BattleManager : MonoBehaviour
     {
         int nowsp;
         if (User.TemporaryCostReduction != 0)
+        {
             nowsp = User.NowSp + User.TemporaryCostReduction - int.Parse(card.cost);
+            User.TemporaryCostReduction = 0;
+        }
         else
             nowsp = User.NowSp - int.Parse(card.cost);
         if (nowsp < 0)
@@ -336,6 +339,7 @@ public class BattleManager : MonoBehaviour
         }
         var behaviour = CardBehaviourFactory.Create(card);
         behaviour.Onplay(this, EnemyManager, cardObject);
+
         User.NowSp = nowsp;
     }
 }
