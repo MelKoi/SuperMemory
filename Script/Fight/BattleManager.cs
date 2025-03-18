@@ -322,7 +322,11 @@ public class BattleManager : MonoBehaviour
     }
     public void UseCard(CardAsset card, GameObject cardObject,PlayerAsset User)//使用卡牌
     {
-        int nowsp = User.NowSp - int.Parse(card.cost);
+        int nowsp;
+        if (User.TemporaryCostReduction != 0)
+            nowsp = User.NowSp + User.TemporaryCostReduction - int.Parse(card.cost);
+        else
+            nowsp = User.NowSp - int.Parse(card.cost);
         if (nowsp < 0)
         {
             Debug.Log("当前体力不够使用此牌");
