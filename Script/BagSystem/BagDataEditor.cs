@@ -19,6 +19,7 @@ public class BagDataEditor : Editor
         // 显示默认配置
         EditorGUILayout.PropertyField(serializedObject.FindProperty("initialCharacters"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("initialWeapons"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("initialItems"));
 
         // 运行时数据展示
         EditorGUILayout.Space();
@@ -72,6 +73,15 @@ public class BagDataEditor : Editor
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.ObjectField(state.asset, typeof(WeaponAsset), false);
+            state.owned = EditorGUILayout.Toggle("拥有", state.owned);
+            EditorGUILayout.EndHorizontal();
+        }
+
+        EditorGUILayout.LabelField("道具状态:");
+        foreach (var state in bagAsset.runtimeBagData.itemStates)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.ObjectField(state.asset, typeof(ItemAsset), false);
             state.owned = EditorGUILayout.Toggle("拥有", state.owned);
             EditorGUILayout.EndHorizontal();
         }

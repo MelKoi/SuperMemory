@@ -57,4 +57,17 @@ public class BagDataManager : MonoBehaviour
     {
         return bagAsset.runtimeBagData.HasItem(charactor);
     }
+
+    //武器未获取时将武器设为true
+    public void AcquireItem(ItemAsset item)
+    {
+        bagAsset.runtimeBagData.SetItemOwned(item, true);
+        SaveBagData();
+    }
+
+    //查看武器获取状态
+    public bool HasItem(ItemAsset item)
+    {
+        return bagAsset.runtimeBagData.HasItem(item);
+    }
 }
