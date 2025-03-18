@@ -7,6 +7,7 @@ public class BagData
 {
     public List<AssetState<CharactorAsset>> characterStates;
     public List<AssetState<WeaponAsset>> weaponStates;
+    public List<AssetState<ItemAsset>> itemStates;
 
     public bool HasItem<T>(T asset) where T : ScriptableObject
     {
@@ -18,6 +19,10 @@ public class BagData
         else if (typeof(T) == typeof(WeaponAsset))
         {
             var state = weaponStates.Find(x => x.asset == asset as WeaponAsset);
+            return state?.owned ?? false;
+        }else if(typeof(T) == typeof(ItemAsset))
+        {
+            var state = itemStates.Find(x => x.asset == asset as ItemAsset);
             return state?.owned ?? false;
         }
         return false;
@@ -33,6 +38,11 @@ public class BagData
         else if (typeof(T) == typeof(WeaponAsset))
         {
             var state = weaponStates.Find(x => x.asset == asset as WeaponAsset);
+            if (state != null) state.owned = owned;
+        }
+        else if (typeof(T) == typeof(ItemAsset))
+        {
+            var state = itemStates.Find(x => x.asset == asset as ItemAsset);
             if (state != null) state.owned = owned;
         }
     }

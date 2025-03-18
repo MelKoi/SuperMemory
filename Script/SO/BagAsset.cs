@@ -10,6 +10,7 @@ public class BagAsset : ScriptableObject
     [Header("默认配置数据")]
     public List<CharactorAsset> initialCharacters;
     public List<WeaponAsset> initialWeapons;
+    public List<ItemAsset> initialItems;
 
     public BagData runtimeBagData;//运行时修改的数据
 
@@ -21,7 +22,8 @@ public class BagAsset : ScriptableObject
         runtimeBagData = new BagData
         {
             characterStates = new List<AssetState<CharactorAsset>>(),
-            weaponStates = new List<AssetState<WeaponAsset>>()
+            weaponStates = new List<AssetState<WeaponAsset>>(),
+            itemStates = new List<AssetState<ItemAsset>>()
         };
 
         // 初始化默认状态
@@ -39,6 +41,14 @@ public class BagAsset : ScriptableObject
             runtimeBagData.weaponStates.Add(new AssetState<WeaponAsset>
             {
                 asset = weaponAsset,
+                owned = false
+            });
+        }
+        foreach (var itemAsset in initialItems.Where(a => a != null))
+        {
+            runtimeBagData.itemStates.Add(new AssetState<ItemAsset>
+            {
+                asset = itemAsset,
                 owned = false
             });
         }
@@ -94,6 +104,19 @@ public class BagAsset : ScriptableObject
                 runtimeBagData.weaponStates.Add(new AssetState<WeaponAsset>
                 {
                     asset = newWeapon,
+                    owned = false
+                });
+            }
+        }
+
+        //检查新增道具
+        foreach (var newItem in initialItems)
+        {
+            if (!runtimeBagData.itemStates.Exists(x => x.asset == newItem))
+            {
+                runtimeBagData.itemStates.Add(new AssetState<ItemAsset>
+                {
+                    asset = newItem,
                     owned = false
                 });
             }
