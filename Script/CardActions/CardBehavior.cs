@@ -31,6 +31,13 @@ public class ActionCardBehaviour : CardBehaviour
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
     {
         Debug.Log("该行动牌已经使用！");
+        foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+        {
+            if (bm._currentPhase == GamePhase.playerAction)
+                effect.ApplyEffect(bm, em, bm.Player);
+            else if (bm._currentPhase == GamePhase.enemyAction)
+                effect.ApplyEffect(bm, em, bm.Enemy);
+        }
         Destroy(Card);
     }
 }
@@ -102,94 +109,6 @@ public class SkillCardBehaviour : CardBehaviour
         if (Card != null)
         {
             Destroy(Card);
-        }
-    }
-    public interface ICardEffect
-    {
-        void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, PlayerAsset user);
-    }
-    //属性加减效果
-    public class AttributeModifierEffect : ICardEffect
-    {
-        public enum AttributeType { Hp, Sp, Mp }
-        public AttributeType TargetAttribute;
-        public int ModifierValue;
-
-        public void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, PlayerAsset user)
-        {
-            switch (TargetAttribute)
-            {
-                case AttributeType.Hp:
-                    user.hp += ModifierValue;
-                    break;
-                case AttributeType.Sp:
-                    user.NowSp += ModifierValue;
-                    break;
-                case AttributeType.Mp:
-                    user.mp += ModifierValue;
-                    break;
-            }
-
-            // 更新UI
-            if (user == battleManager.Player)
-            {
-                battleManager.UpdateUI(battleManager.HpText, battleManager.MpText, battleManager.SpText,
-                    battleManager.Weapon1Acc, battleManager.Weapon2Acc, user);
-            }
-            else
-            {
-                battleManager.UpdateUI(enemyManager.HpText, enemyManager.MpText, enemyManager.SpText,
-                    enemyManager.Weapon1Acc, enemyManager.Weapon2Acc, user);
-            }
-        }
-    }
-    //减少卡牌消耗
-    public class CostReductionEffect : ICardEffect
-    {
-        public int ReductionAmount;
-
-        public void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, PlayerAsset user)
-        {
-            // 有一个全局变量存储临时消耗减少
-            user.TemporaryCostReduction = ReductionAmount;
-        }
-    }
-    //禁用某种行动
-    public class DisableActionEffect : ICardEffect
-    {
-        public void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, PlayerAsset user)
-        {
-            if (battleManager._currentPhase == GamePhase.playerReady)
-            {
-                battleManager._currentPhase = GamePhase.playerAction;
-                battleManager.EndTurn();
-            }
-        }
-    }
-    //弃置一张牌
-    public class DiscardCardEffect : ICardEffect
-    {
-        public void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, PlayerAsset user)
-        {
-            // 随机弃置一张手牌
-            if (user == battleManager.Player)
-            {
-                if (battleManager.HandArea.transform.childCount > 0)
-                {
-                    int randomIndex = UnityEngine.Random.Range(0, battleManager.HandArea.transform.childCount);
-                    GameObject cardToDiscard = battleManager.HandArea.transform.GetChild(randomIndex).gameObject;
-                    Destroy(cardToDiscard);
-                }
-            }
-            else
-            {
-                if (enemyManager.HandArea.transform.childCount > 0)
-                {
-                    int randomIndex = UnityEngine.Random.Range(0, enemyManager.HandArea.transform.childCount);
-                    GameObject cardToDiscard = enemyManager.HandArea.transform.GetChild(randomIndex).gameObject;
-                    Destroy(cardToDiscard);
-                }
-            }
         }
     }
 }
