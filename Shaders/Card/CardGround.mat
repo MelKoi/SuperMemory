@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CardGround
+  m_Shader: {fileID: 4800000, guid: 411062f4184563244a40fa43dbbd2ec9, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _MANNULCONTROL1_ON
+  m_InvalidKeywords: []
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Gradient1:
+        m_Texture: {fileID: 2800000, guid: cc099df341161684f8fc69428e2e07f0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex1:
+        m_Texture: {fileID: 2800000, guid: ff2c666e2f77ab843b94c7ec1f02a256, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise1:
+        m_Texture: {fileID: 2800000, guid: 6f23cd5b95e4aa6469c8bdd9d97f10aa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampTex1:
+        m_Texture: {fileID: 2800000, guid: 1b7d56937fccfcd4185c7db6571b5df7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ChageAmount1: 0
+    - _EdgeIntensity1: 2
+    - _EdgeWidth1: 0.46
+    - _MANNULCONTROL1: 1
+    - _Speed1: 0.2
+    - _Spread1: 0.4
+    - __dirty: 0
+    m_Colors:
+    - _NoiseSpeed1: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []
