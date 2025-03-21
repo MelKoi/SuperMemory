@@ -3376,7 +3376,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -227, y: 159}
+  m_AnchoredPosition: {x: 22.7, y: 159}
   m_SizeDelta: {x: 215.0764, y: 322.6121}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &179044123339644011
@@ -3559,7 +3559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 42e8ee7eab2b71548b015c7c76602676, type: 2}
+  m_Material: {fileID: 2100000, guid: cbbcfb787b8c64547aeb3233ef81352b, type: 2}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3707,7 +3707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 42e8ee7eab2b71548b015c7c76602676, type: 2}
+  m_Material: {fileID: 2100000, guid: bc3ec975bd3fee84fabba79358724896, type: 2}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3866,6 +3866,9 @@ MonoBehaviour:
   cardGroundImage: {fileID: 1522522108714013975}
   cardTypeImage: {fileID: 2438863520128485296}
   cardBodyImage: {fileID: 6006361589458600875}
+  cardNameText: {fileID: 1379141250693213875}
+  cardDescriptionText: {fileID: 3065722356286441194}
+  cardCostText: {fileID: 8666234444638474854}
   _ChangeAmount: 0
 --- !u!95 &5102599980988556516
 Animator:
@@ -3875,7 +3878,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3163413791234624914}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: d8e03045adc340649a4095cfe93f4e34, type: 2}
   m_CullingMode: 0
@@ -4121,7 +4124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 42e8ee7eab2b71548b015c7c76602676, type: 2}
+  m_Material: {fileID: 2100000, guid: 2b7ffa991467c174480f64a841550182, type: 2}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}

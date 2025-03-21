@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CardGround
+  m_Name: CardBack
   m_Shader: {fileID: 4800000, guid: 411062f4184563244a40fa43dbbd2ec9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -33,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ff2c666e2f77ab843b94c7ec1f02a256, type: 3}
+        m_Texture: {fileID: 2800000, guid: 99c7d667894a2254babe70cd3ca43068, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex1:

@@ -49,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
-        m_Texture: {fileID: 2800000, guid: 1b7d56937fccfcd4185c7db6571b5df7, type: 3}
+        m_Texture: {fileID: 2800000, guid: b05b1ca78f6bace43a7158202c9c5a56, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex1:
@@ -66,14 +66,15 @@ Material:
     - _ChageAmount1: 0
     - _ChangeAmount: 0
     - _ColorMask: 15
-    - _EdgeIntensity: 10.63
+    - _EdgeIntensity: 35.3
     - _EdgeIntensity1: 2
-    - _EdgeWidth: 2
+    - _EdgeWidth: 0.57
     - _EdgeWidth1: 0.54
     - _MANNULCONTROL1: 1
+    - _NoiseScale: 16.51
     - _Speed: 0.5
     - _Speed1: 0
-    - _Spread: 0.4
+    - _Spread: 0.35
     - _Spread1: 0.3
     - _Stencil: 0
     - _StencilComp: 8
@@ -84,7 +85,8 @@ Material:
     - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _NoiseSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseSpeed: {r: 0, g: -0.14, b: 0, a: 0}
     - _NoiseSpeed1: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseUV_XY: {r: 10.98, g: 0.1, b: 0, a: 0}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

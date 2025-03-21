@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CardGround
+  m_Name: Cost
   m_Shader: {fileID: 4800000, guid: 411062f4184563244a40fa43dbbd2ec9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -17,7 +17,7 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 4000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -33,11 +33,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ff2c666e2f77ab843b94c7ec1f02a256, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex1:
-        m_Texture: {fileID: 2800000, guid: ff2c666e2f77ab843b94c7ec1f02a256, type: 3}
+        m_Texture: {fileID: 2800000, guid: 010c5bcce7a0a2e449b7ed878001d16d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Noise:
@@ -72,7 +72,7 @@ Material:
     - _EdgeWidth1: 0.54
     - _MANNULCONTROL1: 1
     - _NoiseScale: 16.51
-    - _Speed: 0
+    - _Speed: 0.5
     - _Speed1: 0
     - _Spread: 0.35
     - _Spread1: 0.3
