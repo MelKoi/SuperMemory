@@ -28,7 +28,7 @@ public class CardShaderController : MonoBehaviour
     [Range(0,1f)]
     public float _ChangeAmount;
 
-    void Enable()
+    void Start()
     {
         //cardGround = cardGroundImage.material;
         //cardType = cardTypeImage.material;
@@ -81,44 +81,72 @@ public class CardShaderController : MonoBehaviour
 
     private void Update()
     {
-        cardGround.SetFloat("_ChangeAmount", _ChangeAmount);
-        cardType.SetFloat("_ChangeAmount", _ChangeAmount);
-        
-        if(_ChangeAmount <0.2f && _ChangeAmount >0.07f)
-            cardDescription.SetFloat("_ChangeAmount", (_ChangeAmount-0.07f)/(0.2f-0.07f));
-        else if(_ChangeAmount >=0.2f)
-            cardDescription.SetFloat("_ChangeAmount", 1);
-        else
-            cardDescription.SetFloat("_ChangeAmount", 0);
+        if (cardGround != null)
+            cardGround.SetFloat("_ChangeAmount", _ChangeAmount);
+        if (cardType != null)
+            cardType.SetFloat("_ChangeAmount", _ChangeAmount);
 
-        if(_ChangeAmount > 0.85f)
+        if (cardDescription != null)
         {
-            cardCost.SetFloat("_ChangeAmount", _ChangeAmount);
-            cardName.SetFloat("_ChangeAmount", _ChangeAmount);
+            if (_ChangeAmount <0.2f && _ChangeAmount >0.07f)
+                cardDescription.SetFloat("_ChangeAmount", (_ChangeAmount-0.07f)/(0.2f-0.07f));
+            else if(_ChangeAmount >=0.2f)
+                cardDescription.SetFloat("_ChangeAmount", 1);
+            else
+                cardDescription.SetFloat("_ChangeAmount", 0);
+
         }
-        else
+
+
+        if (cardName != null && cardCost != null)
         {
-            cardCost.SetFloat("_ChangeAmount", 0);
-            cardName.SetFloat("_ChangeAmount", 0);
+            if (_ChangeAmount > 0.85f)
+            {
+                cardCost.SetFloat("_ChangeAmount", _ChangeAmount);
+                cardName.SetFloat("_ChangeAmount", _ChangeAmount);
+            }
+            else
+            {
+                cardCost.SetFloat("_ChangeAmount", 0);
+                cardName.SetFloat("_ChangeAmount", 0);
+            }
         }
-        
-        if (_ChangeAmount > 0.19f && _ChangeAmount < 0.535f)
-            cardBody.SetFloat("_ChangeAmount", (_ChangeAmount - 0.19f) / (0.535f - 0.19f));
-        else if (_ChangeAmount <=0.19f)
-            cardBody.SetFloat("_ChangeAmount", 0);
-        else
-            cardBody.SetFloat("_ChangeAmount",1);
+
+        if (cardBody != null)
+        {
+            if (_ChangeAmount > 0.19f && _ChangeAmount < 0.535f)
+                cardBody.SetFloat("_ChangeAmount", (_ChangeAmount - 0.19f) / (0.535f - 0.19f));
+            else if (_ChangeAmount <=0.19f)
+                cardBody.SetFloat("_ChangeAmount", 0);
+            else
+                cardBody.SetFloat("_ChangeAmount",1);
+        }
+            
     }
 
    //销毁时销毁材质实例
     private void OnDestroy()
     {
-        if (cardGround != null) Destroy(cardGround);
-        if (cardType != null) Destroy(cardType);
-        if (cardBody != null) Destroy(cardBody);
-        if (cardName != null) Destroy(cardName);
-        if (cardDescription != null) Destroy(cardDescription);
-        if (cardCost != null) Destroy(cardCost);
+        if (Application.isPlaying)
+        {
+            // 运行时使用 Destroy
+            if (cardGround != null) Destroy(cardGround);
+            if (cardType != null) Destroy(cardType);
+            if (cardBody != null) Destroy(cardBody);
+            if (cardName != null) Destroy(cardName);
+            if (cardDescription != null) Destroy(cardDescription);
+            if (cardCost != null) Destroy(cardCost);
+        }
+        else
+        {
+            // 编辑器模式使用 DestroyImmediate
+            if (cardGround != null) DestroyImmediate(cardGround);
+            if (cardType != null) DestroyImmediate(cardType);
+            if (cardBody != null) DestroyImmediate(cardBody);
+            if (cardName != null) DestroyImmediate(cardName);
+            if (cardDescription != null) DestroyImmediate(cardDescription);
+            if (cardCost != null) DestroyImmediate(cardCost);
+        }
     }
 
     //设置卡牌主图像
