@@ -30,13 +30,42 @@ public class CardShaderController : MonoBehaviour
 
     void Enable()
     {
-        cardGround = cardGroundImage.material;
-        cardType = cardTypeImage.material;
-        cardBody = cardBodyImage.material;
-        cardName = cardNameText.material;
-        cardDescription = cardDescriptionText.material;
-        cardCost = cardCostText.material;
-
+        //cardGround = cardGroundImage.material;
+        //cardType = cardTypeImage.material;
+        //cardBody = cardBodyImage.material;
+        //cardName = cardNameText.material;
+        //cardDescription = cardDescriptionText.material;
+        //cardCost = cardCostText.material;
+        if (cardGroundImage != null)
+        {
+            cardGround = new Material(cardGroundImage.material);
+            cardGroundImage.material = cardGround;
+        }
+        if (cardTypeImage != null)
+        {
+            cardType = new Material(cardTypeImage.material);
+            cardTypeImage.material = cardType;
+        }
+        if (cardBodyImage != null)
+        {
+            cardBody = new Material(cardBodyImage.material);
+            cardBodyImage.material = cardBody;
+        }
+        if (cardNameText != null)
+        {
+            cardName = new Material(cardNameText.material);
+            cardNameText.material = cardName;
+        }
+        if (cardDescriptionText != null)
+        {
+            cardDescription = new Material(cardDescriptionText.material);
+            cardDescriptionText.material = cardDescription;
+        }
+        if (cardCostText != null)
+        {
+            cardCost = new Material(cardCostText.material);
+            cardCostText.material = cardCost;
+        }
 
         if (cardGround == null || cardGround.shader == false || cardGround.shader.isSupported == false ||
             cardType == null || cardType.shader == false || cardType.shader.isSupported == false||
@@ -79,6 +108,17 @@ public class CardShaderController : MonoBehaviour
             cardBody.SetFloat("_ChangeAmount", 0);
         else
             cardBody.SetFloat("_ChangeAmount",1);
+    }
+
+   //销毁时销毁材质实例
+    private void OnDestroy()
+    {
+        if (cardGround != null) Destroy(cardGround);
+        if (cardType != null) Destroy(cardType);
+        if (cardBody != null) Destroy(cardBody);
+        if (cardName != null) Destroy(cardName);
+        if (cardDescription != null) Destroy(cardDescription);
+        if (cardCost != null) Destroy(cardCost);
     }
 
     //设置卡牌主图像
