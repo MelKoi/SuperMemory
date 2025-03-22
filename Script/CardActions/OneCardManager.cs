@@ -14,6 +14,7 @@ public class OneCardManager : MonoBehaviour
     [Header("Image References")]//图片
     public Image CardPic;
     public Image CardType;
+    public Image CardImage;
     public GameObject CardBack;
     void Awake()
     {

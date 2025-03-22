@@ -163,8 +163,18 @@ public class BattleManager : MonoBehaviour
     private void CreateCard(CardAsset asset, Transform parent)
     {
         GameObject newCard = Instantiate(CardPrefab, parent);
-        newCard.GetComponent<OneCardManager>().cardAsset = asset;
+        CardShaderController cardShaderController = newCard.GetComponent<CardShaderController>();
+        OneCardManager card = newCard.GetComponent<OneCardManager>();
         newCard.GetComponent<OneCardManager>().ReadCardFromAsset(asset);
+        newCard.GetComponent<OneCardManager>().cardAsset = asset;
+        cardShaderController.InitializeMaterials();
+        cardShaderController.SetMainTex(cardShaderController.cardGround, card.CardImage.sprite);
+        cardShaderController.SetMainTex(cardShaderController.cardType, card.CardType.sprite);
+        cardShaderController.SetMainTex(cardShaderController.cardBody, card.CardPic.sprite);
+        cardShaderController.SetRampTex(cardShaderController.cardGround, asset.Ram);
+        cardShaderController.SetRampTex(cardShaderController.cardType, asset.Ram);
+        cardShaderController.SetRampTex(cardShaderController.cardBody, asset.Ram);
+
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
     {

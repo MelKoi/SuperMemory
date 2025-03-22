@@ -15,9 +15,9 @@ public class CardShaderController : MonoBehaviour
     public Text cardNameText;
     public Text cardDescriptionText;
     public Text cardCostText;
-    private Material cardGround;
-    private Material cardType;
-    private Material cardBody;
+    public Material cardGround;
+    public Material cardType;
+    public Material cardBody;
     private Material cardName;
     private Material cardDescription;
     private Material cardCost;
