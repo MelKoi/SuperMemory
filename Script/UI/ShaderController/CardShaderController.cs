@@ -124,7 +124,7 @@ public class CardShaderController : MonoBehaviour
             
     }
 
-   //销毁时销毁材质实例
+    //销毁时销毁材质实例
     private void OnDestroy()
     {
         if (Application.isPlaying)
