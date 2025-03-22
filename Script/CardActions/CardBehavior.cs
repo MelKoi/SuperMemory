@@ -78,6 +78,9 @@ public class SkillCardBehaviour : CardBehaviour
             if (Area == null)
                 Debug.Log("Area");
             SkillCardChange(Card, Area);
+            bm.SkillEffect.Clear();
+            foreach(var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+                bm.AttackEffect.Add(effect);
         }
        else if (bm._currentPhase == GamePhase.enemyAction)
         {
@@ -85,6 +88,8 @@ public class SkillCardBehaviour : CardBehaviour
             Transform Area = em.SkillArea;
             // 销毁 Area 中的第一个子物体
             SkillCardChange(Card, Area);
+            foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+                em.AttackEffect.Add(effect);
         }
     }
     private void SkillCardChange(GameObject Card,Transform Area)

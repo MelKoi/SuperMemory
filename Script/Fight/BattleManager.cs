@@ -174,6 +174,10 @@ public class BattleManager : MonoBehaviour
         cardShaderController.SetRampTex(cardShaderController.cardGround, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardType, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardBody, asset.Ramp);
+        cardShaderController.SetRampTex(cardShaderController.cardName, asset.Ramp);
+        cardShaderController.SetRampTex(cardShaderController.cardDescription, asset.Ramp);
+        cardShaderController.SetRampTex(cardShaderController.cardCost,asset.Ramp);
+
 
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
@@ -235,6 +239,11 @@ public class BattleManager : MonoBehaviour
     }
     public void PlayerReady()//玩家准备阶段
     {
+        if(SkillEffect != null)
+            foreach (var effect in SkillEffect)
+            {
+                effect.ApplyEffect(this, EnemyManager);
+            }
         Debug.Log(_currentPhase);
         Player.NowSp = Player.maxSp;//恢复体力
         //重置武器攻击状态
@@ -257,6 +266,11 @@ public class BattleManager : MonoBehaviour
     }
     public void EnemyReady()//敌方准备阶段
     {
+        if (EnemyManager.SkillEffect != null)
+            foreach (var effect in EnemyManager.SkillEffect)
+            {
+                effect.ApplyEffect(this, EnemyManager);
+            }
         Debug.Log(_currentPhase);
         Enemy.NowSp = Enemy.maxSp;//恢复体力
         //重置武器攻击状态

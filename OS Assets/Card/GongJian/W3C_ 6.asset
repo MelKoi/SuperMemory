@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0e92eb3102b1c4a850edf515ed212c, type: 3}
   m_Name: W3C_ 6
   m_EditorClassIdentifier: 
-  WeaponAsset: {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
   CardName: "\u95EA\u8EAB\u7BAD\u821E"
   description: "\u83B7\u5F972\u70B9\u683C\u6321\u503C\uFF0C\u4E14\u52A0\u4E0B\u6765\u7684\u653B\u51FB\u63D0\u9AD8\u4E00\u4E2A\u84C4\u80FD\u7B49\u7EA7"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}
   Type: 1
   TypePic: {fileID: 21300000, guid: 8b4447e6d1ae5214d9fe7c22b09fc7f1, type: 3}
   cost: 10
+  Ramp: {fileID: 21300000, guid: b05b1ca78f6bace43a7158202c9c5a56, type: 3}
+  Effects: []
