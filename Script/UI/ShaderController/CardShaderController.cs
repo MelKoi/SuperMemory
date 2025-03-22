@@ -18,9 +18,9 @@ public class CardShaderController : MonoBehaviour
     public Material cardGround;
     public Material cardType;
     public Material cardBody;
-    private Material cardName;
-    private Material cardDescription;
-    private Material cardCost;
+    public Material cardName;
+    public Material cardDescription;
+    public Material cardCost;
 
     private Sprite sprite;
 

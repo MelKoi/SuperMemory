@@ -23,7 +23,7 @@ public class CardAsset : ScriptableObject
     public Sprite TypePic;//卡牌种类图案
     public string cost;//花费
 
-    public Sprite Ram;//对应的Ram图
+    public Sprite Ramp;//对应的Ramp图
 
     [Header("卡面效果")]
     public List<CardEffectAsset> Effects = new List<CardEffectAsset>();

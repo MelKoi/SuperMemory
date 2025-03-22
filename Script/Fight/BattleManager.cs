@@ -171,9 +171,9 @@ public class BattleManager : MonoBehaviour
         cardShaderController.SetMainTex(cardShaderController.cardGround, card.CardImage.sprite);
         cardShaderController.SetMainTex(cardShaderController.cardType, card.CardType.sprite);
         cardShaderController.SetMainTex(cardShaderController.cardBody, card.CardPic.sprite);
-        cardShaderController.SetRampTex(cardShaderController.cardGround, asset.Ram);
-        cardShaderController.SetRampTex(cardShaderController.cardType, asset.Ram);
-        cardShaderController.SetRampTex(cardShaderController.cardBody, asset.Ram);
+        cardShaderController.SetRampTex(cardShaderController.cardGround, asset.Ramp);
+        cardShaderController.SetRampTex(cardShaderController.cardType, asset.Ramp);
+        cardShaderController.SetRampTex(cardShaderController.cardBody, asset.Ramp);
 
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
