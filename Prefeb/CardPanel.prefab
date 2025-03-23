@@ -342,13 +342,14 @@ GameObject:
   m_Component:
   - component: {fileID: 128609584922445987}
   - component: {fileID: 1286349963631170593}
-  - component: {fileID: 7830952447960012722}
-  - component: {fileID: -5462023476811219957}
-  - component: {fileID: 3604776806573500789}
-  - component: {fileID: 3794868940725308420}
   - component: {fileID: 2113283875467416853}
-  - component: {fileID: 5361332195254140545}
+  - component: {fileID: 3604776806573500789}
   - component: {fileID: 4082640015013872609}
+  - component: {fileID: -5462023476811219957}
+  - component: {fileID: 3794868940725308420}
+  - component: {fileID: 7830952447960012722}
+  - component: {fileID: 5361332195254140545}
+  - component: {fileID: 2612979959180687503}
   m_Layer: 5
   m_Name: CardPanel
   m_TagString: Untagged
@@ -385,36 +386,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3163413792254164860}
   m_CullTransparentMesh: 1
---- !u!114 &7830952447960012722
-MonoBehaviour:
+--- !u!225 &2113283875467416853
+CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3163413792254164860}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4e05a6acffc97c4082e048a1ab7248d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-5462023476811219957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3163413792254164860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d46bac2ebe71a14d98655e7c6bfa68c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canDrug: 1
-  CardUser: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
-  rotationSpeed: 5
-  tweenDuration: 0.5
-  maxRotationAngle: 90
-  handArea: {fileID: 0}
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &3604776806573500789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,6 +443,46 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!95 &4082640015013872609
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3163413792254164860}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d8e03045adc340649a4095cfe93f4e34, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-5462023476811219957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3163413792254164860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d46bac2ebe71a14d98655e7c6bfa68c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canDrug: 1
+  CardUser: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
+  cardAnimationController: {fileID: 0}
+  rotationSpeed: 5
+  tweenDuration: 0.5
+  maxRotationAngle: 90
+  handArea: {fileID: 0}
 --- !u!114 &3794868940725308420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,18 +503,18 @@ MonoBehaviour:
   CardType: {fileID: 2438863520987034974}
   CardImage: {fileID: 1522522109583960057}
   CardBack: {fileID: 679741974252625019}
---- !u!225 &2113283875467416853
-CanvasGroup:
+--- !u!114 &7830952447960012722
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3163413792254164860}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4e05a6acffc97c4082e048a1ab7248d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5361332195254140545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,28 +536,25 @@ MonoBehaviour:
   cardGround: {fileID: 0}
   cardType: {fileID: 0}
   cardBody: {fileID: 0}
+  cardName: {fileID: 0}
+  cardDescription: {fileID: 0}
+  cardCost: {fileID: 0}
   _ChangeAmount: 0.009
---- !u!95 &4082640015013872609
-Animator:
-  serializedVersion: 5
+--- !u!114 &2612979959180687503
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3163413792254164860}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d8e03045adc340649a4095cfe93f4e34, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4015f8d7f101606439cbbec2ba27f7a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  isUsing: 0
+  useFinish: 0
 --- !u!1 &5341508537412880906
 GameObject:
   m_ObjectHideFlags: 0

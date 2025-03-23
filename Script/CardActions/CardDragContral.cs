@@ -16,6 +16,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     [SerializeField]
     private PlayerAsset CardUser;
 
+    public CardAnimationController cardAnimationController;
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
@@ -36,6 +37,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+        cardAnimationController = GetComponent<CardAnimationController>();
         originalParent = transform.parent;
         handArea = transform.parent;
 
@@ -92,11 +94,17 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         if (!canDrug)
             return;
+        StartCoroutine(OnEndDragContinue(eventData));
+       
+    }
+
+    private IEnumerator OnEndDragContinue(PointerEventData eventData)
+    {
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
         // 判断是否拖出手牌区
-        if(RectTransformUtility.RectangleContainsScreenPoint(
+        if (RectTransformUtility.RectangleContainsScreenPoint(
             Weapon1.GetComponent<RectTransform>(),
             eventData.position,
             eventData.pressEventCamera))
@@ -105,9 +113,9 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             CardUser.Weapon1Acc++;
             Destroy(gameObject);
             //触发武器蓄能
-
+            yield break; // 结束协程
         }
-        else if(RectTransformUtility.RectangleContainsScreenPoint(
+        else if (RectTransformUtility.RectangleContainsScreenPoint(
             Weapon2.GetComponent<RectTransform>(),
             eventData.position,
             eventData.pressEventCamera))
@@ -116,6 +124,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             CardUser.Weapon2Acc++;
             Destroy(gameObject);
             //触发武器蓄能
+            yield break; // 结束协程
         }
         else if (!RectTransformUtility.RectangleContainsScreenPoint(//发现了无法移动原处的bug
             handArea.GetComponent<RectTransform>(),
@@ -124,6 +133,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             // 触发卡牌使用逻辑
             Debug.Log("卡牌已拖出手牌区！");
+            yield return StartCoroutine(cardAnimationController.PlayAnimation());
             HandleCardUsage();
         }
         else

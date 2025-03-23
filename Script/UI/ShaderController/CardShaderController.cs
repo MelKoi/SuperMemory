@@ -15,12 +15,14 @@ public class CardShaderController : MonoBehaviour
     public Text cardNameText;
     public Text cardDescriptionText;
     public Text cardCostText;
+    [Header("材质")]
     public Material cardGround;
     public Material cardType;
     public Material cardBody;
     public Material cardName;
     public Material cardDescription;
     public Material cardCost;
+    
 
     private Sprite sprite;
 
@@ -30,12 +32,7 @@ public class CardShaderController : MonoBehaviour
 
     void Start()
     {
-        //cardGround = cardGroundImage.material;
-        //cardType = cardTypeImage.material;
-        //cardBody = cardBodyImage.material;
-        //cardName = cardNameText.material;
-        //cardDescription = cardDescriptionText.material;
-        //cardCost = cardCostText.material;
+       
         if (cardGroundImage != null)
         {
             cardGround = new Material(cardGroundImage.material);
@@ -96,8 +93,6 @@ public class CardShaderController : MonoBehaviour
                 cardDescription.SetFloat("_ChangeAmount", 0);
 
         }
-
-
         if (cardName != null && cardCost != null)
         {
             if (_ChangeAmount > 0.85f)
@@ -215,4 +210,6 @@ public class CardShaderController : MonoBehaviour
             cardCostText.material = cardCost;
         }
     }
+
+    
 }
