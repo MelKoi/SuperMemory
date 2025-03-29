@@ -45,7 +45,7 @@ public class OneCardManager : MonoBehaviour
 
         DescriptionText.text = cardAsset.description;
 
-        CardPic.sprite = cardAsset.cardPic;
+        CardPic.sprite = cardAsset.WeaponAsset.CardFace;
 
     }
 }

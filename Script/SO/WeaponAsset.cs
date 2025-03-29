@@ -18,6 +18,8 @@ public class WeaponAsset : ScriptableObject
     [TextArea(2, 3)]//填写框，最少2行，最多3行
     public string description;//卡牌描述
     public int OnceAccumulation;//单次蓄力
+    public Sprite CardBack;//卡背
+    public Sprite CardFace;//卡面
     [System.Serializable]
     public struct AccumulationPair//蓄力伤害,哈希结构（？）
     {

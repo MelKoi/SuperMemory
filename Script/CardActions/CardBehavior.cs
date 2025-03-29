@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -16,7 +16,7 @@ public class AttackCardBehaviour : CardBehaviour
     }
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
     {
-        Debug.Log("¹¥»÷ÅÆµÄĞ§¹û½«×÷ÓÃÓÚÏÂÒ»´Î¹¥»÷£¡");
+        Debug.Log("æ”»å‡»ç‰Œçš„æ•ˆæœå°†ä½œç”¨äºä¸‹ä¸€æ¬¡æ”»å‡»ï¼");
         foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
         {
             if (bm._currentPhase == GamePhase.playerAction)
@@ -24,7 +24,7 @@ public class AttackCardBehaviour : CardBehaviour
             else if (bm._currentPhase == GamePhase.enemyAction)
                 em.AttackEffect.Add(effect);
         }
-        Destroy(Card);//Ïú»Ù¿¨ÅÆ
+        Destroy(Card);//é”€æ¯å¡ç‰Œ
     }
 }
 public class ActionCardBehaviour : CardBehaviour
@@ -36,7 +36,7 @@ public class ActionCardBehaviour : CardBehaviour
     }
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
     {
-        Debug.Log("¸ÃĞĞ¶¯ÅÆÒÑ¾­Ê¹ÓÃ£¡");
+        Debug.Log("è¯¥è¡ŒåŠ¨ç‰Œå·²ç»ä½¿ç”¨ï¼");
         foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
         {
             effect.ApplyEffect(bm, em);
@@ -52,11 +52,35 @@ public class CounterCardBehaviour : CardBehaviour
         _card = card;
     }
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
-    {
-        bm.Purple.SetActive(true);
-        
+    {   
+        if(bm._currentPhase == GamePhase.playerAction)
+            if(!bm.Purple.activeSelf)
+            {
+                bm.Purple.SetActive(true);
+                foreach(var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+                    bm.CounterEffect.Add(effect);
+            }
+            else
+            {
+                bm.CounterEffect.Clear();
+                foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+                    bm.CounterEffect.Add(effect);
+            }
+        else if(bm._currentPhase == GamePhase.enemyAction)
+            if(!em.Purple.activeSelf)
+            {
+                em.Purple.SetActive(true);
+                foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+                    em.CounterEffect.Add(effect);
+            }
+            else
+            {
+                em.CounterEffect.Clear();
+                foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
+                    em.CounterEffect.Add(effect);
+            }
 
-        //Ïú»Ù¿¨ÅÆ
+        //é”€æ¯å¡ç‰Œ
         Destroy(Card);
     }
 }
@@ -71,7 +95,7 @@ public class SkillCardBehaviour : CardBehaviour
     {
        if(bm._currentPhase == GamePhase.playerAction)
         {
-            Debug.Log("Íæ¼ÒÕ½¼¼ÅÆÒÑ¾­Ê¹ÓÃ£¡");
+            Debug.Log("ç©å®¶æˆ˜æŠ€ç‰Œå·²ç»ä½¿ç”¨ï¼");
             Transform Area = bm.SkillArea;
             if (Card == null)
                 Debug.Log("Card");
@@ -84,9 +108,9 @@ public class SkillCardBehaviour : CardBehaviour
         }
        else if (bm._currentPhase == GamePhase.enemyAction)
         {
-            Debug.Log("µĞ·½Õ½¼¼ÅÆÒÑ¾­Ê¹ÓÃ£¡");
+            Debug.Log("æ•Œæ–¹æˆ˜æŠ€ç‰Œå·²ç»ä½¿ç”¨ï¼");
             Transform Area = em.SkillArea;
-            // Ïú»Ù Area ÖĞµÄµÚÒ»¸ö×ÓÎïÌå
+            // é”€æ¯ Area ä¸­çš„ç¬¬ä¸€ä¸ªå­ç‰©ä½“
             SkillCardChange(Card, Area);
             foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
                 em.AttackEffect.Add(effect);
@@ -102,15 +126,19 @@ public class SkillCardBehaviour : CardBehaviour
                 Destroy(child.gameObject);
             }
         }
-
-        GameObject Skill = Instantiate(Card, Area.position, Quaternion.identity, Area);
-        Skill.GetComponent<CardDragContral>().canDrug = false;
-        Skill.transform.localPosition = Vector3.zero;
-        Skill.transform.localScale =new Vector3(0.75f,0.75f,1f);
-        // Ïú»ÙÔ­Ê¼ Card
-        if (Card != null)
-        {
-            Destroy(Card);
-        }
+        //æµ‹è¯•å°†åŸæ¥çš„ç‰Œç§»åŠ¨åˆ°æˆ˜æŠ€åŒºåŸŸ
+        Card.transform.SetParent(Area,true);
+        Card.GetComponent<CardDragContral>().canDrug = false;
+        Card.transform.localPosition = Vector3.zero;
+        Card.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+        //GameObject Skill = Instantiate(Card, Area.position, Quaternion.identity, Area);
+        //Skill.GetComponent<CardDragContral>().canDrug = false;
+        //Skill.transform.localPosition = Vector3.zero;
+        //Skill.transform.localScale =new Vector3(0.75f,0.75f,1f);
+        // é”€æ¯åŸå§‹ Card
+        //if (Card != null)
+        //{
+            //Destroy(Card);
+        //}
     }
 }

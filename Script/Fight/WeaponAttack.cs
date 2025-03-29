@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class WeaponAttack : MonoBehaviour, IPointerClickHandler
 {
+    public BattleManager battleManager;
     public float doubleClickThreshold = 0.3f;//双击时间阈值(s)
     public float cooldown = 1f;//冷却时间
     private bool isCooldown = false;//是否在冷却
@@ -25,6 +26,9 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         Weapon = gameObject.GetComponent<WeaponCardManager>().weaponAsset;
+        battleManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<BattleManager>();
+        Enemy = battleManager.Enemy;
+        Player = battleManager.Player;
     }
     // Update is called once per frame
     void Update()
@@ -77,6 +81,13 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             }
             if (Damage == 0)
                 return;
+            if (enemyManager.Purple)//如果对方已经使用过对应牌
+            {
+                foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
+                {
+                    effect.ApplyEffect(battleManager, enemyManager);
+                }
+            }
             attacked.hp = attacked.hp - Damage;
             Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Damage +"点伤害！");
             foreach(var effect in battleManager.AttackEffect)

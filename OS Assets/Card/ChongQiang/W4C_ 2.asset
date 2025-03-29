@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0e92eb3102b1c4a850edf515ed212c, type: 3}
   m_Name: W4C_ 2
   m_EditorClassIdentifier: 
+  WeaponAsset: {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
   CardName: "\u9EBB\u75F9\u5F39"
   description: "\u5BF9\u624B\u4E0B\u4E00\u56DE\u5408\u65E0\u6CD5\u4F7F\u7528\u884C\u52A8\u724C"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}

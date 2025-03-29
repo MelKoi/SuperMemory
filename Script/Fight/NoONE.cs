@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using TMPro.EditorUtilities;
 using Unity.VisualScripting;
@@ -6,15 +6,15 @@ using UnityEngine;
 
 public class NoONE : BattleManager
 {
-    override public void StartEnemyTurn()//µĞÈËµÄÖ÷Òª½×¶Î
+    override public void StartEnemyTurn()//æ•Œäººçš„ä¸»è¦é˜¶æ®µ
     {
         Debug.Log(_currentPhase);
         int Behavior = 0;
-        int Damage = 0;//¹¥»÷ÉËº¦
-        int acc = 0;// ĞîÄÜÁÙÊ±´¢´æ
+        int Damage = 0;//æ”»å‡»ä¼¤å®³
+        int acc = 0;// è“„èƒ½ä¸´æ—¶å‚¨å­˜
         while(Behavior <= 2)
         {
-            //ÎäÆ÷µ½´ï1¼¶ĞîÄÜ¾ÍÂíÉÏ¹¥»÷
+            //æ­¦å™¨åˆ°è¾¾1çº§è“„èƒ½å°±é©¬ä¸Šæ”»å‡»
             if(Enemy.Weapon1 == false)
             {
                 acc = Enemy.Weapon1Acc;
@@ -27,8 +27,15 @@ public class NoONE : BattleManager
                 }
                 if (Damage != 0)
                 {
+                    if (this.Purple)//å¦‚æœå¯¹æ–¹å·²ç»ä½¿ç”¨è¿‡å¯¹åº”ç‰Œ
+                    {
+                        foreach (var effect in CounterEffect)
+                        {
+                            effect.ApplyEffect(this, EnemyManager);
+                        }
+                    }
                     Player.hp = Player.hp - Damage;
-                    Debug.Log("¶ÔÎÒ·½Ôì³É" + Damage + "µãÉËº¦£¡");
+                    Debug.Log("å¯¹æˆ‘æ–¹é€ æˆ" + Damage + "ç‚¹ä¼¤å®³ï¼");
                     Enemy.mp = Enemy.mp + acc;
                     acc = Enemy.Weapon1Acc = 0;
                     Damage = 0;
@@ -50,8 +57,15 @@ public class NoONE : BattleManager
                 }
                 if (Damage != 0)
                 {
+                    if (this.Purple)//å¦‚æœå¯¹æ–¹å·²ç»ä½¿ç”¨è¿‡å¯¹åº”ç‰Œ
+                    {
+                        foreach (var effect in CounterEffect)
+                        {
+                            effect.ApplyEffect(this, EnemyManager);
+                        }
+                    }
                     Player.hp = Player.hp - Damage;
-                    Debug.Log("¶ÔÎÒ·½Ôì³É" + Damage + "µãÉËº¦£¡");
+                    Debug.Log("å¯¹æˆ‘æ–¹é€ æˆ" + Damage + "ç‚¹ä¼¤å®³ï¼");
                     Enemy.mp = Enemy.mp + acc;
                     acc = Enemy.Weapon2Acc = 0;
                     Damage = 0;
@@ -61,7 +75,7 @@ public class NoONE : BattleManager
                 }
                    
             }
-            //¼ìË÷ÅÆ¿âÄÚµÄÊÖÅÆ
+            //æ£€ç´¢ç‰Œåº“å†…çš„æ‰‹ç‰Œ
             List<Transform> EnemyCards = new List<Transform>();
             Transform parent = EnemyManager.HandArea.transform;
             if(parent.childCount == 0)
@@ -76,21 +90,21 @@ public class NoONE : BattleManager
             foreach(var card in EnemyCards)
             {
                 CardAsset cardAsset = card.gameObject.GetComponent<OneCardManager>().cardAsset;
-                if (cardAsset.Type == Type.¹¥»÷)//¹¥»÷ÅÆÖ±½ÓÊ¹ÓÃ
+                if (cardAsset.Type == Type.æ”»å‡»)//æ”»å‡»ç‰Œç›´æ¥ä½¿ç”¨
                 {
                     UseCard(cardAsset, card.gameObject, Enemy);
                     Behavior++;
                     continue;
                 }
             }
-            EnemyAcc(parent.GetChild(0).gameObject);//·ñÔòÓÅÏÈĞîÄÜ£¬ĞîÄÜÖµ¶¼ÎªÁãÊ±£¬Á½°ÑÎäÆ÷Ëæ»ú£¬·ñÔòÑ¡ÔñĞîÄÜÖµ¸ü¸ßµÄÎäÆ÷
+            EnemyAcc(parent.GetChild(0).gameObject);//å¦åˆ™ä¼˜å…ˆè“„èƒ½ï¼Œè“„èƒ½å€¼éƒ½ä¸ºé›¶æ—¶ï¼Œä¸¤æŠŠæ­¦å™¨éšæœºï¼Œå¦åˆ™é€‰æ‹©è“„èƒ½å€¼æ›´é«˜çš„æ­¦å™¨
             Behavior++;
-            if (Enemy.Weapon1 == true || Enemy.Weapon2 == true)//Á½°ÑÎäÆ÷ÆäÖĞÖ®Ò»¹¥»÷ºóÊ¹ÓÃ·Ç¹¥»÷ÅÆ£¬Ê¹ÓÃÊÖÅÆÖĞµÄµÚÒ»ÕÅ
+            if (Enemy.Weapon1 == true || Enemy.Weapon2 == true)//ä¸¤æŠŠæ­¦å™¨å…¶ä¸­ä¹‹ä¸€æ”»å‡»åä½¿ç”¨éæ”»å‡»ç‰Œï¼Œä½¿ç”¨æ‰‹ç‰Œä¸­çš„ç¬¬ä¸€å¼ 
             {
                 foreach (var card in EnemyCards)
                 {
                     CardAsset cardAsset = card.GetComponent<OneCardManager>().cardAsset;
-                    if (cardAsset.Type != Type.¹¥»÷)//¹¥»÷ÅÆÖ±½ÓÊ¹ÓÃ
+                    if (cardAsset.Type != Type.æ”»å‡»)//æ”»å‡»ç‰Œç›´æ¥ä½¿ç”¨
                     {
                         UseCard(cardAsset, card.gameObject, Enemy);
                         Behavior++;
@@ -101,20 +115,20 @@ public class NoONE : BattleManager
             continue;
         }
         EndTurn();
-        //ÊµÏÖµĞ·½Âß¼­
-        //²âÊÔÊ±µÄÔİ¶¨Âß¼­£º¹¥»÷ÅÆ»áÂíÉÏÊ¹ÓÃ£¬Ã»ÓĞ¹¥»÷ÅÆÊ±ÓÅÏÈ½øĞĞĞîÄÜ£¬ĞîÄÜ»áÑ¡Ôñµ±Ç°ĞîÄÜÖµ¸ü¸ßµÄÎäÆ÷
-        //ÎäÆ÷´ïµ½1¼¶ĞîÄÜÔòÂíÉÏÎäÆ÷¹¥»÷£¬ÔÚ±¾»ØºÏÊ¹ÓÃ¹ıÎäÆ÷¹¥»÷Ê±£¬²Å»á¿¼ÂÇÊ¹ÓÃ·Ç¹¥»÷ÅÆ£¬
-        //Ò»»ØºÏ½øĞĞÈı´ÎĞĞ¶¯
-        //²»»á½øĞĞ·­¹ö¶ÔÓ¦
+        //å®ç°æ•Œæ–¹é€»è¾‘
+        //æµ‹è¯•æ—¶çš„æš‚å®šé€»è¾‘ï¼šæ”»å‡»ç‰Œä¼šé©¬ä¸Šä½¿ç”¨ï¼Œæ²¡æœ‰æ”»å‡»ç‰Œæ—¶ä¼˜å…ˆè¿›è¡Œè“„èƒ½ï¼Œè“„èƒ½ä¼šé€‰æ‹©å½“å‰è“„èƒ½å€¼æ›´é«˜çš„æ­¦å™¨
+        //æ­¦å™¨è¾¾åˆ°1çº§è“„èƒ½åˆ™é©¬ä¸Šæ­¦å™¨æ”»å‡»ï¼Œåœ¨æœ¬å›åˆä½¿ç”¨è¿‡æ­¦å™¨æ”»å‡»æ—¶ï¼Œæ‰ä¼šè€ƒè™‘ä½¿ç”¨éæ”»å‡»ç‰Œï¼Œ
+        //ä¸€å›åˆè¿›è¡Œä¸‰æ¬¡è¡ŒåŠ¨
+        //ä¸ä¼šè¿›è¡Œç¿»æ»šå¯¹åº”
     }
-    override public void EnemyAcc(GameObject Card)//µĞ·½ĞîÄÜº¯Êı
-                          //ÔÚÁ½°ÑÎäÆ÷ĞîÄÜ¶¼Îª0£¬»òÕßÏàÍ¬Ê±È¡Ëæ»úÊı£¨ÀÖ£©
-                          //µ±Á½°ÑÎäÆ÷ĞîÄÜ²»Í¬Ê±£¬ÓÅÏÈ¶ÔĞîÄÜµÈ¼¶¸ßµÄÎäÆ÷½øĞĞĞîÄÜ¡£
+    override public void EnemyAcc(GameObject Card)//æ•Œæ–¹è“„èƒ½å‡½æ•°
+                          //åœ¨ä¸¤æŠŠæ­¦å™¨è“„èƒ½éƒ½ä¸º0ï¼Œæˆ–è€…ç›¸åŒæ—¶å–éšæœºæ•°ï¼ˆä¹ï¼‰
+                          //å½“ä¸¤æŠŠæ­¦å™¨è“„èƒ½ä¸åŒæ—¶ï¼Œä¼˜å…ˆå¯¹è“„èƒ½ç­‰çº§é«˜çš„æ­¦å™¨è¿›è¡Œè“„èƒ½ã€‚
     {
         if (int.Parse(EnemyManager.Weapon1Acc.text)
             == int.Parse(EnemyManager.Weapon2Acc.text))
         {
-            int Num = Random.Range(1, 3);//Éú³É1µ½2Ö®¼äµÄËæ»úÕûÊı
+            int Num = Random.Range(1, 3);//ç”Ÿæˆ1åˆ°2ä¹‹é—´çš„éšæœºæ•´æ•°
             if(Num == 1)
                 Enemy.Weapon1Acc++;
             else if(Num == 2)

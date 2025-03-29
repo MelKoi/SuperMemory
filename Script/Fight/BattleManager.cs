@@ -45,7 +45,8 @@ public class BattleManager : MonoBehaviour
 
     [Header("卡牌预制体")]
     public GameObject CardPrefab;//卡牌预制体
-    public GameObject CharacterPrefab;//卡牌预制体
+    public GameObject CharacterPrefab;//人物卡牌预制体
+    public GameObject WeaponPrefeb;//武器卡牌预制体
 
     [Header("UI组件")]
     public Text HpText;//我方生命
@@ -186,6 +187,12 @@ public class BattleManager : MonoBehaviour
         newCharacter.GetComponent<CharacterCardManager>().charactorasset = character;
         newCharacter.GetComponent<CharacterCardManager>().ReadCardFromAsset(character);
     }
+    private void CreateWeapon(WeaponAsset weapon,Transform parent)
+    {
+        GameObject newWeapon = Instantiate(WeaponPrefeb,parent);
+        newWeapon.GetComponent<WeaponCardManager>().weaponAsset = weapon;
+        newWeapon.GetComponent<WeaponCardManager>().ReadCardFromAsset(weapon);
+    }
     //UI更新
     public void UpdateUI(Text Hptext, Text Mptext, Text Sptext, Text Weapon1Acc, Text Weapon2Acc ,PlayerAsset player)
     {
@@ -235,7 +242,7 @@ public class BattleManager : MonoBehaviour
         for(int i = 0;i < 3; i++)
         {
             BanEnemyWeapon.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i].WeaponName;
-        } 
+        }
     }
     public void PlayerReady()//玩家准备阶段
     {
@@ -299,6 +306,10 @@ public class BattleManager : MonoBehaviour
             FirstDrew.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i].WeaponName;
         }
         BanEnemyWeapon.SetActive(false);
+        CreateWeapon(PlayerWeapons[0], transform.Find("Place/WeaponCard1"));
+        CreateWeapon(PlayerWeapons[1], transform.Find("Place/WeaponCard2"));
+        CreateWeapon(EnemyManager._PlayerWeapons[0], transform.Find("Place/Enemy/WeaponCard1"));
+        CreateWeapon(EnemyManager._PlayerWeapons[1], transform.Find("Place/Enemy/WeaponCard2"));
     }
     public void ChooseFirstDrew(Text text)//选择第一抽取的武器
     {

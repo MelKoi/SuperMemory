@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -22,6 +22,7 @@ public class EnemyManager : MonoBehaviour
     [Header("卡牌预制体")]
     public GameObject CardPrefab;//卡牌预制体
     public GameObject CharacterPrefab;//卡牌预制体
+    public GameObject WeaponPrefeb;//武器卡牌预制体
 
     [Header("UI组件")]
     public Text HpText;//生命

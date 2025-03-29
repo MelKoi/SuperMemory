@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0e92eb3102b1c4a850edf515ed212c, type: 3}
   m_Name: W1C_6
   m_EditorClassIdentifier: 
+  WeaponAsset: {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
   CardName: "\u6F5C\u5FC3"
   description: "\u4ECE\u724C\u5E93\u62BD\u53D6\u4E24\u5F20\u5361\u724C"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}

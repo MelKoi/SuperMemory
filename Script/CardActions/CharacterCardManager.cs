@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,20 +7,20 @@ using static UnityEditor.Timeline.TimelinePlaybackControls;
 public class CharacterCardManager : MonoBehaviour
 {
     public CharactorAsset charactorasset;
-    [Header("ÎÄ±¾¿ò")]
+    [Header("æ–‡æœ¬æ¡†")]
     public Text nameText;
 
-    [Header("Í¼Æ¬")]
+    [Header("å›¾ç‰‡")]
     public Image BianKuang;
     public Image CardFace;
     void Awake()
     {
-        if (charactorasset != null)//¿¨ÅÆ´æÔÚ
+        if (charactorasset != null)//å¡ç‰Œå­˜åœ¨
         {
             ReadCardFromAsset(charactorasset);
         }
     }
-    private bool canBePlayedNow = false;//ÊÇ·ñ¿ÉÒÔ±»Ê¹ÓÃ
+    private bool canBePlayedNow = false;//æ˜¯å¦å¯ä»¥è¢«ä½¿ç”¨
     public bool CanBePlayedNow
     {
         get

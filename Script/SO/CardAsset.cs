@@ -15,6 +15,7 @@ public enum Used
 public class CardAsset : ScriptableObject
 {
     [Header("General info")]//普遍信息
+    public WeaponAsset WeaponAsset;//所属的武器
     public string CardName;//卡牌的名字
     [TextArea(2, 3)]//填写框，最少2行，最多3行
     public string description;//卡牌描述
