@@ -20,4 +20,5 @@ public class PlayerAsset : ScriptableObject
     public bool Weapon1;//武器一已经攻击
     public bool Weapon2;//武器二已经攻击
     public int TemporaryCostReduction;//减少的卡牌消耗
+    public int Damage;//攻击的伤害
 }

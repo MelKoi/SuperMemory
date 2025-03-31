@@ -253,9 +253,6 @@ public class BattleManager : MonoBehaviour
             }
         Debug.Log(_currentPhase);
         Player.NowSp = Player.maxSp;//恢复体力
-        //重置武器攻击状态
-        Player.Weapon1 = false;
-        Player.Weapon2 = false;
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);
         _currentPhase = GamePhase.playerAction;
@@ -264,10 +261,16 @@ public class BattleManager : MonoBehaviour
     {
         if (_currentPhase == GamePhase.playerAction)
         {
+            //重置武器攻击状态
+            Player.Weapon1 = false;
+            Player.Weapon2 = false;
             _currentPhase = GamePhase.enemyReady;
         }
         else if(_currentPhase == GamePhase.enemyAction)
         {
+            //重置武器攻击状态
+            Enemy.Weapon1 = false;
+            Enemy.Weapon2 = false;
             _currentPhase = GamePhase.playerReady;
         }
     }
@@ -280,9 +283,6 @@ public class BattleManager : MonoBehaviour
             }
         Debug.Log(_currentPhase);
         Enemy.NowSp = Enemy.maxSp;//恢复体力
-        //重置武器攻击状态
-        Enemy.Weapon1 = false;
-        Enemy.Weapon2 = false;
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
         DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount,EnemyManager.HandArea, EnemyManager._currentDeck);

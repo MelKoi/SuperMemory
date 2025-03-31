@@ -19,7 +19,6 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     public int Acc;//蓄能
     public WeaponAsset Weapon;//武器
 
-    public int Damage;//伤害
     [SerializeField]
     private Text Point;//提醒
     // Start is called before the first frame update
@@ -76,10 +75,10 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             {
                 if(Acc >= damage.Acc)
                 {
-                    Damage = damage.Value;
+                    Player.Damage = damage.Value;
                 }
             }
-            if (Damage == 0)
+            if (Player.Damage == 0)
                 return;
             if (enemyManager.Purple)//如果对方已经使用过对应牌
             {
@@ -88,15 +87,15 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                     effect.ApplyEffect(battleManager, enemyManager);
                 }
             }
-            attacked.hp = attacked.hp - Damage;
-            Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Damage +"点伤害！");
+            attacked.hp = attacked.hp - Player.Damage;
+            Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Player.Damage +"点伤害！");
             foreach(var effect in battleManager.AttackEffect)
             {
                 effect.ApplyEffect(battleManager, enemyManager);
             }
             attack.mp = attack.mp + Acc;
             Acc = 0;
-            Damage = 0;
+            Player.Damage = 0;
             if (gameObject.name.Equals("WeaponCard1"))
             {
                 attack.Weapon1Acc = Acc;

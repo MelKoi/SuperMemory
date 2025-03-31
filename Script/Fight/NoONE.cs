@@ -10,7 +10,6 @@ public class NoONE : BattleManager
     {
         Debug.Log(_currentPhase);
         int Behavior = 0;
-        int Damage = 0;//攻击伤害
         int acc = 0;// 蓄能临时储存
         while(Behavior <= 2)
         {
@@ -22,10 +21,10 @@ public class NoONE : BattleManager
                 {
                     if (acc >= damage.Acc)
                     {
-                        Damage = damage.Value;
+                        Enemy.Damage = damage.Value;
                     }
                 }
-                if (Damage != 0)
+                if (Enemy.Damage != 0)
                 {
                     if (this.Purple)//如果对方已经使用过对应牌
                     {
@@ -34,11 +33,11 @@ public class NoONE : BattleManager
                             effect.ApplyEffect(this, EnemyManager);
                         }
                     }
-                    Player.hp = Player.hp - Damage;
-                    Debug.Log("对我方造成" + Damage + "点伤害！");
+                    Player.hp = Player.hp - Enemy.Damage;
+                    Debug.Log("对我方造成" + Enemy.Damage + "点伤害！");
                     Enemy.mp = Enemy.mp + acc;
                     acc = Enemy.Weapon1Acc = 0;
-                    Damage = 0;
+                    Enemy.Damage = 0;
                     Enemy.Weapon1 = true;
                     Behavior++;
                     continue;
@@ -52,10 +51,10 @@ public class NoONE : BattleManager
                 {
                     if (acc >= damage.Acc)
                     {
-                        Damage = damage.Value;
+                        Enemy.Damage = damage.Value;
                     }
                 }
-                if (Damage != 0)
+                if (Enemy.Damage != 0)
                 {
                     if (this.Purple)//如果对方已经使用过对应牌
                     {
@@ -64,11 +63,11 @@ public class NoONE : BattleManager
                             effect.ApplyEffect(this, EnemyManager);
                         }
                     }
-                    Player.hp = Player.hp - Damage;
-                    Debug.Log("对我方造成" + Damage + "点伤害！");
+                    Player.hp = Player.hp - Enemy.Damage;
+                    Debug.Log("对我方造成" + Enemy.Damage + "点伤害！");
                     Enemy.mp = Enemy.mp + acc;
                     acc = Enemy.Weapon2Acc = 0;
-                    Damage = 0;
+                    Enemy.Damage = 0;
                     Enemy.Weapon2 = true;
                     Behavior++;
                     continue;

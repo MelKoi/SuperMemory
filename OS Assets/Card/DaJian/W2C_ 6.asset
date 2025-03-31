@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponAsset: {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
   CardName: "\u93D6\u6218"
-  description: "\u53EF\u4EE5\u5C06\u81EA\u5DF1\u7684x\u5F20\u624B\u724C\u5F03\u7F6E\u5230\u80FD\u91CF\u533A\uFF0C\u672C\u56DE\u5408\u5185\u4E0B\u4E00\u6B21\u653B\u51FB\u4F24\u5BB3\u589E\u52A0x+1"
+  description: "\u5F03\u7F6E2\u5F20\u624B\u724C\uFF0C\u6211\u65B9\u7B2C\u4E00\u628A\u6B66\u5668\u7684\u84C4\u80FD\u589E\u52A03\uFF0C\u7B2C\u4E8C\u628A\u6B66\u5668\u84C4\u80FD\u589E\u52A01"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}
   Type: 1
   TypePic: {fileID: 21300000, guid: 8b4447e6d1ae5214d9fe7c22b09fc7f1, type: 3}
   cost: 4
   Ramp: {fileID: 21300000, guid: b05b1ca78f6bace43a7158202c9c5a56, type: 3}
-  Effects: []
+  Effects:
+  - {fileID: 11400000, guid: 02c00533e0dbdc948ac8fa324136e908, type: 2}
+  - {fileID: 11400000, guid: 6b06ec257d71bea4aa650b875d3aa6fa, type: 2}
+  - {fileID: 11400000, guid: 2bf34117a58ca73478d77f03c35cd85f, type: 2}
