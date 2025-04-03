@@ -19,8 +19,9 @@ public class CardAnimationController : MonoBehaviour
         if (manager.cardAsset.Type == Type.战技)
             isGreenCard = true;
         anim.SetBool("isGreenCard", isGreenCard);
+        anim.SetBool("useFinish", useFinish);
     }
-
+    
     public void bofa()
     {
         StartCoroutine(PlayAnimation());
@@ -34,5 +35,13 @@ public class CardAnimationController : MonoBehaviour
         
         yield return new WaitUntil(() => useFinish);
         Debug.Log("播放完毕");
+    }
+    public IEnumerator DeleteGreenCard()
+    {
+        useFinish = false;
+        isGreenCard = false;
+        anim.SetBool("isGreenCard",isGreenCard);
+        yield return new WaitUntil(() => useFinish);
+        Debug.Log("清除战技卡");
     }
 }

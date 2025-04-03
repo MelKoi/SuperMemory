@@ -122,23 +122,26 @@ public class SkillCardBehaviour : CardBehaviour
         foreach (Transform child in Area)
         {
             if (child != null)
-            {
+            {   //希望能先将卡牌溶解掉再销毁
+                child.GetComponent<CardAnimationController>().isGreenCard =false;
                 Destroy(child.gameObject);
             }
         }
         //测试将原来的牌移动到战技区域
-        Card.transform.SetParent(Area,true);
-        Card.GetComponent<CardDragContral>().canDrug = false;
-        Card.transform.localPosition = Vector3.zero;
-        Card.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-        //GameObject Skill = Instantiate(Card, Area.position, Quaternion.identity, Area);
-        //Skill.GetComponent<CardDragContral>().canDrug = false;
-        //Skill.transform.localPosition = Vector3.zero;
-        //Skill.transform.localScale =new Vector3(0.75f,0.75f,1f);
-        // 销毁原始 Card
-        //if (Card != null)
-        //{
-            //Destroy(Card);
-        //}
+        //Card.transform.SetParent(Area,true);
+        //Card.GetComponent<CardDragContral>().canDrug = false;
+        //Card.transform.localPosition = Vector3.zero;
+        //Card.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+        Card.GetComponent<CardAnimationController>().useFinish = true;
+        Card.GetComponent<CardAnimationController>().isGreenCard = true;
+        GameObject Skill = Instantiate(Card, Area.position, Quaternion.identity, Area);
+        Skill.GetComponent<CardDragContral>().canDrug = false;
+        Skill.transform.localPosition = Vector3.zero;
+        Skill.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+        //销毁原始 Card
+        if (Card != null)
+        {
+            Destroy(Card);
+        }
     }
 }
