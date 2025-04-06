@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:OS Assets/Event.meta
 guid: 022d7147b0093b944b9ed4772d51bb48
+========
+guid: 6337b01643160a4489797366e6b39b15
+>>>>>>>> Stashed changes:Picture/Menu&Place.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
