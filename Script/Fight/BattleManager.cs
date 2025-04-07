@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using DG.Tweening;
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ public class BattleManager : MonoBehaviour
     public Text Weapon1Acc;//武器1蓄能
     public Text Weapon2Acc;//武器2蓄能
     public GameObject Purple;//对应卡是否使用
+    public GameObject ZeroPoint;//战斗场地中心
 
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
@@ -178,7 +180,8 @@ public class BattleManager : MonoBehaviour
         cardShaderController.SetRampTex(cardShaderController.cardName, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardDescription, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardCost,asset.Ramp);
-
+        if(newCard.transform.parent.name.Equals("EnemyHand"))
+            newCard.GetComponent<OneCardManager>().CardBack.SetActive(true);
 
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
@@ -377,6 +380,7 @@ public class BattleManager : MonoBehaviour
 
         User.NowSp = nowsp;
     }
+
 }
 
 

@@ -539,7 +539,7 @@ MonoBehaviour:
   cardName: {fileID: 0}
   cardDescription: {fileID: 0}
   cardCost: {fileID: 0}
-  _ChangeAmount: 0.009
+  _ChangeAmount: 0
 --- !u!114 &2612979959180687503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,7 +552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4015f8d7f101606439cbbec2ba27f7a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
+  anim: {fileID: 4082640015013872609}
   isUsing: 0
   useFinish: 0
   isGreenCard: 0
