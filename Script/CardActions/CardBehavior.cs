@@ -24,7 +24,6 @@ public class AttackCardBehaviour : CardBehaviour
             else if (bm._currentPhase == GamePhase.enemyAction)
                 em.AttackEffect.Add(effect);
         }
-        Destroy(Card);//销毁卡牌
     }
 }
 public class ActionCardBehaviour : CardBehaviour
@@ -41,7 +40,6 @@ public class ActionCardBehaviour : CardBehaviour
         {
             effect.ApplyEffect(bm, em);
         }
-        Destroy(Card);
     }
 }
 public class CounterCardBehaviour : CardBehaviour
@@ -80,8 +78,6 @@ public class CounterCardBehaviour : CardBehaviour
                     em.CounterEffect.Add(effect);
             }
 
-        //销毁卡牌
-        Destroy(Card);
     }
 }
 public class SkillCardBehaviour : CardBehaviour
@@ -138,10 +134,5 @@ public class SkillCardBehaviour : CardBehaviour
         Skill.GetComponent<CardDragContral>().canDrug = false;
         Skill.transform.localPosition = Vector3.zero;
         Skill.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-        //销毁原始 Card
-        if (Card != null)
-        {
-            Destroy(Card);
-        }
     }
 }

@@ -38,7 +38,7 @@ public class BattleManager : MonoBehaviour
 
     [Header("敌方数据引用")]
     public EnemyManager EnemyManager;//敌方管理器
-    
+
     [Header("卡牌组件")]
     public GameObject HandArea;//手牌区域
     public Transform SkillArea;//战技展开区域
@@ -67,6 +67,7 @@ public class BattleManager : MonoBehaviour
     public List<CardEffectAsset> CounterEffect = new List<CardEffectAsset>();//对应牌效果池
     public List<CardAsset> _currentDeck;//牌库
     public GamePhase _currentPhase;//回合情况
+    public bool hasEnemyTurnStarted = false;//进入敌人的回合
     public CardPool PlayerPool;//对象池
 
     void Start()
@@ -80,17 +81,18 @@ public class BattleManager : MonoBehaviour
             case GamePhase.playerReady:
                 PlayerReady();
                 break;
-            case GamePhase.playerAction:
-
-                break;
             case GamePhase.enemyReady:
                 EnemyReady();
                 break;
             case GamePhase.enemyAction:
-                StartEnemyTurn();
+                if (!hasEnemyTurnStarted)
+                {
+                    StartEnemyTurn();
+                    hasEnemyTurnStarted = true;
+                }
                 break;
         }
-        if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text) 
+        if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
             || Player.Weapon2Acc != int.Parse(Weapon2Acc.text)
             || Player.hp != int.Parse(HpText.text)
             || Player.NowSp != int.Parse(SpText.text)
@@ -98,7 +100,7 @@ public class BattleManager : MonoBehaviour
         {
             UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         }
-        if (Enemy.Weapon1Acc != int.Parse(EnemyManager.Weapon1Acc.text) 
+        if (Enemy.Weapon1Acc != int.Parse(EnemyManager.Weapon1Acc.text)
             || Enemy.Weapon2Acc != int.Parse(EnemyManager.Weapon2Acc.text)
             || Enemy.hp != int.Parse(EnemyManager.HpText.text)
             || Enemy.NowSp != int.Parse(EnemyManager.SpText.text)
@@ -108,7 +110,7 @@ public class BattleManager : MonoBehaviour
             EnemyManager.Weapon2Acc, Enemy);
         }
     }
-    public void DrowCards(int amount,GameObject HandArea, List<CardAsset> _currentDeck)//抽取卡牌
+    public void DrowCards(int amount, GameObject HandArea, List<CardAsset> _currentDeck)//抽取卡牌
     {
         if (_currentDeck.Count == 0)//本次抽卡时发现牌库为空
             if (_currentPhase == GamePhase.playerReady)//如果是玩家抽卡发现的
@@ -129,10 +131,10 @@ public class BattleManager : MonoBehaviour
                     };
                 }
             }
-            else if(_currentPhase == GamePhase.enemyReady)//如果是敌人抽卡发现的
+            else if (_currentPhase == GamePhase.enemyReady)//如果是敌人抽卡发现的
             {
                 foreach (WeaponAsset second in EnemyManager._PlayerWeapons)
-                    if(!second.WeaponName.Equals(EnemyManager.DrewWeapon.WeaponName))//检索敌人拥有的第二把武器
+                    if (!second.WeaponName.Equals(EnemyManager.DrewWeapon.WeaponName))//检索敌人拥有的第二把武器
                     {
                         EnemyManager.DrewWeapon = second;//更新抽取的武器
                         break;
@@ -179,8 +181,8 @@ public class BattleManager : MonoBehaviour
         cardShaderController.SetRampTex(cardShaderController.cardBody, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardName, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardDescription, asset.Ramp);
-        cardShaderController.SetRampTex(cardShaderController.cardCost,asset.Ramp);
-        if(newCard.transform.parent.name.Equals("EnemyHand"))
+        cardShaderController.SetRampTex(cardShaderController.cardCost, asset.Ramp);
+        if (newCard.transform.parent.name.Equals("EnemyHand"))
             newCard.GetComponent<OneCardManager>().CardBack.SetActive(true);
 
     }
@@ -190,14 +192,14 @@ public class BattleManager : MonoBehaviour
         newCharacter.GetComponent<CharacterCardManager>().charactorasset = character;
         newCharacter.GetComponent<CharacterCardManager>().ReadCardFromAsset(character);
     }
-    private void CreateWeapon(WeaponAsset weapon,Transform parent)
+    private void CreateWeapon(WeaponAsset weapon, Transform parent)
     {
-        GameObject newWeapon = Instantiate(WeaponPrefeb,parent);
+        GameObject newWeapon = Instantiate(WeaponPrefeb, parent);
         newWeapon.GetComponent<WeaponCardManager>().weaponAsset = weapon;
         newWeapon.GetComponent<WeaponCardManager>().ReadCardFromAsset(weapon);
     }
     //UI更新
-    public void UpdateUI(Text Hptext, Text Mptext, Text Sptext, Text Weapon1Acc, Text Weapon2Acc ,PlayerAsset player)
+    public void UpdateUI(Text Hptext, Text Mptext, Text Sptext, Text Weapon1Acc, Text Weapon2Acc, PlayerAsset player)
     {
         Hptext.text = player.hp.ToString();
         Mptext.text = player.mp.ToString();
@@ -209,7 +211,7 @@ public class BattleManager : MonoBehaviour
     {
         //读取玩家各种数据
         PlayerData = Player.CharacterAsset;
-        for(int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             PlayerAllWeapons[i] = Player.WeaponAsset[i];
         }
@@ -221,13 +223,13 @@ public class BattleManager : MonoBehaviour
         Player.Weapon1Acc = Player.Weapon2Acc = Player.mp = 0;
         Player.Weapon1 = Player.Weapon2 = false;
         CreateCharacter(PlayerData, transform.Find("Place/CharacterCard"));
-        
+
 
         //读取敌方各种数据
         EnemyManager._PlayerData = Enemy.CharacterAsset;
         for (int i = 0; i < 3; i++)
         {
-           EnemyManager._PlayerAllWeapons[i] = Enemy.WeaponAsset[i];
+            EnemyManager._PlayerAllWeapons[i] = Enemy.WeaponAsset[i];
         }
         Enemy.hp = EnemyManager._PlayerData.MaxHealth;
         Enemy.maxSp = EnemyManager._PlayerData.MaxSp;
@@ -239,17 +241,18 @@ public class BattleManager : MonoBehaviour
         CreateCharacter(EnemyManager._PlayerData, transform.Find("Place/Enemy/CharacterCard"));
 
         //统一更新UI
-        UpdateUI(HpText, MpText, SpText,Weapon1Acc,Weapon2Acc,Player);
-        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc, 
-            EnemyManager.Weapon2Acc,Enemy);
-        for(int i = 0;i < 3; i++)
+        UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
+        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
+            EnemyManager.Weapon2Acc, Enemy);
+        for (int i = 0; i < 3; i++)
         {
             BanEnemyWeapon.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i].WeaponName;
         }
     }
     public void PlayerReady()//玩家准备阶段
     {
-        if(SkillEffect != null)
+        hasEnemyTurnStarted = false;//敌方回合结束
+        if (SkillEffect != null)
             foreach (var effect in SkillEffect)
             {
                 effect.ApplyEffect(this, EnemyManager);
@@ -269,7 +272,7 @@ public class BattleManager : MonoBehaviour
             Player.Weapon2 = false;
             _currentPhase = GamePhase.enemyReady;
         }
-        else if(_currentPhase == GamePhase.enemyAction)
+        else if (_currentPhase == GamePhase.enemyAction)
         {
             //重置武器攻击状态
             Enemy.Weapon1 = false;
@@ -288,13 +291,13 @@ public class BattleManager : MonoBehaviour
         Enemy.NowSp = Enemy.maxSp;//恢复体力
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
-        DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount,EnemyManager.HandArea, EnemyManager._currentDeck);
+        DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount, EnemyManager.HandArea, EnemyManager._currentDeck);
         _currentPhase = GamePhase.enemyAction;
     }
     public void ChooseWeapons(Text text)//我方ban对方一个武器牌
     {
         int j = 0;
-        foreach(WeaponAsset i in EnemyManager._PlayerAllWeapons)
+        foreach (WeaponAsset i in EnemyManager._PlayerAllWeapons)
         {
             if (!i.WeaponName.Equals(text.text))
             {
@@ -316,7 +319,7 @@ public class BattleManager : MonoBehaviour
     }
     public void ChooseFirstDrew(Text text)//选择第一抽取的武器
     {
-        foreach(WeaponAsset weapon in PlayerWeapons)
+        foreach (WeaponAsset weapon in PlayerWeapons)
         {
             if (weapon.WeaponName.Equals(text.text))
             {
@@ -324,7 +327,7 @@ public class BattleManager : MonoBehaviour
                 break;
             }
         }
-        foreach(CardAsset card in DrewWeapon.Allcard)//拷贝卡牌
+        foreach (CardAsset card in DrewWeapon.Allcard)//拷贝卡牌
         {
             _currentDeck.Add(card);
             cardStates[card] = new CardState
@@ -342,8 +345,8 @@ public class BattleManager : MonoBehaviour
                 IsInPlayArea = false
             };
         }
-        DrowCards(PlayerData.HandCardNum,HandArea, _currentDeck);
-        DrowCards(EnemyManager._PlayerData.HandCardNum,EnemyManager.HandArea, EnemyManager._currentDeck);
+        DrowCards(PlayerData.HandCardNum, HandArea, _currentDeck);
+        DrowCards(EnemyManager._PlayerData.HandCardNum, EnemyManager.HandArea, EnemyManager._currentDeck);
         FirstDrew.SetActive(false);
         ChooseCardsPanel.SetActive(false);
         _currentPhase = GamePhase.playerReady;
@@ -354,13 +357,14 @@ public class BattleManager : MonoBehaviour
         EndTurn();
         //实现敌方逻辑
     }
-    public virtual void EnemyAcc(GameObject Card)
+    public virtual IEnumerator EnemyAcc(GameObject Card)
     {
         Debug.Log("蓄能！");
+        yield return null;
         EndTurn();
         //实现敌方逻辑
     }
-    public void UseCard(CardAsset card, GameObject cardObject,PlayerAsset User)//使用卡牌
+    public void UseCard(CardAsset card, GameObject cardObject, PlayerAsset User)//使用卡牌
     {
         int nowsp;
         if (User.TemporaryCostReduction != 0)
@@ -377,11 +381,13 @@ public class BattleManager : MonoBehaviour
         }
         var behaviour = CardBehaviourFactory.Create(card);
         behaviour.Onplay(this, EnemyManager, cardObject);
-
+        if(_currentPhase == GamePhase.playerAction)
+            Destroy(cardObject);
         User.NowSp = nowsp;
     }
 
-}
+
+}  
 
 
 public static class CardBehaviourFactory

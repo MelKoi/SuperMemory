@@ -158,9 +158,9 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
         BattleManager battleManager = transform.parent.parent.GetComponent<BattleManager>();
         if (battleManager._currentPhase == GamePhase.playerAction)
-            battleManager.UseCard(cardManager.cardAsset,gameObject,battleManager.Player);
-        else if(battleManager._currentPhase == GamePhase.enemyAction)
-            battleManager.UseCard(cardManager.cardAsset, gameObject, battleManager.Enemy);
+        {
+            battleManager.UseCard(cardManager.cardAsset, gameObject, battleManager.Player);
+        }
         if(UserSp != CardUser.NowSp)
             rectTransform.DOAnchorPos(originalPosition, 0.3f).SetEase(Ease.OutBack)
                 .OnComplete(() => transform.SetParent(originalParent));

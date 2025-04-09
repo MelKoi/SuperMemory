@@ -28,6 +28,8 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
         battleManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<BattleManager>();
         Enemy = battleManager.Enemy;
         Player = battleManager.Player;
+        GameObject PointObject = battleManager.transform.Find("Place/Point").gameObject;
+        Point = PointObject.GetComponent<Text>();
     }
     // Update is called once per frame
     void Update()
@@ -49,8 +51,8 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // 攻击敌方
     private void AttackEnemy(PlayerAsset attacked,PlayerAsset attack)
     {
-        BattleManager battleManager = transform.parent.parent.GetComponent<BattleManager>();
-        EnemyManager enemyManager = transform.parent.parent.GetComponent<EnemyManager>();
+        BattleManager battleManager = transform.parent.parent.parent.GetComponent<BattleManager>();
+        EnemyManager enemyManager = transform.parent.parent.parent.GetComponent<EnemyManager>();
         if (gameObject.name.Equals("WeaponCard1"))
         {
             if(attack.Weapon1)
@@ -80,7 +82,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             }
             if (Player.Damage == 0)
                 return;
-            if (enemyManager.Purple)//如果对方已经使用过对应牌
+            if (enemyManager.Purple.activeSelf == true)//如果对方已经使用过对应牌
             {
                 foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
                 {
