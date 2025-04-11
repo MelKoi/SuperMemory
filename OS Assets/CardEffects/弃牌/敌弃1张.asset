@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   User: {fileID: 0}
   Used: {fileID: 0}
-  who: 0
+  who: 1
   CardNum: 1

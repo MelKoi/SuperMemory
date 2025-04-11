@@ -252,13 +252,13 @@ public class BattleManager : MonoBehaviour
     public void PlayerReady()//玩家准备阶段
     {
         hasEnemyTurnStarted = false;//敌方回合结束
+        Debug.Log(_currentPhase);
+        Player.NowSp = Player.maxSp;//恢复体力
         if (SkillEffect != null)
             foreach (var effect in SkillEffect)
             {
                 effect.ApplyEffect(this, EnemyManager);
             }
-        Debug.Log(_currentPhase);
-        Player.NowSp = Player.maxSp;//恢复体力
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);
         _currentPhase = GamePhase.playerAction;
@@ -282,13 +282,14 @@ public class BattleManager : MonoBehaviour
     }
     public void EnemyReady()//敌方准备阶段
     {
+       
+        Debug.Log(_currentPhase);
+        Enemy.NowSp = Enemy.maxSp;//恢复体力
         if (EnemyManager.SkillEffect != null)
             foreach (var effect in EnemyManager.SkillEffect)
             {
                 effect.ApplyEffect(this, EnemyManager);
             }
-        Debug.Log(_currentPhase);
-        Enemy.NowSp = Enemy.maxSp;//恢复体力
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
         DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount, EnemyManager.HandArea, EnemyManager._currentDeck);
