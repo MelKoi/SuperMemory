@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b7716d277fbc5b4f803714c916d03dd, type: 3}
   m_Name: "\u654C\u5F032\u5F20"
   m_EditorClassIdentifier: 
-  User: {fileID: 0}
-  Used: {fileID: 0}
-  who: 0
-  CardNum: 2
+  User: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
+  Used: {fileID: 11400000, guid: 1a5f203a65c3ab342828df6e319b07cd, type: 2}
+  who: 1
+  CardNum: 1
