@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PotManager : MonoBehaviour
+public class PoltManager : MonoBehaviour
 {
     [Header("事件监听")]
     public VoidEventSO givePaint;
