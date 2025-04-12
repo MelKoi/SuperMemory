@@ -240,6 +240,11 @@ public class BattleManager : MonoBehaviour
         Enemy.Weapon1 = Enemy.Weapon2 = false;
         CreateCharacter(EnemyManager._PlayerData, transform.Find("Place/Enemy/CharacterCard"));
 
+        for(int i = 0; i < 3; i++)
+        {
+            BanEnemyWeapon.transform.GetChild(i).gameObject.GetComponent<Image>().sprite = EnemyManager._PlayerAllWeapons[i].CardFace;
+        }
+
         //统一更新UI
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
@@ -311,7 +316,11 @@ public class BattleManager : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             FirstDrew.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i].WeaponName;
+            FirstDrew.transform.GetChild(i).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i].CardFace;
         }
+
+            
+
         BanEnemyWeapon.SetActive(false);
         CreateWeapon(PlayerWeapons[0], transform.Find("Place/WeaponCard1"));
         CreateWeapon(PlayerWeapons[1], transform.Find("Place/WeaponCard2"));
