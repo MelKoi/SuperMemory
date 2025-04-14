@@ -67,6 +67,7 @@ public class NoONE : BattleManager
 
     private IEnumerator UseCardWithAnimation(GameObject card)
     {
+        card.GetComponent<CardPreview>().CanPreview = false;
         // 移动卡牌到屏幕中央的动画
         // 隐藏卡牌背面
         card.transform.DORotate(new Vector3(0, 90, 0), 1.0f)
@@ -84,6 +85,7 @@ public class NoONE : BattleManager
                 {
                     // 使用卡牌
                     CardAsset cardAsset = card.GetComponent<OneCardManager>().cardAsset;
+                    card.GetComponent<CardPreview>().CanPreview = true;
                     UseCard(cardAsset, card, Enemy);
 
                     Destroy(card);

@@ -23,9 +23,13 @@ public class CharactorAsset : ScriptableObject
 
     public int HandCardNum;//手牌数
 
-    public string[] Power;//技能
+    public string Power;//技能
 
     public Sprite HeroImage;//图片
 
-    public Sprite[] PowerImage;//技能图片
+    public Sprite PowerImage;//技能图片
+
+    public List<CardEffectAsset> PowerEffect;//技能效果
+
+    public int PowerCost;//技能消耗
 }

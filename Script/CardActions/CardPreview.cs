@@ -9,14 +9,21 @@ public class CardPreview : MonoBehaviour
     public bool CanPreview = true;
     public void OnPointerEnter()
     {
-         mRect.DOKill();  
-         mRect.DOScale(new Vector3(1.0f, 1.0f), 0.5f).SetEase(Ease.OutExpo);
+        if(CanPreview)
+        {
+            mRect.DOKill();
+            mRect.DOScale(new Vector3(1.0f, 1.0f), 0.5f).SetEase(Ease.OutExpo);
+        }
     }
 
     public void OnPointerExit()
     {
-        mRect.DOKill();
-        mRect.DOScale(new Vector3(0.75f, 0.75f), 0.5f).SetEase(Ease.OutExpo);
+        if(CanPreview)
+        {
+            mRect.DOKill();
+            mRect.DOScale(new Vector3(0.75f, 0.75f), 0.5f).SetEase(Ease.OutExpo);
+        }
+        
     }
     private RectTransform mRect;
     // Start is called before the first frame update

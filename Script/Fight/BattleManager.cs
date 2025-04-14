@@ -69,6 +69,7 @@ public class BattleManager : MonoBehaviour
     public GamePhase _currentPhase;//回合情况
     public bool hasEnemyTurnStarted = false;//进入敌人的回合
     public CardPool PlayerPool;//对象池
+    public bool PlayerSkillIsUsed = false;//玩家技能已经使用
 
     void Start()
     {
@@ -262,6 +263,7 @@ public class BattleManager : MonoBehaviour
         hasEnemyTurnStarted = false;//敌方回合结束
         Debug.Log(_currentPhase);
         Player.NowSp = Player.maxSp;//恢复体力
+        PlayerSkillIsUsed = false;
         if (SkillEffect != null)
             foreach (var effect in SkillEffect)
             {
@@ -402,7 +404,23 @@ public class BattleManager : MonoBehaviour
         User.NowSp = nowsp;
     }
 
-
+    public void UseSkill()
+    {
+        if(!PlayerSkillIsUsed)
+        {
+            if(Player.mp - PlayerData.PowerCost >= 0)
+            {
+                Player.mp = Player.mp - PlayerData.PowerCost;
+                //foreach (var SkillEffect in PlayerData.PowerEffect)
+                //SkillEffect.ApplyEffect(this, EnemyManager);
+                Debug.Log("技能已经使用");
+                PlayerSkillIsUsed = !PlayerSkillIsUsed;
+            }
+           else
+                Debug.Log("能量不足");
+        }
+    }
+        
 }  
 
 
