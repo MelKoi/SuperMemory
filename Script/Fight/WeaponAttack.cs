@@ -53,7 +53,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     {
         BattleManager battleManager = transform.parent.parent.parent.GetComponent<BattleManager>();
         EnemyManager enemyManager = transform.parent.parent.parent.GetComponent<EnemyManager>();
-        if (gameObject.name.Equals("WeaponCard1"))
+        if (transform.parent.name.Equals("WeaponCard1"))
         {
             if(attack.Weapon1)
             {
@@ -88,6 +88,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 {
                     effect.ApplyEffect(battleManager, enemyManager);
                 }
+                enemyManager.Purple.gameObject.SetActive(false);
             }
             attacked.hp = attacked.hp - Player.Damage;
             Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Player.Damage +"点伤害！");
@@ -98,7 +99,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             attack.mp = attack.mp + Acc;
             Acc = 0;
             Player.Damage = 0;
-            if (gameObject.name.Equals("WeaponCard1"))
+            if (transform.parent.name.Equals("WeaponCard1"))
             {
                 attack.Weapon1Acc = Acc;
                 attack.Weapon1 = true;

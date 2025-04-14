@@ -137,6 +137,7 @@ public class NoONE : BattleManager
                     {
                         effect.ApplyEffect(this, EnemyManager);
                     }
+                    Purple.SetActive(false);
                 }
                 Player.hp = Player.hp - Enemy.Damage;
                 Debug.Log("对我方造成" + Enemy.Damage + "点伤害！");
