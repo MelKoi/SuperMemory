@@ -87,6 +87,9 @@ public class BattleManager : MonoBehaviour
             case GamePhase.enemyAction:
                 if (!hasEnemyTurnStarted)
                 {
+                    int cardsNum = HandArea.transform.childCount;
+                    for (int i = 0; i < cardsNum; i++)
+                        HandArea.transform.GetChild(i).GetComponent<CardDragContral>().canDrug = false;
                     StartEnemyTurn();
                     hasEnemyTurnStarted = true;
                 }
@@ -267,6 +270,9 @@ public class BattleManager : MonoBehaviour
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);
         _currentPhase = GamePhase.playerAction;
+        int cardsNum = HandArea.transform.childCount;
+        for (int i = 0; i < cardsNum; i++)
+            HandArea.transform.GetChild(i).GetComponent<CardDragContral>().canDrug = true;
     }
     public void EndTurn()//回合结束
     {
