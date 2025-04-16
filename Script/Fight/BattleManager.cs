@@ -26,6 +26,11 @@ public class BattleManager : MonoBehaviour
     private Dictionary<CardAsset, CardState> cardStates = new Dictionary<CardAsset, CardState>();
     private Dictionary<CardAsset, CardState> EnemycardStates = new Dictionary<CardAsset, CardState>();
 
+    [Header("开头动画所需")]
+    public Animation BackGroud;//背景
+    public GameObject ChooseWeapon;//选择武器界面
+    public GameObject Place;//战斗场地
+
     [Header("双方角色")]
     public PlayerAsset Player;//我方
     public PlayerAsset Enemy;//敌方
@@ -61,7 +66,6 @@ public class BattleManager : MonoBehaviour
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
     public GameObject FirstDrew;//选择抽取武器界面
-    public GameObject ChooseCardsPanel;//初始战斗场地
     public List<CardEffectAsset> AttackEffect = new List<CardEffectAsset>();//攻击牌效果池
     public List<CardEffectAsset> SkillEffect = new List<CardEffectAsset>();//战技牌效果
     public List<CardEffectAsset> CounterEffect = new List<CardEffectAsset>();//对应牌效果池
@@ -244,19 +248,21 @@ public class BattleManager : MonoBehaviour
         Enemy.Weapon1 = Enemy.Weapon2 = false;
         CreateCharacter(EnemyManager._PlayerData, transform.Find("Place/Enemy/CharacterCard"));
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 1; i <= 3; i++)
         {
-            BanEnemyWeapon.transform.GetChild(i).gameObject.GetComponent<Image>().sprite = EnemyManager._PlayerAllWeapons[i].CardFace;
+            BanEnemyWeapon.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = EnemyManager._PlayerAllWeapons[i-1].CardFace;
         }
 
         //统一更新UI
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
-        for (int i = 0; i < 3; i++)
+        for (int i = 1; i <= 3; i++)
         {
-            BanEnemyWeapon.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i].WeaponName;
+            BanEnemyWeapon.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i-1].WeaponName;
         }
+
+        StartCoroutine(PlayGameStartAnimation());
     }
     public void PlayerReady()//玩家准备阶段
     {
@@ -321,10 +327,10 @@ public class BattleManager : MonoBehaviour
         }
         EnemyManager.DrewWeapon = EnemyManager._PlayerWeapons[0];
         FirstDrew.SetActive(true);
-        for (int i = 0; i < 2; i++)
+        for (int i = 1; i <= 2; i++)
         {
-            FirstDrew.transform.GetChild(i).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i].WeaponName;
-            FirstDrew.transform.GetChild(i).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i].CardFace;
+            FirstDrew.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i-1].WeaponName;
+            FirstDrew.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i-1].CardFace;
         }
 
             
@@ -365,8 +371,9 @@ public class BattleManager : MonoBehaviour
         }
         DrowCards(PlayerData.HandCardNum, HandArea, _currentDeck);
         DrowCards(EnemyManager._PlayerData.HandCardNum, EnemyManager.HandArea, EnemyManager._currentDeck);
+        Place.SetActive(true);
         FirstDrew.SetActive(false);
-        ChooseCardsPanel.SetActive(false);
+        ChooseWeapon.SetActive(false);
         _currentPhase = GamePhase.playerReady;
     }
     public virtual void StartEnemyTurn()//敌人的主要阶段
@@ -421,6 +428,14 @@ public class BattleManager : MonoBehaviour
         }
     }
         
+    IEnumerator PlayGameStartAnimation()
+    {
+        BackGroud.Play();
+        yield return new WaitForSeconds(3.5f);
+
+        ChooseWeapon.SetActive(true);
+
+    }
 }  
 
 
