@@ -9,6 +9,7 @@ public class BattleListen : MonoBehaviour
     [Header("事件监听")]
     public VoidEventSO hideEvent;
     public VoidEventSO accEvent;
+    public VoidEventSO attEvent;
 
     [Header("基本参数")]
     public bool isPlayer;
@@ -18,24 +19,27 @@ public class BattleListen : MonoBehaviour
 
     private float dir;
     private Vector3 currentPosition;
-    private Color currentColor;
+    private Vector3 currentScale ;
     private bool isHide;
     private bool isAcc;
-    private SpriteRenderer spriteRenderer;
+    private bool isAtt;
     private void Awake()
     {
         dir = isPlayer ? -1 : 1;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        currentPosition = transform.position;
+        currentScale = transform.localScale;
     }
     private void OnEnable()         //设置监听
     {
         hideEvent.OnEventRiased += OnHideEvent;
         accEvent.OnEventRiased += OnAccEvent;
+        attEvent.OnEventRiased += OnAttEvent;
     }
     private void OnDisable()        //移除监听
     {
         hideEvent.OnEventRiased -= OnHideEvent;
         accEvent.OnEventRiased -= OnAccEvent;
+        attEvent.OnEventRiased -= OnAttEvent;
     }
 
     //闪避监听
@@ -43,7 +47,6 @@ public class BattleListen : MonoBehaviour
     {
         if (!isHide) {
             Debug.Log("闪避");
-            currentPosition = transform.position;
             isHide = true;
             Sequence sequence = DOTween.Sequence();
             //第一阶段：向指定方向移动
@@ -64,18 +67,32 @@ public class BattleListen : MonoBehaviour
     //蓄力监听
     public void OnAccEvent()
     {
-        Sequence sequence = DOTween.Sequence();
-        isAcc = !isAcc;
-        currentColor = spriteRenderer .color;
-        if (isAcc)
-        {
+       
+        if (!isAcc)
+        {   
             Debug.Log("蓄力");
-            //这些DOTween终究只是暂时的演示，后期换成动画控制器即可
-            sequence.Append(spriteRenderer.DOColor(new Color(0.91f, 0.32f, 0.3f),0.5f)
-                                                                  .SetLoops(-1,LoopType.Yoyo)
-                                                                  .OnComplete(() =>{
-                                                                      spriteRenderer.DOColor(currentColor, 0.5f);
-                                                                  }));
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(transform.DOScaleY(transform.localScale.y + 1, duration));
+            sequence.AppendInterval(wait);
+            sequence.Append(transform.DOScaleY(currentScale.y, duration)
+                            .SetEase(Ease.OutQuad));
+            sequence.OnComplete(() => isAcc = false);
+            sequence.Play();
+        }
+    }
+
+    //攻击监听
+    public void OnAttEvent()
+    {
+        if (!isAtt)
+        {
+            Debug.Log("攻击");
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(transform.DOScaleX(transform.localScale.x + 1, duration));
+            sequence.AppendInterval(wait);
+            sequence.Append(transform.DOScaleX(currentScale.x, duration)
+                            .SetEase(Ease.OutQuad));
+            sequence.OnComplete(() => isAtt = false);
             sequence.Play();
         }
     }
