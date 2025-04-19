@@ -75,6 +75,9 @@ public class BattleManager : MonoBehaviour
     public CardPool PlayerPool;//对象池
     public bool PlayerSkillIsUsed = false;//玩家技能已经使用
 
+    [Header("事件监听")]
+    public BattleListen BS;
+   
     void Start()
     {
         GameStart();

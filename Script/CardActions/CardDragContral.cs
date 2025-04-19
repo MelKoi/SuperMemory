@@ -32,6 +32,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     [Header("References")]
     [SerializeField] private Transform handArea; // 拖入手牌区父物体
+    [SerializeField] private BattleManager PlayerBattle;//战斗管理器脚本
 
     private void Awake()
     {
@@ -40,6 +41,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         cardAnimationController = GetComponent<CardAnimationController>();
         originalParent = transform.parent;
         handArea = transform.parent;
+        PlayerBattle = handArea.parent.parent.GetComponent<BattleManager>();
 
         //获取武器
         Weapon1 = transform.parent.parent.Find("WeaponCard1");
@@ -112,6 +114,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             Debug.Log("蓄能！");
             CardUser.Weapon1Acc++;
             Destroy(gameObject);
+            PlayerBattle.BS.accEvent.RaiseEvent();
             //触发武器蓄能
             yield break; // 结束协程
         }
@@ -123,6 +126,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             Debug.Log("蓄能！");
             CardUser.Weapon2Acc++;
             Destroy(gameObject);
+            PlayerBattle.BS.accEvent.RaiseEvent();
             //触发武器蓄能
             yield break; // 结束协程
         }

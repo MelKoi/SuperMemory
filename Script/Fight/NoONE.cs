@@ -133,6 +133,7 @@ public class NoONE : BattleManager
             }
             if (Enemy.Damage != 0)
             {
+                EnemyManager.BS.attEvent.RaiseEvent();
                 if (this.Purple)//如果对方已经使用过对应牌
                 {
                     foreach (var effect in CounterEffect)
@@ -250,6 +251,7 @@ public class NoONE : BattleManager
         // 移动卡牌到武器位置的动画
         Vector3 weaponPosition = targetWeapon.transform.position;
         yield return StartCoroutine(MoveCardToPosition(Card.gameObject, weaponPosition));
+        EnemyManager.BS.accEvent.RaiseEvent();
         // 增加蓄能值
         if(targetWeapon == EnemyManager.Weapon1Acc)
         {

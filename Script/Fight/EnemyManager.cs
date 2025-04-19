@@ -38,6 +38,8 @@ public class EnemyManager : MonoBehaviour
     public List<CardEffectAsset> SkillEffect = new List<CardEffectAsset>();//战技牌效果
     public List<CardEffectAsset> CounterEffect = new List<CardEffectAsset>();//对应牌效果池
 
+    [Header("事件监听")]
+    public BattleListen BS;
     public void EnemyRolling()//敌方翻滚对应
     {
 

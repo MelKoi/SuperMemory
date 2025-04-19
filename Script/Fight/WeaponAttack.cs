@@ -82,6 +82,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             }
             if (Player.Damage == 0)
                 return;
+            battleManager.BS.attEvent.RaiseEvent();
             if (enemyManager.Purple.activeSelf == true)//如果对方已经使用过对应牌
             {
                 foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
