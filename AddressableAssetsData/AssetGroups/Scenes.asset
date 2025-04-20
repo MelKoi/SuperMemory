@@ -32,8 +32,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 83a6bcc7c9b954a449648fdb4b61e9d5
-    m_Address: Fight
+  - m_GUID: c1bfbc64377ef824fb170dd26fd6e024
+    m_Address: Assets/Scenes/Fight.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -3093,7 +3093,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &961801569
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3871,6 +3871,7 @@ MonoBehaviour:
   AttackEffect: []
   SkillEffect: []
   CounterEffect: []
+  BS: {fileID: 1504436624}
 --- !u!114 &1255767322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3920,6 +3921,7 @@ MonoBehaviour:
   _currentPhase: 0
   hasEnemyTurnStarted: 0
   PlayerSkillIsUsed: 0
+  BS: {fileID: 1413065157}
 --- !u!1 &1264914036
 GameObject:
   m_ObjectHideFlags: 0
@@ -4435,6 +4437,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1413065155}
   - component: {fileID: 1413065156}
+  - component: {fileID: 1413065157}
   m_Layer: 0
   m_Name: "\u5C0F\u4EBA1"
   m_TagString: Untagged
@@ -4499,7 +4502,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.47750083, g: 0.9924528, b: 0.5333498, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -4509,6 +4512,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1413065157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413065154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f2af89f2b9e30146a008d7923a28e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hideEvent: {fileID: 11400000, guid: 2c5fcc6a7a1efb3459264a54e406d97c, type: 2}
+  accEvent: {fileID: 11400000, guid: d763877c665abdb4eb6578c9c3731ce8, type: 2}
+  attEvent: {fileID: 11400000, guid: d191185fed4a3f9498eb440d977e6c94, type: 2}
+  isPlayer: 1
+  hideDistance: 1
+  duration: 0.5
+  wait: 0.5
 --- !u!1 &1498096083
 GameObject:
   m_ObjectHideFlags: 0
@@ -4598,6 +4620,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1504436622}
   - component: {fileID: 1504436623}
+  - component: {fileID: 1504436624}
   m_Layer: 0
   m_Name: "\u5C0F\u4EBA2"
   m_TagString: Untagged
@@ -4662,7 +4685,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.3679244, b: 0.3679244, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -4672,6 +4695,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1504436624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1504436621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f2af89f2b9e30146a008d7923a28e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hideEvent: {fileID: 11400000, guid: df713acc8381237478887293f61689e1, type: 2}
+  accEvent: {fileID: 11400000, guid: d21bb90a55402a24a810fef7ec569c1c, type: 2}
+  attEvent: {fileID: 11400000, guid: 8463264ebb3ab5246bbb8dcb9d170335, type: 2}
+  isPlayer: 0
+  hideDistance: 1
+  duration: 0.5
+  wait: 0.1
 --- !u!1 &1564208241
 GameObject:
   m_ObjectHideFlags: 0
@@ -4688,7 +4730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1564208242
 Transform:
   m_ObjectHideFlags: 0
