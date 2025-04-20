@@ -1,19 +1,32 @@
 using DG.Tweening;
+using DialogueEditor;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PhoneController : MonoBehaviour
 {
     public GameObject lockFade;
+    public ConversationManager conversationManager;
     [HideInInspector]public Slider lockSlider;
 
     [Header("基本信息")]
     public bool isHide;
     public float returnSpeed = 0.5f;
+    public int currentDialog = 1;
+    public int currentFight = 0;
     private bool isUnlocking;
     private RectTransform rectTransform;
 
+    [Header("事件监听")]
+    public VoidEventSO dialogFinishEvent;
+
+    [Header("广播")]
+    public SceneLoadEventSO loadEventSO;
+
+    [Header("场景")]
+    public List<GameSceneSO> fight;
 
     private void Awake()
     {
@@ -25,8 +38,14 @@ public class PhoneController : MonoBehaviour
         isUnlocking = false;
         isHide = true;
     }
-
-
+    private void OnEnable()
+    {
+        dialogFinishEvent.OnEventRiased += FinishDialog;
+    }
+    private void OnDisable()
+    {
+        dialogFinishEvent.OnEventRiased -= FinishDialog;
+    }
     private void Update()
     {
         if (lockFade)
@@ -90,5 +109,29 @@ public class PhoneController : MonoBehaviour
         lockFade.SetActive(true);
     }
 
+    #endregion
+
+    #region 对话相关
+    public void StartDialog()
+    {
+        StartCoroutine(WaitPhoneHide());
+    }
+    IEnumerator WaitPhoneHide()
+    {
+        yield return StartCoroutine(HidePhoneAndLock());
+        while (isUnlocking)
+        {
+            yield return null;
+        }
+        string dialogNum = "Dialog Part" + currentDialog.ToString();
+        conversationManager.StartConversation(GameObject.Find(dialogNum).GetComponent<NPCConversation>());
+        currentDialog++;
+    }
+    public void FinishDialog()
+    {
+        Debug.Log("战斗开始");
+        loadEventSO.RaiseLoadRequestEvent(fight[currentFight],true);
+        currentFight++;
+    }
     #endregion
 }
