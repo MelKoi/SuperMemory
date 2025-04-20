@@ -23,6 +23,12 @@ public class BattleListen : MonoBehaviour
     private bool isHide;
     private bool isAcc;
     private bool isAtt;
+
+    public GameObject Bullet;//子弹预制体
+    public float bulletSpeed = 10f;
+    public float maxBulletDistance = 10f; // 子弹最大飞行距离
+    public LayerMask collisionLayer; // 设置要检测的碰撞层
+    public bool AttTouch;//攻击命中
     private void Awake()
     {
         dir = isPlayer ? -1 : 1;
@@ -88,12 +94,96 @@ public class BattleListen : MonoBehaviour
         {
             Debug.Log("攻击");
             Sequence sequence = DOTween.Sequence();
+           // Vector3 BulltePosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            GameObject bullet = Instantiate(Bullet, transform.position, Quaternion.identity);
             sequence.Append(transform.DOScaleX(transform.localScale.x + 1, duration));
             sequence.AppendInterval(wait);
+            BulletController bulletController = bullet.AddComponent<BulletController>();
+            // 设置子弹参数
+            int direction = isPlayer ? 1 : -1; // 玩家向右，敌人向左
             sequence.Append(transform.DOScaleX(currentScale.x, duration)
                             .SetEase(Ease.OutQuad));
-            sequence.OnComplete(() => isAtt = false);
+            sequence.OnComplete(() =>
+            bulletController.Initialize(direction, bulletSpeed, maxBulletDistance, collisionLayer)
+            );
+            if (bulletController.hasHit)
+                AttTouch = true;
+
+            isAtt = false;
             sequence.Play();
         }
     }
+}
+public class BulletController : MonoBehaviour
+{
+    private int direction;
+    private float speed;
+    private float maxDistance;
+    private LayerMask collisionLayer;
+    private Vector3 startPosition;
+    public bool hasHit;
+
+    public void Initialize(int dir, float spd, float maxDist, LayerMask layer)
+    {
+        direction = dir;
+        speed = spd;
+        maxDistance = maxDist;
+        collisionLayer = layer;
+        startPosition = transform.position;
+
+        // 设置子弹朝向
+        if (direction < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+
+        // 开始移动
+        StartCoroutine(MoveBullet());
+    }
+
+    private IEnumerator MoveBullet()
+    {
+        while (Vector3.Distance(startPosition, transform.position) < maxDistance && !hasHit)
+        {
+            // 检测碰撞
+            RaycastHit2D hit = Physics2D.Raycast(
+                transform.position,
+                Vector2.right * direction,
+                speed * Time.deltaTime,
+                collisionLayer);
+
+            if (hit.collider != null)
+            {
+                // 命中目标
+                HandleHit(hit.collider);
+                yield break;
+            }
+
+            // 移动子弹
+            transform.Translate(Vector3.right * direction * speed * Time.deltaTime);
+            yield return null;
+        }
+
+        // 到达最大距离未命中
+        Destroy(gameObject);
+    }
+
+    private void HandleHit(Collider2D other)
+    {
+        hasHit = true;
+        Debug.Log("子弹命中: " + other.gameObject.name);
+
+         //这里可以添加命中效果，如爆炸动画等
+
+        Destroy(gameObject);
+    }
+
+    // 可选：使用物理碰撞检测替代射线检测
+    //private void OnTriggerEnter2D(Collider2D other)
+    //{
+        //if (((1 << other.gameObject.layer) & collisionLayer) != 0)
+        //{
+            //HandleHit(other);
+        //}
+    //}
 }

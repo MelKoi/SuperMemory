@@ -73,9 +73,9 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
         }
         if (attacked.hp != 0)
         {
-            foreach(var damage in Weapon.Accumulation)
+            foreach (var damage in Weapon.Accumulation)
             {
-                if(Acc >= damage.Acc)
+                if (Acc >= damage.Acc)
                 {
                     Player.Damage = damage.Value;
                 }
@@ -83,34 +83,39 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             if (Player.Damage == 0)
                 return;
             battleManager.BS.attEvent.RaiseEvent();
-            if (enemyManager.Purple.activeSelf == true)//如果对方已经使用过对应牌
+            if (!battleManager.BS.AttTouch)
+                return;
+            else
             {
-                foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
+                if (enemyManager.Purple.activeSelf == true)//如果对方已经使用过对应牌
+                {
+                    foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
+                    {
+                        effect.ApplyEffect(battleManager, enemyManager);
+                    }
+                    enemyManager.Purple.gameObject.SetActive(false);
+                }
+                attacked.hp = attacked.hp - Player.Damage;
+                Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
+                foreach (var effect in battleManager.AttackEffect)
                 {
                     effect.ApplyEffect(battleManager, enemyManager);
                 }
-                enemyManager.Purple.gameObject.SetActive(false);
+                attack.mp = attack.mp + Acc;
+                Acc = 0;
+                Player.Damage = 0;
+                if (transform.parent.name.Equals("WeaponCard1"))
+                {
+                    attack.Weapon1Acc = Acc;
+                    attack.Weapon1 = true;
+                }
+                else
+                {
+                    attack.Weapon2Acc = Acc;
+                    attack.Weapon2 = true;
+                }
+                StartCoroutine(CooldownTimer());
             }
-            attacked.hp = attacked.hp - Player.Damage;
-            Debug.Log($"使用 {gameObject.name} 对敌方造成"+ Player.Damage +"点伤害！");
-            foreach(var effect in battleManager.AttackEffect)
-            {
-                effect.ApplyEffect(battleManager, enemyManager);
-            }
-            attack.mp = attack.mp + Acc;
-            Acc = 0;
-            Player.Damage = 0;
-            if (transform.parent.name.Equals("WeaponCard1"))
-            {
-                attack.Weapon1Acc = Acc;
-                attack.Weapon1 = true;
-            }
-            else
-            {
-               attack.Weapon2Acc =  Acc;
-                attack.Weapon2 = true;
-            }
-            StartCoroutine(CooldownTimer());
         }
     }
     private IEnumerator CooldownTimer()
