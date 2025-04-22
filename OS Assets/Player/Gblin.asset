@@ -14,7 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: 1
   CharacterAsset: {fileID: 11400000, guid: 5c8adf614e00a2d4f9a6e92e30ed6759, type: 2}
+  hp: 33
+  mp: 3
+  maxSp: 25
+  NowSp: 25
   WeaponAsset:
   - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
   - {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
   - {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
+  Weapon1Acc: 0
+  Weapon2Acc: 0
+  Weapon1: 0
+  Weapon2: 0
+  TemporaryCostReduction: 0
+  Damage: 0

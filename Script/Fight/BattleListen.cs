@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BattleListen : MonoBehaviour
 {
@@ -28,7 +29,9 @@ public class BattleListen : MonoBehaviour
     public float bulletSpeed = 10f;
     public float maxBulletDistance = 10f; // 子弹最大飞行距离
     public LayerMask collisionLayer; // 设置要检测的碰撞层
-    public bool AttTouch;//攻击命中
+    public BulletController bulletController = null;//子弹管理
+
+
     private void Awake()
     {
         dir = isPlayer ? -1 : 1;
@@ -94,22 +97,19 @@ public class BattleListen : MonoBehaviour
         {
             Debug.Log("攻击");
             Sequence sequence = DOTween.Sequence();
-           // Vector3 BulltePosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             GameObject bullet = Instantiate(Bullet, transform.position, Quaternion.identity);
+            bulletController = bullet.AddComponent<BulletController>();
+            // 设置子弹参数
             sequence.Append(transform.DOScaleX(transform.localScale.x + 1, duration));
             sequence.AppendInterval(wait);
-            BulletController bulletController = bullet.AddComponent<BulletController>();
-            // 设置子弹参数
+           
             int direction = isPlayer ? 1 : -1; // 玩家向右，敌人向左
             sequence.Append(transform.DOScaleX(currentScale.x, duration)
                             .SetEase(Ease.OutQuad));
-            sequence.OnComplete(() =>
-            bulletController.Initialize(direction, bulletSpeed, maxBulletDistance, collisionLayer)
-            );
-            if (bulletController.hasHit)
-                AttTouch = true;
-
-            isAtt = false;
+            sequence.OnComplete(() => {
+                bulletController.Initialize(direction, bulletSpeed, maxBulletDistance, collisionLayer);
+                isAtt = false;
+            });           
             sequence.Play();
         }
     }
@@ -134,7 +134,7 @@ public class BulletController : MonoBehaviour
         // 设置子弹朝向
         if (direction < 0)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y * 1, transform.localScale.z * 1);
         }
 
         // 开始移动

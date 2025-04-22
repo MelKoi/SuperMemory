@@ -6,8 +6,9 @@ public class WeaponBeAttacked : CardEffectAsset
 {
     public int WeaponNum;//武器序号，1为1号武器，2为2号武器，3为两把武器,4为随机
     public int WeaponCanAtk;//设置为能否攻击，1为能，0为不能
-    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
+    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, bool isCounterCare)
     {
+        User = GetUser(battleManager, isCounterCare);
         Used = GetUsed(battleManager);
         switch(WeaponNum)
         {

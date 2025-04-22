@@ -38,7 +38,7 @@ public class ActionCardBehaviour : CardBehaviour
         Debug.Log("该行动牌已经使用！");
         foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
         {
-            effect.ApplyEffect(bm, em);
+            effect.ApplyEffect(bm, em,false);
         }
     }
 }

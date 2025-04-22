@@ -19,7 +19,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public enum GamePhase
 {
-    gameStart,playerAction,enemyAction,playerReady,enemyReady
+    gameStart,playerAction,enemyAction,playerReady,enemyReady,gameEnd
 }
 public class BattleManager : MonoBehaviour
 {
@@ -62,6 +62,8 @@ public class BattleManager : MonoBehaviour
     public Text Weapon2Acc;//武器2蓄能
     public GameObject Purple;//对应卡是否使用
     public GameObject ZeroPoint;//战斗场地中心
+    public Button PowerButton;//能量按钮
+    public Button EndTurnButton;//回合结束按钮
 
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
@@ -84,6 +86,10 @@ public class BattleManager : MonoBehaviour
     }
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Z))
+        {
+            StartCoroutine(PlayerHide());
+        }
         switch (_currentPhase)
         {
             case GamePhase.playerReady:
@@ -102,6 +108,8 @@ public class BattleManager : MonoBehaviour
                     hasEnemyTurnStarted = true;
                 }
                 break;
+            case GamePhase.gameEnd:
+                return;
         }
         if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
             || Player.Weapon2Acc != int.Parse(Weapon2Acc.text)
@@ -271,13 +279,21 @@ public class BattleManager : MonoBehaviour
     {
         hasEnemyTurnStarted = false;//敌方回合结束
         Debug.Log(_currentPhase);
+        PowerButton.interactable = true;
+        EndTurnButton.interactable = true;//将两个功能性按钮设置为可按下状态
         Player.NowSp = Player.maxSp;//恢复体力
         PlayerSkillIsUsed = false;
         if (SkillEffect != null)
-            foreach (var effect in SkillEffect)
+            foreach (var effect in SkillEffect)//先结算当前我方展开的战技牌
             {
-                effect.ApplyEffect(this, EnemyManager);
+                effect.ApplyEffect(this, EnemyManager,false);
             }
+        if (EnemyManager.SkillEffect != null)
+            foreach (var effect in EnemyManager.SkillEffect)//再结算当前敌方展开的战技牌，下方敌人同理
+            {
+                effect.ApplyEffect(this, EnemyManager, true);
+            }
+        Player.Damage = 0;
         UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
         DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);
         _currentPhase = GamePhase.playerAction;
@@ -306,12 +322,20 @@ public class BattleManager : MonoBehaviour
     {
        
         Debug.Log(_currentPhase);
+        PowerButton.interactable = false;
+        EndTurnButton.interactable = false;//将两个功能性按钮设置为不可控制状态
         Enemy.NowSp = Enemy.maxSp;//恢复体力
         if (EnemyManager.SkillEffect != null)
             foreach (var effect in EnemyManager.SkillEffect)
             {
-                effect.ApplyEffect(this, EnemyManager);
+                effect.ApplyEffect(this, EnemyManager,false);
             }
+        if (SkillEffect != null)
+            foreach (var effect in SkillEffect)
+            {
+                effect.ApplyEffect(this, EnemyManager, true);
+            }
+        Enemy.Damage = 0;
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
         DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount, EnemyManager.HandArea, EnemyManager._currentDeck);
@@ -404,6 +428,7 @@ public class BattleManager : MonoBehaviour
             nowsp = User.NowSp - int.Parse(card.cost);
         if (nowsp < 0)
         {
+            nowsp = User.NowSp;
             Debug.Log("当前体力不够使用此牌");
             return;
         }
@@ -431,12 +456,20 @@ public class BattleManager : MonoBehaviour
         }
     }
         
-    IEnumerator PlayGameStartAnimation()
+    IEnumerator PlayGameStartAnimation()//对战开始动画
     {
         BackGroud.Play();
         yield return new WaitForSeconds(3.5f);
 
         ChooseWeapon.SetActive(true);
+
+    }
+    IEnumerator PlayerHide()//玩家躲避
+    {
+        BS.gameObject.layer = LayerMask.NameToLayer("Default");
+        BS.hideEvent.RaiseEvent();
+        yield return new WaitForSeconds(0.8f);
+        BS.gameObject.layer = LayerMask.NameToLayer("Player");
 
     }
 }  

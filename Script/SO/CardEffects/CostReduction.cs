@@ -7,9 +7,9 @@ public class CostReduction : CardEffectAsset
 {
     public int ReductionAmount;
 
-    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
+    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, bool isCounterCare)
     {
-        User = GetUser(battleManager);
+        User = GetUser(battleManager,isCounterCare);
         Used = GetUsed(battleManager);
         // 有一个全局变量存储临时消耗减少
         Used.TemporaryCostReduction = ReductionAmount;

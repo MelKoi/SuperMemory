@@ -6,9 +6,9 @@ using UnityEngine;
 public class DisableAction : CardEffectAsset
 {
     public GamePhase nowGamePhase;
-    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
+    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, bool isCounterCare)
     {
-        User = GetUser(battleManager);
+        User = GetUser(battleManager, isCounterCare);
         Used = GetUsed(battleManager);
         if(battleManager._currentPhase == nowGamePhase)
             switch (battleManager._currentPhase)

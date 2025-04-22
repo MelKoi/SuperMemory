@@ -12,7 +12,7 @@ public class NoONE : BattleManager
 
     private int Behavior = 3;//行动次数
     private int acc = 0;// 蓄能临时储存
-    private bool hasAttackedThisTurn = false;
+    private bool hasAttackedThisTurn = false;//本回合是否进行过攻击,用于回合内判断行动模式
     private IEnumerator PerformAIActions()//总体的敌人AI
     {
         RectTransform ZeroPosition = ZeroPoint.GetComponent<RectTransform>();//获取战斗场地中点
@@ -33,7 +33,7 @@ public class NoONE : BattleManager
             }
             //优先使用攻击牌
            GameObject attackCard = FindCardOfType(Type.攻击, EnemyCards);
-            if (attackCard != null)
+            if (attackCard != null && (Enemy.NowSp - int.Parse(attackCard.GetComponent<OneCardManager>().cardAsset.cost) >= 0))
             {
                 yield return StartCoroutine(UseCardWithAnimation(attackCard));
                 continue;
@@ -42,7 +42,7 @@ public class NoONE : BattleManager
             // 2. 检查武器是否可以攻击
             if (TryWeaponAttack(out bool didAttack))
             {
-                if (didAttack) yield return new WaitForSeconds(0.5f); // 攻击动画等待
+                if (didAttack) yield return new WaitForSeconds(5f); // 攻击动画等待
                 continue;
             }
 
@@ -50,7 +50,7 @@ public class NoONE : BattleManager
             if (hasAttackedThisTurn)
             {
                 GameObject nonAttackCard = FindNonAttackCard(EnemyCards);
-                if (nonAttackCard != null)
+                if (nonAttackCard != null && (Enemy.NowSp - int.Parse(nonAttackCard.GetComponent<OneCardManager>().cardAsset.cost) >= 0))
                 {
                     yield return StartCoroutine(UseCardWithAnimation(nonAttackCard));
                     continue;
@@ -117,11 +117,12 @@ public class NoONE : BattleManager
         if (card != null)
             card.transform.position = targetPosition;
     }
-    private bool TryWeaponAttack(out bool didAttack)//武器攻击
+    // 修改原方法
+    private bool TryWeaponAttack(out bool didAttack)
     {
         didAttack = false;
 
-        if (Enemy.Weapon1 == false)
+        if (!Enemy.Weapon1)
         {
             acc = Enemy.Weapon1Acc;
             foreach (var damage in EnemyManager._PlayerWeapons[0].Accumulation)
@@ -131,31 +132,16 @@ public class NoONE : BattleManager
                     Enemy.Damage = damage.Value;
                 }
             }
+
             if (Enemy.Damage != 0)
             {
-                EnemyManager.BS.attEvent.RaiseEvent();
-                if (this.Purple)//如果对方已经使用过对应牌
-                {
-                    foreach (var effect in CounterEffect)
-                    {
-                        effect.ApplyEffect(this, EnemyManager);
-                    }
-                    Purple.SetActive(false);
-                }
-                Player.hp = Player.hp - Enemy.Damage;
-                Debug.Log("对我方造成" + Enemy.Damage + "点伤害！");
-                Enemy.mp = Enemy.mp + acc;
-                acc = Enemy.Weapon1Acc = 0;
-                Enemy.Damage = 0;
-                Enemy.Weapon1 = true;
-                hasAttackedThisTurn = true;
-                Behavior--;
-                didAttack = true;
-                return true;
+                StartCoroutine(PerformWeaponAttack(true));
+                didAttack = true; // 表示已开始攻击
+                return true; // 表示尝试了攻击
             }
-
         }
-        if (Enemy.Weapon2 == false)
+
+        if (!Enemy.Weapon2)
         {
             acc = Enemy.Weapon2Acc;
             foreach (var damage in EnemyManager._PlayerWeapons[1].Accumulation)
@@ -165,28 +151,89 @@ public class NoONE : BattleManager
                     Enemy.Damage = damage.Value;
                 }
             }
+
             if (Enemy.Damage != 0)
             {
-                if (this.Purple)//如果对方已经使用过对应牌
-                {
-                    foreach (var effect in CounterEffect)
-                    {
-                        effect.ApplyEffect(this, EnemyManager);
-                    }
-                }
-                Player.hp = Player.hp - Enemy.Damage;
-                Debug.Log("对我方造成" + Enemy.Damage + "点伤害！");
-                Enemy.mp = Enemy.mp + acc;
-                acc = Enemy.Weapon2Acc = 0;
-                Enemy.Damage = 0;
-                Enemy.Weapon2 = true;
-                hasAttackedThisTurn = true;
-                Behavior--;
-                didAttack = true;
-                return true;
+                StartCoroutine(PerformWeaponAttack(false));
+                didAttack = true; // 表示已开始攻击
+                return true; // 表示尝试了攻击
             }
         }
+
         return false;
+    }
+    // 新增协程方法处理实际攻击逻辑
+    private IEnumerator PerformWeaponAttack(bool isWeapon1)
+    {
+        // 触发攻击事件
+        EnemyManager.BS.attEvent.RaiseEvent();
+
+        // 等待攻击命中判定
+        float timeout = 3f; // 超时时间
+        float elapsed = 0f;
+
+        while (!EnemyManager.BS.bulletController.hasHit && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!EnemyManager.BS.bulletController.hasHit)
+        {
+            Debug.LogWarning("攻击未命中或超时");
+            Enemy.mp += acc;//处理攻击后逻辑
+            acc = 0;
+            Enemy.Damage = 0;
+
+            if (isWeapon1)
+            {
+                Enemy.Weapon1Acc = 0;
+                Enemy.Weapon1 = true;
+            }
+            else
+            {
+                Enemy.Weapon2Acc = 0;
+                Enemy.Weapon2 = true;
+            }
+
+            hasAttackedThisTurn = true;
+            Behavior--;
+            yield break;
+        }
+
+        // 执行攻击命中后的逻辑
+        if (Purple.activeSelf)
+        {
+            foreach (var effect in CounterEffect)
+            {
+                effect.ApplyEffect(this, EnemyManager,true);
+            }
+            Purple.SetActive(false);
+        }
+        Player.hp -= Enemy.Damage;
+        Debug.Log($"对我方造成{Enemy.Damage}点伤害！");
+        foreach (var effect in EnemyManager.AttackEffect)
+        {
+            effect.ApplyEffect(this, EnemyManager, false);
+        }
+        Enemy.mp += acc;//处理攻击后逻辑
+        acc = 0;
+        Enemy.Damage = 0;
+
+        if (isWeapon1)
+        {
+            Enemy.Weapon1Acc = 0;
+            Enemy.Weapon1 = true;
+        }
+        else
+        {
+            Enemy.Weapon2Acc = 0;
+            Enemy.Weapon2 = true;
+        }
+
+        hasAttackedThisTurn = true;
+        Behavior--;
+        
     }
     private GameObject FindNonAttackCard(List<Transform> EnemyCards)//寻找非攻击牌
     {

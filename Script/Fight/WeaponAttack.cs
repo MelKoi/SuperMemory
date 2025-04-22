@@ -43,22 +43,22 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
         if (Time.time - lastClickTime < doubleClickThreshold)
         {
             // 触发攻击逻辑
-            AttackEnemy(Enemy, Player);
-                
+            StartCoroutine(AttackEnemyCoroutine(Enemy, Player));
+
         }
         lastClickTime = Time.time;
     }
     // 攻击敌方
-    private void AttackEnemy(PlayerAsset attacked,PlayerAsset attack)
+    private IEnumerator AttackEnemyCoroutine(PlayerAsset attacked, PlayerAsset attack)
     {
         BattleManager battleManager = transform.parent.parent.parent.GetComponent<BattleManager>();
         EnemyManager enemyManager = transform.parent.parent.parent.GetComponent<EnemyManager>();
         if (transform.parent.name.Equals("WeaponCard1"))
         {
-            if(attack.Weapon1)
+            if (attack.Weapon1)
             {
                 StartCoroutine(Pointed());
-                return;
+                yield break;
             }
             Acc = attack.Weapon1Acc;
         }
@@ -67,7 +67,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             if (attack.Weapon2)
             {
                 StartCoroutine(Pointed());
-                return;
+                yield break;
             }
             Acc = attack.Weapon2Acc;
         }
@@ -81,41 +81,52 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 }
             }
             if (Player.Damage == 0)
-                return;
+                yield break;
             battleManager.BS.attEvent.RaiseEvent();
-            if (!battleManager.BS.AttTouch)
-                return;
+
+            // 等待攻击命中判定
+            float timeout = 3f; // 超时时间
+            float elapsed = 0f;
+
+            while (!battleManager.BS.bulletController.hasHit && elapsed < timeout)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!battleManager.BS.bulletController.hasHit)
+            {
+                Debug.LogWarning("攻击未命中或超时");
+                yield break;
+            }
+            if (enemyManager.Purple.activeSelf)//如果对方已经使用过对应牌
+            {
+                foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
+                {
+                    effect.ApplyEffect(battleManager, enemyManager,true);
+                }
+                enemyManager.Purple.gameObject.SetActive(false);
+            }
+            attacked.hp = attacked.hp - Player.Damage;
+            Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
+            foreach (var effect in battleManager.AttackEffect)
+            {
+                effect.ApplyEffect(battleManager, enemyManager,false);
+            }
+            attack.mp = attack.mp + Acc;
+            Acc = 0;
+            Player.Damage = 0;
+            if (transform.parent.name.Equals("WeaponCard1"))
+            {
+                attack.Weapon1Acc = Acc;
+                attack.Weapon1 = true;
+            }
             else
             {
-                if (enemyManager.Purple.activeSelf == true)//如果对方已经使用过对应牌
-                {
-                    foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
-                    {
-                        effect.ApplyEffect(battleManager, enemyManager);
-                    }
-                    enemyManager.Purple.gameObject.SetActive(false);
-                }
-                attacked.hp = attacked.hp - Player.Damage;
-                Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
-                foreach (var effect in battleManager.AttackEffect)
-                {
-                    effect.ApplyEffect(battleManager, enemyManager);
-                }
-                attack.mp = attack.mp + Acc;
-                Acc = 0;
-                Player.Damage = 0;
-                if (transform.parent.name.Equals("WeaponCard1"))
-                {
-                    attack.Weapon1Acc = Acc;
-                    attack.Weapon1 = true;
-                }
-                else
-                {
-                    attack.Weapon2Acc = Acc;
-                    attack.Weapon2 = true;
-                }
-                StartCoroutine(CooldownTimer());
+                attack.Weapon2Acc = Acc;
+                attack.Weapon2 = true;
             }
+            StartCoroutine(CooldownTimer());
         }
     }
     private IEnumerator CooldownTimer()

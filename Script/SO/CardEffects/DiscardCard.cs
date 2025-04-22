@@ -6,9 +6,9 @@ using UnityEngine;
 public class DiscardCard : CardEffectAsset
 {
     public int CardNum;
-    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
+    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, bool isCounterCare)
     {
-        User = GetUser(battleManager);
+        User = GetUser(battleManager, isCounterCare);
         Used = GetUsed(battleManager);
         if (Used == battleManager.Player)
         {

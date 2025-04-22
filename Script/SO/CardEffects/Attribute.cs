@@ -10,9 +10,9 @@ public class Attribute : CardEffectAsset
     public int ModifierValue;
     public int DamageChange;//伤害的转变，0时全部消除，1是翻倍，2是减半，3是增加value的数值
 
-    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager)
+    public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, bool isCounterCare)
     {
-        User = GetUser(battleManager);
+        User = GetUser(battleManager, isCounterCare);
         Used = GetUsed(battleManager);    
         // 实现效果逻辑
         switch (TargetAttribute)
