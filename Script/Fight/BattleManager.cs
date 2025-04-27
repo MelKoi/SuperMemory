@@ -64,6 +64,8 @@ public class BattleManager : MonoBehaviour
     public GameObject ZeroPoint;//战斗场地中心
     public Button PowerButton;//能量按钮
     public Button EndTurnButton;//回合结束按钮
+    public Image PlayerPower;//玩家的技能图片
+    public Image EnemyPower;//敌人的技能图片
 
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
@@ -242,6 +244,7 @@ public class BattleManager : MonoBehaviour
         Player.Weapon1Acc = Player.Weapon2Acc = Player.mp = 0;
         Player.Weapon1 = Player.Weapon2 = false;
         CreateCharacter(PlayerData, transform.Find("Place/CharacterCard"));
+        PlayerPower.sprite = PlayerData.PowerImage;
 
 
         //读取敌方各种数据
@@ -258,6 +261,7 @@ public class BattleManager : MonoBehaviour
         Enemy.Weapon1Acc = Enemy.Weapon2Acc = Enemy.mp = 0;
         Enemy.Weapon1 = Enemy.Weapon2 = false;
         CreateCharacter(EnemyManager._PlayerData, transform.Find("Place/Enemy/CharacterCard"));
+        EnemyPower.sprite = EnemyManager._PlayerData.PowerImage;
 
         for(int i = 1; i <= 3; i++)
         {

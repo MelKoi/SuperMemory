@@ -23,17 +23,22 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81bd90dc1fccd4344ba3b1dc786340ca
-    m_Address: Menu
+    m_Address: Assets/Scenes/Menu.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9552bd1fb2e4b84385b1c81beabcdc9
-    m_Address: Room
+    m_Address: Assets/Scenes/Room.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1bfbc64377ef824fb170dd26fd6e024
     m_Address: Assets/Scenes/Fight.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 700e21f795ed5414cbdbd597edbf504e
+    m_Address: Assets/Scenes/SampleScene.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

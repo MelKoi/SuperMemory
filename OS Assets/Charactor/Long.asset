@@ -15,10 +15,12 @@ MonoBehaviour:
   Cardname: "\u9F99"
   BianKuang: {fileID: 21300000, guid: af9104d496a7de045ad3446f6707d34a, type: 3}
   MaxHealth: 35
-  MaxSp: 25
+  MaxSp: 20
   speed: 4
   description: "\u7537\u4EBA"
   HandCardNum: 4
-  Power: []
+  Power: 
   HeroImage: {fileID: 21300000, guid: 7514ed683ea7e38499171d060ce08a3b, type: 3}
-  PowerImage: []
+  PowerImage: {fileID: 21300000, guid: 6089b7868ed0fcd4e9a7f8e570f32128, type: 3}
+  PowerEffect: []
+  PowerCost: 0

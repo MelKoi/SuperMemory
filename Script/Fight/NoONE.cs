@@ -183,7 +183,7 @@ public class NoONE : BattleManager
             Debug.LogWarning("攻击未命中或超时");
             Enemy.mp += acc;//处理攻击后逻辑
             acc = 0;
-            Enemy.Damage = 0;
+            Enemy.Damage = Enemy.Damage/2;
 
             if (isWeapon1)
             {
@@ -210,12 +210,12 @@ public class NoONE : BattleManager
             }
             Purple.SetActive(false);
         }
-        Player.hp -= Enemy.Damage;
-        Debug.Log($"对我方造成{Enemy.Damage}点伤害！");
         foreach (var effect in EnemyManager.AttackEffect)
         {
             effect.ApplyEffect(this, EnemyManager, false);
         }
+        Player.hp -= Enemy.Damage;
+        Debug.Log($"对我方造成{Enemy.Damage}点伤害！");
         Enemy.mp += acc;//处理攻击后逻辑
         acc = 0;
         Enemy.Damage = 0;

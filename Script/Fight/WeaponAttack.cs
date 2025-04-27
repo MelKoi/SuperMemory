@@ -107,12 +107,12 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 }
                 enemyManager.Purple.gameObject.SetActive(false);
             }
-            attacked.hp = attacked.hp - Player.Damage;
-            Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
             foreach (var effect in battleManager.AttackEffect)
             {
-                effect.ApplyEffect(battleManager, enemyManager,false);
+                effect.ApplyEffect(battleManager, enemyManager, false);
             }
+            attacked.hp = attacked.hp - Player.Damage;
+            Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
             attack.mp = attack.mp + Acc;
             Acc = 0;
             Player.Damage = 0;

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5aa6ec622014452468a38c61d8ef6a5d, type: 3}
-  m_Name: HuanE
+  m_Name: Gblin
   m_EditorClassIdentifier: 
-  Cardname: "\u5E7B\u86FE"
+  Cardname: "\u7CBE\u82F1\u54E5\u5E03\u6797"
   BianKuang: {fileID: 21300000, guid: af9104d496a7de045ad3446f6707d34a, type: 3}
-  MaxHealth: 25
-  MaxSp: 25
-  speed: 5
-  description: "\u5931\u4E50\u56ED\u4E8B\u4EF6\u7684\u82F1\u96C4\u4E4B\u4E00\uFF0C\u518D\u73B0\u4E86\u5176\u5728\u6E38\u620F\u4E2D\u547C\u706B\u5524\u96F7\u7684\u5F62\u8C61"
-  HandCardNum: 3
-  Power: "\u96F7\u706B\u8BC0"
-  HeroImage: {fileID: 21300000, guid: 403b8b5422253aa4fa64c53896571f95, type: 3}
-  PowerImage: {fileID: 21300000, guid: df646aa788f2ff745b4843cc38ebe8e9, type: 3}
+  MaxHealth: 30
+  MaxSp: 20
+  speed: 4
+  description: '?'
+  HandCardNum: 4
+  Power: "\u8D85\u5927\u529B\u6572\u51FB"
+  HeroImage: {fileID: 21300000, guid: a64ae48f872f9b34cb79c0d132cb09d7, type: 3}
+  PowerImage: {fileID: 21300000, guid: f1a70423e29c9c34b8c521c3a5f5b557, type: 3}
   PowerEffect: []
   PowerCost: 0
