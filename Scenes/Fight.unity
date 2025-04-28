@@ -3093,7 +3093,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &961801569
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4531,6 +4531,13 @@ MonoBehaviour:
   hideDistance: 1
   duration: 0.5
   wait: 0.5
+  Bullet: {fileID: 0}
+  bulletSpeed: 10
+  maxBulletDistance: 10
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  AttTouch: 0
 --- !u!1 &1498096083
 GameObject:
   m_ObjectHideFlags: 0
@@ -4714,6 +4721,13 @@ MonoBehaviour:
   hideDistance: 1
   duration: 0.5
   wait: 0.1
+  Bullet: {fileID: 0}
+  bulletSpeed: 10
+  maxBulletDistance: 10
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  AttTouch: 0
 --- !u!1 &1564208241
 GameObject:
   m_ObjectHideFlags: 0
@@ -4730,7 +4744,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1564208242
 Transform:
   m_ObjectHideFlags: 0
