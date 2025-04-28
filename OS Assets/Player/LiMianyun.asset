@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: 2
   CharacterAsset: {fileID: 11400000, guid: 5c8adf614e00a2d4f9a6e92e30ed6759, type: 2}
-  hp: 0
+  hp: 35
   mp: 0
-  maxSp: 0
-  NowSp: 0
+  maxSp: 20
+  NowSp: 20
   WeaponAsset:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
+  - {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
+  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
   Weapon1Acc: 0
   Weapon2Acc: 0
   Weapon1: 0

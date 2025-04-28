@@ -202,13 +202,13 @@ public class NoONE : BattleManager
         }
 
         // 执行攻击命中后的逻辑
-        if (Purple.activeSelf)
+        if (Purple.GetComponent<Image>().sprite == POpen)
         {
             foreach (var effect in CounterEffect)
             {
                 effect.ApplyEffect(this, EnemyManager,true);
             }
-            Purple.SetActive(false);
+            Purple.GetComponent<Image>().sprite = PClose;
         }
         foreach (var effect in EnemyManager.AttackEffect)
         {

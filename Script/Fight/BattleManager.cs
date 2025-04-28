@@ -66,6 +66,8 @@ public class BattleManager : MonoBehaviour
     public Button EndTurnButton;//回合结束按钮
     public Image PlayerPower;//玩家的技能图片
     public Image EnemyPower;//敌人的技能图片
+    public Sprite POpen;//对应牌起效
+    public Sprite PClose;//对应牌失效
 
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
@@ -111,6 +113,7 @@ public class BattleManager : MonoBehaviour
                 }
                 break;
             case GamePhase.gameEnd:
+                Debug.Log("对局结束");
                 return;
         }
         if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
@@ -129,6 +132,10 @@ public class BattleManager : MonoBehaviour
         {
             UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
+        }
+        if(Player.hp <= 0 || Enemy.hp <= 0)
+        {
+            _currentPhase = GamePhase.gameEnd;
         }
     }
     public void DrowCards(int amount, GameObject HandArea, List<CardAsset> _currentDeck)//抽取卡牌
@@ -245,7 +252,7 @@ public class BattleManager : MonoBehaviour
         Player.Weapon1 = Player.Weapon2 = false;
         CreateCharacter(PlayerData, transform.Find("Place/CharacterCard"));
         PlayerPower.sprite = PlayerData.PowerImage;
-
+        Purple.GetComponent<Image>().sprite = PClose;
 
         //读取敌方各种数据
         EnemyManager._PlayerData = Enemy.CharacterAsset;
@@ -262,8 +269,9 @@ public class BattleManager : MonoBehaviour
         Enemy.Weapon1 = Enemy.Weapon2 = false;
         CreateCharacter(EnemyManager._PlayerData, transform.Find("Place/Enemy/CharacterCard"));
         EnemyPower.sprite = EnemyManager._PlayerData.PowerImage;
+        EnemyManager.Purple.GetComponent<Image>().sprite = PClose;
 
-        for(int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 3; i++)
         {
             BanEnemyWeapon.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = EnemyManager._PlayerAllWeapons[i-1].CardFace;
         }

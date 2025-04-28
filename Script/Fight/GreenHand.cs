@@ -5,17 +5,12 @@ using UnityEngine.UI;
 
 public class GreenHand : BattleManager
 {
-    public GameObject IamgeAndText;
-    public Image TalkImage;
-    public Text TalkText;
+    //public GameObject IamgeAndText;
+    //public Image TalkImage;
+    //public Text TalkText;
     private int acc = 0;// –Óƒ‹¡Ÿ ±¥¢¥Ê
     private bool hasAttackedThisTurn = false;
     // Start is called before the first frame update
-    void Start()
-    {
-        GameStart();
-
-    }
 
     public void GreenHandTeach()
     {

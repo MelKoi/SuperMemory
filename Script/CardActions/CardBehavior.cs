@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class CardBehaviour : MonoBehaviour
 {
@@ -52,9 +53,9 @@ public class CounterCardBehaviour : CardBehaviour
     public override void Onplay(BattleManager bm, EnemyManager em, GameObject Card)
     {   
         if(bm._currentPhase == GamePhase.playerAction)
-            if(!bm.Purple.activeSelf)
+            if(bm.Purple.GetComponent<Image>().sprite == bm.PClose)
             {
-                bm.Purple.SetActive(true);
+                bm.Purple.GetComponent<Image>().sprite = bm.POpen;
                 foreach(var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
                     bm.CounterEffect.Add(effect);
             }
@@ -65,9 +66,9 @@ public class CounterCardBehaviour : CardBehaviour
                     bm.CounterEffect.Add(effect);
             }
         else if(bm._currentPhase == GamePhase.enemyAction)
-            if(!em.Purple.activeSelf)
+            if(em.Purple.GetComponent<Image>().sprite == bm.PClose)
             {
-                em.Purple.SetActive(true);
+                em.Purple.GetComponent<Image>().sprite = bm.PClose;
                 foreach (var effect in Card.GetComponent<OneCardManager>().cardAsset.Effects)
                     em.CounterEffect.Add(effect);
             }

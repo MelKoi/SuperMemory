@@ -362,7 +362,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 0
 --- !u!222 &39547616
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1121,7 +1121,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 0
 --- !u!222 &261594316
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1370,7 +1370,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1255767322}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BattleManager, Assembly-CSharp
         m_MethodName: UseSkill
         m_Mode: 1
@@ -1790,7 +1790,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1255767322}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BattleManager, Assembly-CSharp
         m_MethodName: EndTurn
         m_Mode: 1
@@ -2390,7 +2390,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 0
 --- !u!222 &651041227
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3285,7 +3285,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 642813228}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 149.29333}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1008030929
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3772,7 +3772,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 0
 --- !u!222 &1182032979
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4028,7 +4028,7 @@ MonoBehaviour:
   CharacterArea: {fileID: 1040907269}
   CardPrefab: {fileID: 3163413792254164860, guid: c9d99fefbb015ea4eb181ed9a6fc8ae8, type: 3}
   CharacterPrefab: {fileID: 3216423774540130171, guid: 953042453feb32b4e9e30da14515fcf4, type: 3}
-  WeaponPrefeb: {fileID: 0}
+  WeaponPrefeb: {fileID: 3031318929838873099, guid: dfa7a28c661571740aeafe422094e0c8, type: 3}
   HpText: {fileID: 1264914038}
   SpText: {fileID: 651041226}
   MpText: {fileID: 39547615}
@@ -4049,18 +4049,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1255767319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd00b754fdd38d940b213114be1dd212, type: 3}
+  m_Script: {fileID: 11500000, guid: 1718c0fb790f7bf4dbf3e837fa2c73ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BackGroud: {fileID: 642813227}
   ChooseWeapon: {fileID: 550831471}
   Place: {fileID: 1857775657}
   Player: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
-  Enemy: {fileID: 11400000, guid: 1a5f203a65c3ab342828df6e319b07cd, type: 2}
+  Enemy: {fileID: 11400000, guid: 4c9e85926b87a8d459af3c37bb413575, type: 2}
   PlayerData: {fileID: 0}
   PlayerWeapons:
-  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
   - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
+  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
   PlayerAllWeapons:
   - {fileID: 0}
   - {fileID: 0}
@@ -4166,7 +4166,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 0
 --- !u!222 &1264914039
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4926,7 +4926,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 642813228}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 149.29333}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1558620585
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5852,7 +5852,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 0
 --- !u!222 &1983838036
 CanvasRenderer:
   m_ObjectHideFlags: 0

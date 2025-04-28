@@ -99,13 +99,13 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 Debug.LogWarning("攻击未命中或超时");
                 yield break;
             }
-            if (enemyManager.Purple.activeSelf)//如果对方已经使用过对应牌
+            if (enemyManager.Purple.GetComponent<Image>().sprite == battleManager.POpen)//如果对方已经使用过对应牌
             {
                 foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
                 {
                     effect.ApplyEffect(battleManager, enemyManager,true);
                 }
-                enemyManager.Purple.gameObject.SetActive(false);
+                enemyManager.Purple.GetComponent<Image>().sprite = battleManager.PClose;
             }
             foreach (var effect in battleManager.AttackEffect)
             {
