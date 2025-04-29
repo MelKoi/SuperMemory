@@ -24,6 +24,7 @@ public class PhoneController : MonoBehaviour
 
     [Header("广播")]
     public SceneLoadEventSO loadEventSO;
+    public VoidEventSO showBagPanelEvent;
 
     [Header("场景")]
     public List<GameSceneSO> fight;
@@ -114,9 +115,9 @@ public class PhoneController : MonoBehaviour
     #region 对话相关
     public void StartDialog()
     {
-        StartCoroutine(WaitPhoneHide());
+        StartCoroutine(WaitPhoneHideStartConversation());
     }
-    IEnumerator WaitPhoneHide()
+    IEnumerator WaitPhoneHideStartConversation()
     {
         yield return StartCoroutine(HidePhoneAndLock());
         while (isUnlocking)
@@ -132,6 +133,22 @@ public class PhoneController : MonoBehaviour
         Debug.Log("战斗开始");
         loadEventSO.RaiseLoadRequestEvent(fight[currentFight],true);
         currentFight++;
+    }
+    #endregion
+
+    #region 背包面板
+    public void ShowBagPanel()
+    {
+        StartCoroutine(WaitPhoneHideShowPanel());
+    }
+    IEnumerator WaitPhoneHideShowPanel()
+    {
+        yield return StartCoroutine(HidePhoneAndLock());
+        while (isUnlocking)
+        {
+            yield return null;
+        }
+        showBagPanelEvent.RaiseEvent();
     }
     #endregion
 }

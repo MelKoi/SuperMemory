@@ -10,6 +10,7 @@ public class BagDataManager : MonoBehaviour
     private void Awake()
     {
         InitializeBagData();
+        DontDestroyOnLoad(this.gameObject);
     }
 
     //加载背包数据
