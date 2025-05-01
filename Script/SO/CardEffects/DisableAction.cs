@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "回合阶段禁用", menuName = "Card Effects/回合阶段禁用")]
+[CreateAssetMenu(fileName = "跳过阶段", menuName = "Card Effects/回合阶段禁用/跳过阶段")]
 public class DisableAction : CardEffectAsset
 {
     public GamePhase nowGamePhase;

@@ -22,5 +22,6 @@ MonoBehaviour:
   Power: 
   HeroImage: {fileID: 21300000, guid: 7514ed683ea7e38499171d060ce08a3b, type: 3}
   PowerImage: {fileID: 21300000, guid: 6089b7868ed0fcd4e9a7f8e570f32128, type: 3}
-  PowerEffect: []
-  PowerCost: 0
+  PowerEffect:
+  - {fileID: 11400000, guid: f9bd7575de0fed340bdfa8c0448c2207, type: 2}
+  PowerCost: 3

@@ -5,10 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "属性变动效果", menuName = "Card Effects/属性加减")]
 public class Attribute : CardEffectAsset
 {
-    public enum AttributeType { Hp, Sp, Mp, Weapon1Acc, Weapon2Acc, Damage }
+    public enum AttributeType { Hp, Sp, Mp, Weapon1Acc, Weapon2Acc, WeaponAcc, Damage }
     public AttributeType TargetAttribute;
     public int ModifierValue;
     public int DamageChange;//伤害的转变，0时全部消除，1是翻倍，2是减半，3是增加value的数值
+    public int AccChangeMode;//蓄能变化的模式，1为小于，2为大于
 
     public override void ApplyEffect(BattleManager battleManager, EnemyManager enemyManager, bool isCounterCare)
     {
@@ -52,7 +53,26 @@ public class Attribute : CardEffectAsset
                 if (Used.Weapon2Acc < 0)
                     Used.Weapon2Acc = 0;
                 break;
-
+            case AttributeType.WeaponAcc:
+                int ChangeAcc;
+                if(AccChangeMode == 1)
+                    ChangeAcc = Used.Weapon1Acc < Used.Weapon2Acc? 1 : 2;//采用较小的作为主要修改对象，1表示Weapon1，2表示Weapon2
+                else
+                    ChangeAcc = Used.Weapon1Acc < Used.Weapon2Acc ? 2 : 1;//采用较大的作为主要修改对象，1表示Weapon1，2表示Weapon2
+                switch (ChangeAcc)
+                {
+                    case 1:
+                        Used.Weapon1Acc += ModifierValue;
+                        if (Used.Weapon1Acc < 0)
+                            Used.Weapon1Acc = 0;
+                        break;
+                    case 2:
+                        Used.Weapon2Acc += ModifierValue;
+                        if (Used.Weapon2Acc < 0)
+                            Used.Weapon2Acc = 0;
+                        break;
+                }
+                break;
         }
         // 更新UI
         if (Used == battleManager.Player)

@@ -305,9 +305,11 @@ public class BattleManager : MonoBehaviour
             {
                 effect.ApplyEffect(this, EnemyManager, true);
             }
+        if (EnemyManager.CounterEffect.Count != 0)
+            EnemyManager.Purple.GetComponent<Image>().sprite = POpen;
         Player.Damage = 0;
-        UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
-        DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);
+        UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);//更新UI
+        DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);//抽卡
         _currentPhase = GamePhase.playerAction;
         int cardsNum = HandArea.transform.childCount;
         for (int i = 0; i < cardsNum; i++)
@@ -348,6 +350,8 @@ public class BattleManager : MonoBehaviour
                 effect.ApplyEffect(this, EnemyManager, true);
             }
         Enemy.Damage = 0;
+        if (CounterEffect.Count != 0)
+            Purple.GetComponent<Image>().sprite = POpen;
         UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
         DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount, EnemyManager.HandArea, EnemyManager._currentDeck);
@@ -451,15 +455,15 @@ public class BattleManager : MonoBehaviour
         User.NowSp = nowsp;
     }
 
-    public void UseSkill()
+    public void PlayerUseSkill()
     {
         if(!PlayerSkillIsUsed)
         {
             if(Player.mp - PlayerData.PowerCost >= 0)
             {
                 Player.mp = Player.mp - PlayerData.PowerCost;
-                //foreach (var SkillEffect in PlayerData.PowerEffect)
-                //SkillEffect.ApplyEffect(this, EnemyManager);
+                foreach (var SkillEffect in PlayerData.PowerEffect)
+                    SkillEffect.ApplyEffect(this, EnemyManager,false);
                 Debug.Log("技能已经使用");
                 PlayerSkillIsUsed = !PlayerSkillIsUsed;
             }
@@ -467,7 +471,20 @@ public class BattleManager : MonoBehaviour
                 Debug.Log("能量不足");
         }
     }
-        
+    public void EnemyUseSkill()
+    {
+        if (Enemy.mp - EnemyManager._PlayerData.PowerCost >= 0)
+        {
+            Enemy.mp = Enemy.mp - EnemyManager._PlayerData.PowerCost;
+            //foreach (var SkillEffect in EnemyManager._PlayerData.PowerEffect)
+                //SkillEffect.ApplyEffect(this, EnemyManager, false);
+            Debug.Log("技能已经使用");
+            EnemyManager.EnemySkillIsUsed = !EnemyManager.EnemySkillIsUsed;
+        }
+        else
+            Debug.Log("能量不足");
+    }
+ 
     IEnumerator PlayGameStartAnimation()//对战开始动画
     {
         BackGroud.Play();
