@@ -13,7 +13,8 @@ public class PoltManager : MonoBehaviour
     public GameObject pictrueArea;
     public GameObject PanalOption;
     public VerticalLayoutGroup verticalLayoutGroup;
-    public Sprite image;
+    public List<Sprite>  images;
+    private int currentImage = 0;
 
     private void Awake()
     {
@@ -33,7 +34,9 @@ public class PoltManager : MonoBehaviour
     public void ShowPictrue()
     {
         pictruePanel.SetActive(true);
-        pictrueArea.GetComponent<Image>().sprite = image;
+        if(currentImage < images.Count) 
+            pictrueArea.GetComponent<Image>().sprite = images[currentImage];
+        currentImage++;
     }
     public void ShowPanalOption()
     {

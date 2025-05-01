@@ -51,7 +51,7 @@ public class BattleManager : MonoBehaviour
 
     [Header("卡牌预制体")]
     public GameObject CardPrefab;//卡牌预制体
-    public GameObject CharacterPrefab;//人物卡牌预制体
+    public GameObject CharacterPrefeb;//人物卡牌预制体
     public GameObject WeaponPrefeb;//武器卡牌预制体
 
     [Header("UI组件")]
@@ -216,7 +216,7 @@ public class BattleManager : MonoBehaviour
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
     {
-        GameObject newCharacter = Instantiate(CharacterPrefab, parent);
+        GameObject newCharacter = Instantiate(CharacterPrefeb, parent);
         newCharacter.GetComponent<CharacterCardManager>().charactorasset = character;
         newCharacter.GetComponent<CharacterCardManager>().ReadCardFromAsset(character);
     }
