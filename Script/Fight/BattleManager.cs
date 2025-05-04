@@ -68,6 +68,7 @@ public class BattleManager : MonoBehaviour
     public Image EnemyPower;//敌人的技能图片
     public Sprite POpen;//对应牌起效
     public Sprite PClose;//对应牌失效
+    public GameObject GameOver;//游戏结束
 
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
@@ -90,11 +91,11 @@ public class BattleManager : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Z))
+        if(Input.GetKeyDown(KeyCode.Z))//按下z执行玩家闪避
         {
             StartCoroutine(PlayerHide());
         }
-        switch (_currentPhase)
+        switch (_currentPhase)//根据回合阶段进行具体的操作
         {
             case GamePhase.playerReady:
                 PlayerReady();
@@ -114,6 +115,7 @@ public class BattleManager : MonoBehaviour
                 break;
             case GamePhase.gameEnd:
                 Debug.Log("对局结束");
+                GameOver.SetActive(true);
                 return;
         }
         if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
@@ -493,7 +495,7 @@ public class BattleManager : MonoBehaviour
         ChooseWeapon.SetActive(true);
 
     }
-    IEnumerator PlayerHide()//玩家躲避
+    public IEnumerator PlayerHide()//玩家躲避
     {
         BS.gameObject.layer = LayerMask.NameToLayer("Default");
         BS.hideEvent.RaiseEvent();
