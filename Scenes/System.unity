@@ -216,7 +216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &963342959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,7 +330,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1109991792
 Transform:
   m_ObjectHideFlags: 0
@@ -572,6 +572,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bagAsset: {fileID: 11400000, guid: 10719869cdf642d41a0c5df9771d17ec, type: 2}
+  changeFightCharactorEvent: {fileID: 11400000, guid: 0ab8fe727ba3b024ebe9296558b30f7f, type: 2}
+  changeFightWeaponEvent: {fileID: 11400000, guid: 4203f4fe061c37a40a1095b545051854, type: 2}
+  fightCharactor: {fileID: 11400000, guid: 5c8adf614e00a2d4f9a6e92e30ed6759, type: 2}
+  fightWeapons:
+  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
+  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
