@@ -14,9 +14,9 @@ public class PhoneController : MonoBehaviour
     [Header("基本信息")]
     public bool isHide;
     public float returnSpeed = 0.5f;
-    public int currentDialog = 1;
-    public int currentFight = 0;
-    private bool isUnlocking;
+    public int currentDialog = 1;    //用于对话计数
+    public int currentFight = 0;     //用于对战计数
+    private bool isUnlocking;        //判断是否正在锁屏
     private RectTransform rectTransform;
 
     [Header("事件监听")]
@@ -115,6 +115,7 @@ public class PhoneController : MonoBehaviour
     #region 对话相关
     public void StartDialog()
     {
+        conversationManager.gameObject.SetActive(true);
         StartCoroutine(WaitPhoneHideStartConversation());
     }
     IEnumerator WaitPhoneHideStartConversation()
@@ -140,6 +141,7 @@ public class PhoneController : MonoBehaviour
     public void ShowBagPanel()
     {
         StartCoroutine(WaitPhoneHideShowPanel());
+        conversationManager.gameObject.SetActive(false);
     }
     IEnumerator WaitPhoneHideShowPanel()
     {

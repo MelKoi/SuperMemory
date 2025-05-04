@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BagPanel : MonoBehaviour
 {
@@ -16,9 +17,12 @@ public class BagPanel : MonoBehaviour
 
     [Header("事件监听")]
     public VoidEventSO showBagPanelEvent;  //监听显示背包广播
+    [Header("广播")]
+    public ChangeFightCharactorSO changeFightCharactorEvent;
 
     public BagDataManager bagDataManager;
-    public BagAsset bag;
+    public List<GameObject> charactorList;
+    public List<GameObject> weaponList;
     private float currentPosY;
     private RectTransform rectTransform;
 
@@ -36,17 +40,48 @@ public class BagPanel : MonoBehaviour
     {
         showBagPanelEvent.OnEventRiased -= ShowBagPanel;
     }
+    private void Update()
+    {
+        UpDateCardChoose();
+    }
+    public void UpDateCardChoose()
+    {
+        foreach(GameObject charactor in charactorList)
+        {
+            Transform chooseTransform = charactor.transform.Find("isChoose");
+            GameObject isChoose = chooseTransform.gameObject;
+            isChoose.SetActive(charactor.GetComponent<CharacterCardManager>().charactorasset.Cardname.Equals(bagDataManager.fightCharactor.Cardname));
+        }
+        foreach (GameObject weapon in weaponList)
+        {
+            Transform chooseTransform = weapon.transform.Find("isChoose");
+            GameObject isChoose = chooseTransform.gameObject;
+            bool flag = false;
+            foreach (WeaponAsset fightWeapon in bagDataManager.fightWeapons)
+            {
+                if(weapon.GetComponent<WeaponCardManager>().
+                    weaponAsset.WeaponName.Equals(fightWeapon.WeaponName))
+                {
+                    flag = true;
+                }
+            }
+            isChoose.SetActive(flag);
+        }
+    }
     private void CreateCharacter(CharactorAsset character, Transform parent)
     {
         GameObject newCharacter = Instantiate(characterPrefeb, parent);
         newCharacter.GetComponent<CharacterCardManager>().charactorasset = character;
         newCharacter.GetComponent<CharacterCardManager>().ReadCardFromAsset(character);
+        charactorList.Add(newCharacter);
     }
     private void CreateWeapon(WeaponAsset weapon, Transform parent)
     {
         GameObject newWeapon = Instantiate(weaponPrefeb, parent);
+        
         newWeapon.GetComponent<WeaponCardManager>().weaponAsset = weapon;
         newWeapon.GetComponent<WeaponCardManager>().ReadCardFromAsset(weapon);
+        weaponList.Add(newWeapon);
     }
     public void ShowBagPanel()
     {

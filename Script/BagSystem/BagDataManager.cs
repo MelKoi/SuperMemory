@@ -7,12 +7,29 @@ public class BagDataManager : MonoBehaviour
     [Header("背包")]
     public BagAsset bagAsset;
 
+    [Header("事件监听")]
+    public ChangeFightCharactorSO changeFightCharactorEvent;
+    public ChangeFightWeaponSO changeFightWeaponEvent;
+    [Header("当前装备")]
+    public CharactorAsset fightCharactor;
+    public List<WeaponAsset> fightWeapons;
+    private int currentChooseWeapon = 0;
+    
     private void Awake()
     {
         InitializeBagData();
         DontDestroyOnLoad(this.gameObject);
     }
-
+    private void OnEnable()
+    {
+        changeFightCharactorEvent.ChangeFightCharactorEvent += ChangeFightCharactor;
+        changeFightWeaponEvent.ChangeFightWeaponEvent += ChangeFightWeapon;
+    }
+    private void OnDisable()
+    {
+        changeFightCharactorEvent.ChangeFightCharactorEvent -= ChangeFightCharactor;
+        changeFightWeaponEvent.ChangeFightWeaponEvent -= ChangeFightWeapon;
+    }
     //加载背包数据
     private void InitializeBagData()
     {
@@ -70,5 +87,19 @@ public class BagDataManager : MonoBehaviour
     public bool HasItem(ItemAsset item)
     {
         return bagAsset.runtimeBagData.HasItem(item);
+    }
+
+    //切换角色
+    public void ChangeFightCharactor(CharactorAsset charactor)
+    {
+        fightCharactor = charactor;
+    }
+
+    //切换武器
+    public void ChangeFightWeapon(WeaponAsset weapon)
+    {
+        fightWeapons[currentChooseWeapon] = weapon;
+        currentChooseWeapon++;
+        currentChooseWeapon %= 2;
     }
 }
