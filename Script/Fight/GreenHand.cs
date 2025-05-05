@@ -11,14 +11,21 @@ public class GreenHand : BattleManager
     //public GameObject IamgeAndText;
     //public Image TalkImage;
     //public Text TalkText;
-    private int acc = 0;// ĞîÄÜÁÙÊ±´¢´æ
+    private int acc = 0;// è“„èƒ½ä¸´æ—¶å‚¨å­˜
     private bool hasAttackedThisTurn = false;
-    private int TurnNum = 0;//»ØºÏÊı£º0,1,2·Ö±ğ½øĞĞ²»Í¬µÄ½Ì³Ì£»1£¬2£¬3ÔòÓÃÓÚ¿ØÖÆµĞ·½µÄ»ù±¾ĞĞ¶¯
+    private int TurnNum = 0;//å›åˆæ•°ï¼š0,1,2åˆ†åˆ«è¿›è¡Œä¸åŒçš„æ•™ç¨‹ï¼›1ï¼Œ2ï¼Œ3åˆ™ç”¨äºæ§åˆ¶æ•Œæ–¹çš„åŸºæœ¬è¡ŒåŠ¨
 
-    [Header("ĞÂÊÖ½Ì³Ì×é¼ş")]
-    [SerializeField] private GameObject GreenHandPanel;//½Ì³ÌÃæ°å
-    public ConversationManager ConversationManager;//¶Ô»°¹ÜÀí×é¼ş
+    [Header("æ–°æ‰‹æ•™ç¨‹ç»„ä»¶")]
+    [SerializeField] private GameObject GreenHandPanel;//æ•™ç¨‹é¢æ¿
+    public ConversationManager ConversationManager;//å¯¹è¯ç®¡ç†ç»„ä»¶
     public int currentDialog = 1;
+
+    [Header("å¹¿æ’­")]
+    public SceneLoadEventSO loadEventSO;
+
+    [Header("åœºæ™¯")]
+    public GameSceneSO room;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -50,9 +57,9 @@ public class GreenHand : BattleManager
                 }
                 break;
             case GamePhase.gameEnd:
-                Debug.Log("¶Ô¾Ö½áÊø");
+                Debug.Log("å¯¹å±€ç»“æŸ");
                 GameOver.SetActive(true);
-                //ÕâÀï·Å»Øµ½¶Ô»°µÄ·½·¨»òÕßº¯Êı
+                //è¿™é‡Œæ”¾å›åˆ°å¯¹è¯çš„æ–¹æ³•æˆ–è€…å‡½æ•°
                 return;
         }
 
@@ -78,15 +85,15 @@ public class GreenHand : BattleManager
             _currentPhase = GamePhase.gameEnd;
         }
     }
-    private IEnumerator PerformAIActions()//×ÜÌåµÄµĞÈËAI
+    private IEnumerator PerformAIActions()//æ€»ä½“çš„æ•ŒäººAI
     {
-        RectTransform ZeroPosition = ZeroPoint.GetComponent<RectTransform>();//»ñÈ¡Õ½¶·³¡µØÖĞµã
+        RectTransform ZeroPosition = ZeroPoint.GetComponent<RectTransform>();//è·å–æˆ˜æ–—åœºåœ°ä¸­ç‚¹
         List<Transform> EnemyCards = new List<Transform>();
         Transform parent = EnemyManager.HandArea.transform;
         TurnNum++;
         switch (TurnNum)
         {
-            case 1://µÚÒ»¸ö»ØºÏ£¬µĞÈË»á³öÅÆºÍĞîÄÜ
+            case 1://ç¬¬ä¸€ä¸ªå›åˆï¼Œæ•Œäººä¼šå‡ºç‰Œå’Œè“„èƒ½
                 for (int i = 0; i < parent.childCount; i++)
                 {
                     EnemyCards.Add(parent.GetChild(i));
@@ -98,16 +105,16 @@ public class GreenHand : BattleManager
                 for (int i = 0; i < 3; i++)
                     yield return StartCoroutine(EnemyAcc(parent.GetChild(0).gameObject));
                 break;
-            case 2://µĞÈË»áÏàÓ¦½øĞĞ¹¥»÷
+            case 2://æ•Œäººä¼šç›¸åº”è¿›è¡Œæ”»å‡»
                 if (TryWeaponAttack(out bool didAttack))
                 {
-                    if (didAttack) yield return new WaitForSeconds(5f); // ¹¥»÷¶¯»­µÈ´ı
+                    if (didAttack) yield return new WaitForSeconds(5f); // æ”»å‡»åŠ¨ç”»ç­‰å¾…
                 }
                 break;
-            case 3://µĞÈË»áÊ¹ÓÃ¼¼ÄÜ
+            case 3://æ•Œäººä¼šä½¿ç”¨æŠ€èƒ½
                 EnemyUseSkill();
                 break;
-            case 4://µ¯´°£¬µĞÈËÈÏÊä
+            case 4://å¼¹çª—ï¼Œæ•Œäººè®¤è¾“
                 Enemy.hp = 0;
                 break;
         }
@@ -145,8 +152,8 @@ public class GreenHand : BattleManager
             if (Enemy.Damage != 0)
             {
                 StartCoroutine(PerformWeaponAttack(true));
-                didAttack = true; // ±íÊ¾ÒÑ¿ªÊ¼¹¥»÷
-                return true; // ±íÊ¾³¢ÊÔÁË¹¥»÷
+                didAttack = true; // è¡¨ç¤ºå·²å¼€å§‹æ”»å‡»
+                return true; // è¡¨ç¤ºå°è¯•äº†æ”»å‡»
             }
         }
 
@@ -164,21 +171,21 @@ public class GreenHand : BattleManager
             if (Enemy.Damage != 0)
             {
                 StartCoroutine(PerformWeaponAttack(false));
-                didAttack = true; // ±íÊ¾ÒÑ¿ªÊ¼¹¥»÷
-                return true; // ±íÊ¾³¢ÊÔÁË¹¥»÷
+                didAttack = true; // è¡¨ç¤ºå·²å¼€å§‹æ”»å‡»
+                return true; // è¡¨ç¤ºå°è¯•äº†æ”»å‡»
             }
         }
 
         return false;
     }
-    // ĞÂÔöĞ­³Ì·½·¨´¦ÀíÊµ¼Ê¹¥»÷Âß¼­
+    // æ–°å¢åç¨‹æ–¹æ³•å¤„ç†å®é™…æ”»å‡»é€»è¾‘
     private IEnumerator PerformWeaponAttack(bool isWeapon1)
     {
-        // ´¥·¢¹¥»÷ÊÂ¼ş
+        // è§¦å‘æ”»å‡»äº‹ä»¶
         EnemyManager.BS.attEvent.RaiseEvent();
 
-        // µÈ´ı¹¥»÷ÃüÖĞÅĞ¶¨
-        float timeout = 3f; // ³¬Ê±Ê±¼ä
+        // ç­‰å¾…æ”»å‡»å‘½ä¸­åˆ¤å®š
+        float timeout = 3f; // è¶…æ—¶æ—¶é—´
         float elapsed = 0f;
 
         while (!EnemyManager.BS.bulletController.hasHit && elapsed < timeout)
@@ -189,8 +196,8 @@ public class GreenHand : BattleManager
 
         if (!EnemyManager.BS.bulletController.hasHit)
         {
-            Debug.LogWarning("¹¥»÷Î´ÃüÖĞ»ò³¬Ê±");
-            Enemy.mp += acc;//´¦Àí¹¥»÷ºóÂß¼­
+            Debug.LogWarning("æ”»å‡»æœªå‘½ä¸­æˆ–è¶…æ—¶");
+            Enemy.mp += acc;//å¤„ç†æ”»å‡»åé€»è¾‘
             acc = 0;
             Enemy.Damage = Enemy.Damage / 2;
 
@@ -209,7 +216,7 @@ public class GreenHand : BattleManager
             yield break;
         }
 
-        // Ö´ĞĞ¹¥»÷ÃüÖĞºóµÄÂß¼­
+        // æ‰§è¡Œæ”»å‡»å‘½ä¸­åçš„é€»è¾‘
         if (Purple.GetComponent<Image>().sprite == POpen)
         {
             foreach (var effect in CounterEffect)
@@ -223,8 +230,8 @@ public class GreenHand : BattleManager
             effect.ApplyEffect(this, EnemyManager, false);
         }
         Player.hp -= Enemy.Damage;
-        Debug.Log($"¶ÔÎÒ·½Ôì³É{Enemy.Damage}µãÉËº¦£¡");
-        Enemy.mp += acc;//´¦Àí¹¥»÷ºóÂß¼­
+        Debug.Log($"å¯¹æˆ‘æ–¹é€ æˆ{Enemy.Damage}ç‚¹ä¼¤å®³ï¼");
+        Enemy.mp += acc;//å¤„ç†æ”»å‡»åé€»è¾‘
         acc = 0;
         Enemy.Damage = 0;
 
@@ -244,7 +251,7 @@ public class GreenHand : BattleManager
     }
     private IEnumerator MoveCardToPosition(GameObject card, Vector3 targetPosition)
     {
-        if (card == null) yield break; // ÌáÇ°¼ì²é
+        if (card == null) yield break; // æå‰æ£€æŸ¥
 
         float duration = 0.5f;
         float elapsed = 0f;
@@ -256,27 +263,27 @@ public class GreenHand : BattleManager
             elapsed += Time.deltaTime;
             yield return null;
         }
-        // ×îÖÕÎ»ÖÃÉèÖÃÇ°ÔÙ´Î¼ì²é
+        // æœ€ç»ˆä½ç½®è®¾ç½®å‰å†æ¬¡æ£€æŸ¥
         if (card != null)
             card.transform.position = targetPosition;
     }
-    override public void StartEnemyTurn()//µĞÈËµÄÖ÷Òª½×¶Î
+    override public void StartEnemyTurn()//æ•Œäººçš„ä¸»è¦é˜¶æ®µ
     {
         Debug.Log(_currentPhase);
         hasAttackedThisTurn = false;
         StartCoroutine(PerformAIActions());
     }
-    override public IEnumerator EnemyAcc(GameObject Card)//µĞ·½ĞîÄÜº¯Êı
+    override public IEnumerator EnemyAcc(GameObject Card)//æ•Œæ–¹è“„èƒ½å‡½æ•°
     {
-        //µĞ·½ĞîÄÜº¯Êı
-        //ÔÚÁ½°ÑÎäÆ÷ĞîÄÜ¶¼Îª0£¬»òÕßÏàÍ¬Ê±È¡Ëæ»úÊı£¨ÀÖ£©
-        //µ±Á½°ÑÎäÆ÷ĞîÄÜ²»Í¬Ê±£¬ÓÅÏÈ¶ÔĞîÄÜµÈ¼¶¸ßµÄÎäÆ÷½øĞĞĞîÄÜ¡£
+        //æ•Œæ–¹è“„èƒ½å‡½æ•°
+        //åœ¨ä¸¤æŠŠæ­¦å™¨è“„èƒ½éƒ½ä¸º0ï¼Œæˆ–è€…ç›¸åŒæ—¶å–éšæœºæ•°ï¼ˆä¹ï¼‰
+        //å½“ä¸¤æŠŠæ­¦å™¨è“„èƒ½ä¸åŒæ—¶ï¼Œä¼˜å…ˆå¯¹è“„èƒ½ç­‰çº§é«˜çš„æ­¦å™¨è¿›è¡Œè“„èƒ½ã€‚
         {
             Text targetWeapon = EnemyManager.Weapon1Acc;
             if (int.Parse(EnemyManager.Weapon1Acc.text)
                 == int.Parse(EnemyManager.Weapon2Acc.text))
             {
-                int Num = Random.Range(1, 3);//Éú³É1µ½2Ö®¼äµÄËæ»úÕûÊı
+                int Num = Random.Range(1, 3);//ç”Ÿæˆ1åˆ°2ä¹‹é—´çš„éšæœºæ•´æ•°
                 if (Num == 1)
                     targetWeapon = targetWeapon = EnemyManager.Weapon1Acc;
                 else if (Num == 2)
@@ -291,11 +298,11 @@ public class GreenHand : BattleManager
                     targetWeapon = targetWeapon = EnemyManager.Weapon2Acc;
             }
 
-            // ÒÆ¶¯¿¨ÅÆµ½ÎäÆ÷Î»ÖÃµÄ¶¯»­
+            // ç§»åŠ¨å¡ç‰Œåˆ°æ­¦å™¨ä½ç½®çš„åŠ¨ç”»
             Vector3 weaponPosition = targetWeapon.transform.position;
             yield return StartCoroutine(MoveCardToPosition(Card.gameObject, weaponPosition));
             EnemyManager.BS.accEvent.RaiseEvent();
-            // Ôö¼ÓĞîÄÜÖµ
+            // å¢åŠ è“„èƒ½å€¼
             if (targetWeapon == EnemyManager.Weapon1Acc)
             {
                 Enemy.Weapon1Acc++;
@@ -305,7 +312,7 @@ public class GreenHand : BattleManager
                 Enemy.Weapon2Acc++;
             }
 
-            // Ïú»Ù¿¨ÅÆ»òÒş²Ø
+            // é”€æ¯å¡ç‰Œæˆ–éšè—
             Destroy(Card);
 
             yield return null;
@@ -314,8 +321,8 @@ public class GreenHand : BattleManager
     private IEnumerator UseCardWithAnimation(GameObject card)
     {
         card.GetComponent<CardPreview>().CanPreview = false;
-        // ÒÆ¶¯¿¨ÅÆµ½ÆÁÄ»ÖĞÑëµÄ¶¯»­
-        // Òş²Ø¿¨ÅÆ±³Ãæ
+        // ç§»åŠ¨å¡ç‰Œåˆ°å±å¹•ä¸­å¤®çš„åŠ¨ç”»
+        // éšè—å¡ç‰ŒèƒŒé¢
         card.transform.DORotate(new Vector3(0, 90, 0), 1.0f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() => {
@@ -326,10 +333,10 @@ public class GreenHand : BattleManager
         card.transform.DOMove(new Vector3(960, 540, 0), 2.0f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() => {
-                // ¶¯»­Íê³ÉºóÖ´ĞĞ
+                // åŠ¨ç”»å®Œæˆåæ‰§è¡Œ
                 if (card != null)
                 {
-                    // Ê¹ÓÃ¿¨ÅÆ
+                    // ä½¿ç”¨å¡ç‰Œ
                     CardAsset cardAsset = card.GetComponent<OneCardManager>().cardAsset;
                     card.GetComponent<CardPreview>().CanPreview = true;
                     UseCard(cardAsset, card, Enemy);
@@ -338,9 +345,14 @@ public class GreenHand : BattleManager
                 }
             });
 
-        // µÈ´ı¶¯»­Íê³É
+        // ç­‰å¾…åŠ¨ç”»å®Œæˆ
         yield return new WaitForSeconds(2.0f);
 
 
+    }
+
+    public void BackToRoom()
+    {
+        loadEventSO.RaiseLoadRequestEvent(room,true);
     }
 }
