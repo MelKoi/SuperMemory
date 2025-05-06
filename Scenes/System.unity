@@ -313,6 +313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeEvent: {fileID: 11400000, guid: 4995b83fd3547724a899bfa8c67a7970, type: 2}
+  overlayCanvas: {fileID: 963342961}
   fadeImage: {fileID: 432874371}
 --- !u!1 &1109991791
 GameObject:
@@ -361,12 +362,67 @@ MonoBehaviour:
   loadEventSO: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
   newGameEvent: {fileID: 11400000, guid: 5a4cedc42de483942afe5c1c01ca2475, type: 2}
   afterSceneLoadedEvent: {fileID: 11400000, guid: ba409e5d30a045e48af45b48fc55593b, type: 2}
+  afterSceneLoadedStartDialogEvent: {fileID: 11400000, guid: f5685c13c2f8c2846872002a5a1e6dc6, type: 2}
   fadeEvent: {fileID: 11400000, guid: 4995b83fd3547724a899bfa8c67a7970, type: 2}
   unLoadedEvent: {fileID: 11400000, guid: fcaeaaea1e9310344984138f76d92112, type: 2}
   currentLoadedScene: {fileID: 0}
   menuScene: {fileID: 11400000, guid: 89d5b21c84a0a924bbc970972991c9d5, type: 2}
   firstLoadScene: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}
   fadeDuration: 1
+--- !u!1 &1488271868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1488271869}
+  - component: {fileID: 1488271870}
+  m_Layer: 0
+  m_Name: FightAndDialogController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1488271869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488271868}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1488271870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488271868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f67a9efae5fcea4799e8fe9823693e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentFight: 0
+  currentDialog: 1
+  duration: 1
+  conversationManager: {fileID: 0}
+  loadEventSO: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
+  afterSceneLoadedStartDialogEvent: {fileID: 11400000, guid: f5685c13c2f8c2846872002a5a1e6dc6, type: 2}
+  dialogFinishEvent: {fileID: 11400000, guid: e2847f57b5d5a4d43a7b48224122d7f5, type: 2}
+  fight:
+  - {fileID: 11400000, guid: d7f33fce3a447be439798a79643a6f6b, type: 2}
+  - {fileID: 11400000, guid: 26c97b813f8aca74781c8afb6ed5e7f7, type: 2}
 --- !u!1 &1547199859
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,6 +634,7 @@ MonoBehaviour:
   fightWeapons:
   - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
   - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
+  - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -586,4 +643,5 @@ SceneRoots:
   - {fileID: 1857837842}
   - {fileID: 1547199862}
   - {fileID: 1109991792}
+  - {fileID: 1488271869}
   - {fileID: 963342962}

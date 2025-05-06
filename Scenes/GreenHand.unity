@@ -4898,6 +4898,7 @@ MonoBehaviour:
   ConversationManager: {fileID: 614707603}
   currentDialog: 1
   loadEventSO: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
+  unLoadedEvent: {fileID: 11400000, guid: fcaeaaea1e9310344984138f76d92112, type: 2}
   room: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}
 --- !u!1 &1264914036
 GameObject:
