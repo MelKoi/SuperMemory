@@ -17,6 +17,7 @@ public class ScenesLoader : MonoBehaviour
 
     [Header("广播")]
     public VoidEventSO afterSceneLoadedEvent;
+    public VoidEventSO afterSceneLoadedStartDialogEvent;
     public FadeEventSO fadeEvent;
     public SceneLoadEventSO unLoadedEvent;
     [SerializeField] public GameSceneSO currentLoadedScene;
@@ -107,6 +108,9 @@ public class ScenesLoader : MonoBehaviour
         if (currentLoadedScene.sceneType != SceneType.Menu)
         {
             afterSceneLoadedEvent.RaiseEvent();
+        }
+        if (currentLoadedScene.sceneType == SceneType.Theater) {
+            afterSceneLoadedStartDialogEvent.RaiseEvent();
         }
     }
 }

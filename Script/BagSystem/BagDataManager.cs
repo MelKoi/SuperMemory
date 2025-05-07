@@ -98,8 +98,12 @@ public class BagDataManager : MonoBehaviour
     //切换武器
     public void ChangeFightWeapon(WeaponAsset weapon)
     {
-        fightWeapons[currentChooseWeapon] = weapon;
-        currentChooseWeapon++;
-        currentChooseWeapon %= 2;
+        if (!fightWeapons.Contains(weapon))
+        {
+            fightWeapons[currentChooseWeapon] = weapon;
+            currentChooseWeapon++;
+            currentChooseWeapon %= 3;
+        }
+        
     }
 }
