@@ -8,20 +8,26 @@ using UnityEngine.UI;
 public class PhoneController : MonoBehaviour
 {
     public GameObject lockFade;
+    public ConversationManager conversationManager;
     [HideInInspector]public Slider lockSlider;
 
     [Header("基本信息")]
     public bool isHide;
     public float returnSpeed = 0.5f;
+    public int currentDialog = 1;    //用于对话计数
+    public int currentFight = 0;     //用于对战计数
     private bool isUnlocking;        //判断是否正在锁屏
     private RectTransform rectTransform;
+
+    [Header("事件监听")]
+    public VoidEventSO dialogFinishEvent;
 
     [Header("广播")]
     public SceneLoadEventSO loadEventSO;
     public VoidEventSO showBagPanelEvent;
 
     [Header("场景")]
-    public GameSceneSO theater;
+    public List<GameSceneSO> fight;
 
     private void Awake()
     {
@@ -32,6 +38,14 @@ public class PhoneController : MonoBehaviour
         lockSlider.value = 0;
         isUnlocking = false;
         isHide = true;
+    }
+    private void OnEnable()
+    {
+        dialogFinishEvent.OnEventRiased += FinishDialog;
+    }
+    private void OnDisable()
+    {
+        dialogFinishEvent.OnEventRiased -= FinishDialog;
     }
     private void Update()
     {
@@ -98,18 +112,28 @@ public class PhoneController : MonoBehaviour
 
     #endregion
 
-    #region 前往剧场
-    public void MoveToTheater() {
-        StartCoroutine(HidePhoneAndMoveToTheater());
+    #region 对话相关
+    public void StartDialog()
+    {
+        conversationManager.gameObject.SetActive(true);
+        StartCoroutine(WaitPhoneHideStartConversation());
     }
-    IEnumerator HidePhoneAndMoveToTheater()
+    IEnumerator WaitPhoneHideStartConversation()
     {
         yield return StartCoroutine(HidePhoneAndLock());
-        if (isHide)
+        while (isUnlocking)
         {
             yield return null;
         }
-        loadEventSO.RaiseLoadRequestEvent(theater,true);
+        string dialogNum = "Dialog Part" + currentDialog.ToString();
+        conversationManager.StartConversation(GameObject.Find(dialogNum).GetComponent<NPCConversation>());
+        currentDialog++;
+    }
+    public void FinishDialog()
+    {
+        Debug.Log("战斗开始");
+        loadEventSO.RaiseLoadRequestEvent(fight[currentFight],true);
+        currentFight++;
     }
     #endregion
 
@@ -117,6 +141,7 @@ public class PhoneController : MonoBehaviour
     public void ShowBagPanel()
     {
         StartCoroutine(WaitPhoneHideShowPanel());
+        conversationManager.gameObject.SetActive(false);
     }
     IEnumerator WaitPhoneHideShowPanel()
     {
