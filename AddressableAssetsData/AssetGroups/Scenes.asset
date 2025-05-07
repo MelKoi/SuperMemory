@@ -47,54 +47,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 66cf9050d27f60849af3bac255dc53a4
-    m_Address: Assets/OS Assets/Charactor/Gblin.asset
+  - m_GUID: 587cd020a1a14bb46925a372146b2834
+    m_Address: Theater
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 000e5d88b1cd0ef48b0c5b0385540fce
-    m_Address: Assets/OS Assets/Charactor/HuanE.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5c8adf614e00a2d4f9a6e92e30ed6759
-    m_Address: Assets/OS Assets/Charactor/Long.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 77742181a9e5b8a4b9f0070458dde0b6
-    m_Address: Assets/OS Assets/Weapon/ChongQiang.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 776ae0f9e11f0454bab11eb6254e9a8e
-    m_Address: Assets/OS Assets/Weapon/DaJian.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9b1150fd538de1e4d8b93ab2c8fb2293
-    m_Address: Assets/OS Assets/Weapon/DunPai.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4272d5b002d87c541900552207640df3
-    m_Address: Assets/OS Assets/Weapon/FaZhang.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a44103057a20d7f4f956b6f308c210dd
-    m_Address: Assets/OS Assets/Weapon/GongJian.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1ca0f6cc39ecfb44692ac0b2f0ce494f
-    m_Address: Assets/OS Assets/Weapon/QuanRen.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
->>>>>>> parent of 85a792d4 (5.6更新)
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 46569492717de1a42bc1b4b9db5d916a, type: 2}
   m_SchemaSet:
