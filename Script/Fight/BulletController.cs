@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +52,7 @@ public class BulletController : MonoBehaviour
             transform.Translate(Vector3.right * direction * speed * Time.deltaTime);
             yield return null;
         }
+
 
         // 到达最大距离未命中
         Destroy(gameObject);

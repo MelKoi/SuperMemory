@@ -4807,12 +4807,12 @@ MonoBehaviour:
   _currentPhase: 0
   hasEnemyTurnStarted: 0
   PlayerSkillIsUsed: 0
+  sceneLoadEvent: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
   BS: {fileID: 1413065157}
+  room: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}
   GreenHandPanel: {fileID: 2037924654}
   ConversationManager: {fileID: 614707603}
   currentDialog: 1
-  loadEventSO: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
-  room: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}
 --- !u!1 &1264914036
 GameObject:
   m_ObjectHideFlags: 0
@@ -5637,6 +5637,8 @@ MonoBehaviour:
   hideDistance: 1
   duration: 0.5
   wait: 0.5
+  player: {fileID: 1413065155}
+  enemy: {fileID: 1504436622}
   Bullet: {fileID: 7341102869747192584, guid: ea4d18eb95ef4f04e830c4a56ca3d983, type: 3}
   bulletSpeed: 10
   maxBulletDistance: 10
@@ -5784,6 +5786,8 @@ MonoBehaviour:
   hideDistance: 1
   duration: 0.5
   wait: 0.5
+  player: {fileID: 1413065155}
+  enemy: {fileID: 1504436622}
   Bullet: {fileID: 7341102869747192584, guid: ea4d18eb95ef4f04e830c4a56ca3d983, type: 3}
   bulletSpeed: 10
   maxBulletDistance: 10

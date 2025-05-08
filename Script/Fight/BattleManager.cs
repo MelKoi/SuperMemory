@@ -81,10 +81,14 @@ public class BattleManager : MonoBehaviour
     public bool hasEnemyTurnStarted = false;//进入敌人的回合
     public CardPool PlayerPool;//对象池
     public bool PlayerSkillIsUsed = false;//玩家技能已经使用
-
+    [Header("广播")]
+    public SceneLoadEventSO sceneLoadEvent;
     [Header("事件监听")]
     public BattleListen BS;
+    [Header("场景")]
+    public GameSceneSO room;
    
+
     void Start()
     {
         GameStart();
@@ -502,6 +506,11 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         BS.gameObject.layer = LayerMask.NameToLayer("Player");
 
+    }
+
+    public void BackToRoom()
+    {
+        sceneLoadEvent.RaiseLoadRequestEvent(room,true);
     }
 }  
 

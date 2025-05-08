@@ -17,17 +17,21 @@ public class BattleListen : MonoBehaviour
     public float hideDistance;
     public float duration;
     public float wait;
+    public Transform player;
+    public Transform enemy;
 
     private float dir;
     private Vector3 currentPosition;
     private Vector3 currentScale ;
+    private Vector3 playerTrans;
+    private Vector3 enemyTrans;
     private bool isHide;
     private bool isAcc;
     private bool isAtt;
 
     public GameObject Bullet;//子弹预制体
     public float bulletSpeed = 10f;
-    public float maxBulletDistance = 10f; // 子弹最大飞行距离
+    public float maxBulletDistance; // 子弹最大飞行距离
     public LayerMask collisionLayer; // 设置要检测的碰撞层
     public BulletController bulletController = null;//子弹管理
 
@@ -37,6 +41,9 @@ public class BattleListen : MonoBehaviour
         dir = isPlayer ? -1 : 1;
         currentPosition = transform.position;
         currentScale = transform.localScale;
+        playerTrans = player.localPosition;
+        enemyTrans = enemy.localPosition;
+        maxBulletDistance = Mathf.Abs(playerTrans.x - enemyTrans.x);
     }
     private void OnEnable()         //设置监听
     {
@@ -98,17 +105,17 @@ public class BattleListen : MonoBehaviour
             Debug.Log("攻击");
             Sequence sequence = DOTween.Sequence();
             GameObject bullet = Instantiate(Bullet, transform.position, Quaternion.identity);
+            int direction = isPlayer ? 1 : -1; // 玩家向右，敌人向左
             bulletController = bullet.GetComponent<BulletController>();
+            bulletController.Initialize(direction, bulletSpeed, maxBulletDistance, collisionLayer);
             // 设置子弹参数
             sequence.Append(transform.DOScaleX(transform.localScale.x + 1, duration));
             sequence.AppendInterval(wait);
-           
-            int direction = isPlayer ? 1 : -1; // 玩家向右，敌人向左
             sequence.Append(transform.DOScaleX(currentScale.x, duration)
                             .SetEase(Ease.OutQuad));
             sequence.OnComplete(() => {
-                bulletController.Initialize(direction, bulletSpeed, maxBulletDistance, collisionLayer);
                 isAtt = false;
+                
             });           
             sequence.Play();
         }
