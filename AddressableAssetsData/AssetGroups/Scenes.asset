@@ -38,7 +38,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 700e21f795ed5414cbdbd597edbf504e
-    m_Address: SampleScene
+    m_Address: 1-1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -49,6 +49,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 587cd020a1a14bb46925a372146b2834
     m_Address: Theater
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a02eb93b0d1c8f24fb3f1c29cc741908
+    m_Address: 1-2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
