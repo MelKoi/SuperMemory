@@ -4310,7 +4310,9 @@ MonoBehaviour:
   _currentPhase: 0
   hasEnemyTurnStarted: 0
   PlayerSkillIsUsed: 0
+  sceneLoadEvent: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
   BS: {fileID: 1413065157}
+  room: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}
 --- !u!1 &1264914036
 GameObject:
   m_ObjectHideFlags: 0
@@ -5002,6 +5004,8 @@ MonoBehaviour:
   hideDistance: 1
   duration: 0.5
   wait: 0.5
+  player: {fileID: 0}
+  enemy: {fileID: 0}
   Bullet: {fileID: 7341102869747192584, guid: ea4d18eb95ef4f04e830c4a56ca3d983, type: 3}
   bulletSpeed: 10
   maxBulletDistance: 10
@@ -5228,6 +5232,8 @@ MonoBehaviour:
   hideDistance: 1
   duration: 0.5
   wait: 0.5
+  player: {fileID: 0}
+  enemy: {fileID: 0}
   Bullet: {fileID: 7341102869747192584, guid: ea4d18eb95ef4f04e830c4a56ca3d983, type: 3}
   bulletSpeed: 10
   maxBulletDistance: 10
@@ -6017,8 +6023,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GreenHand, Assembly-CSharp
+      - m_Target: {fileID: 1255767322}
+        m_TargetAssemblyTypeName: BattleManager, Assembly-CSharp
         m_MethodName: BackToRoom
         m_Mode: 1
         m_Arguments:

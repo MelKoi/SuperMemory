@@ -247,7 +247,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &963342959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,7 +362,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1109991792
 Transform:
   m_ObjectHideFlags: 0
@@ -453,7 +453,9 @@ MonoBehaviour:
   dialogFinishEvent: {fileID: 11400000, guid: e2847f57b5d5a4d43a7b48224122d7f5, type: 2}
   fight:
   - {fileID: 11400000, guid: d7f33fce3a447be439798a79643a6f6b, type: 2}
-  - {fileID: 11400000, guid: 26c97b813f8aca74781c8afb6ed5e7f7, type: 2}
+  - {fileID: 11400000, guid: 8fdb5ee3c9df2e1438d78979e48f59a8, type: 2}
+  - {fileID: 11400000, guid: 4997ff0adef4d784b99c8c9237fd53a0, type: 2}
+  - {fileID: 11400000, guid: 8d2689c53ae2dce42bf6a0e2a74adeef, type: 2}
 --- !u!1 &1547199859
 GameObject:
   m_ObjectHideFlags: 0

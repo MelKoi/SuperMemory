@@ -20,12 +20,6 @@ public class GreenHand : BattleManager
     public ConversationManager ConversationManager;//对话管理组件
     public int currentDialog = 1;
 
-    [Header("广播")]
-    public SceneLoadEventSO loadEventSO;
-
-    [Header("场景")]
-    public GameSceneSO room;
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -349,10 +343,6 @@ public class GreenHand : BattleManager
         yield return new WaitForSeconds(2.0f);
 
 
-    }
-    public void BackToRoom()
-    {
-        loadEventSO.RaiseLoadRequestEvent(room,true);
     }
     
 }
