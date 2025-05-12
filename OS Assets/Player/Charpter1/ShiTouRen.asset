@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf5830348aabc646acfb470780db150, type: 3}
   m_Name: ShiTouRen
   m_EditorClassIdentifier: 
-  Player: 0
-  CharacterAsset: {fileID: 0}
+  Player: 4
+  CharacterAsset: {fileID: 11400000, guid: ade388115307c3442b3f6c0c1742959f, type: 2}
   hp: 0
   mp: 0
   maxSp: 0
   NowSp: 0
   WeaponAsset:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
+  - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
+  - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
   Weapon1Acc: 0
   Weapon2Acc: 0
   Weapon1: 0

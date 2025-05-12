@@ -81,6 +81,7 @@ public class BattleManager : MonoBehaviour
     public bool hasEnemyTurnStarted = false;//进入敌人的回合
     public CardPool PlayerPool;//对象池
     public bool PlayerSkillIsUsed = false;//玩家技能已经使用
+    public GameObject Bag;//获取背包
     [Header("广播")]
     public SceneLoadEventSO sceneLoadEvent;
     [Header("事件监听")]
@@ -95,8 +96,9 @@ public class BattleManager : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Z))//按下z执行玩家闪避
+        if(Input.GetKeyDown(KeyCode.Z) && Player.NowSp >= 10)//按下z执行玩家闪避
         {
+            Player.NowSp = Player.NowSp - 10;
             StartCoroutine(PlayerHide());
         }
         switch (_currentPhase)//根据回合阶段进行具体的操作

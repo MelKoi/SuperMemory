@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa6ec622014452468a38c61d8ef6a5d, type: 3}
   m_Name: DaoZei
   m_EditorClassIdentifier: 
-  Cardname: 
-  BianKuang: {fileID: 0}
-  MaxHealth: 0
-  MaxSp: 0
-  speed: 0
-  description: 
-  HandCardNum: 0
-  Power: 
-  HeroImage: {fileID: 0}
-  PowerImage: {fileID: 0}
+  Cardname: "\u76D7\u8D3C"
+  BianKuang: {fileID: 21300000, guid: af9104d496a7de045ad3446f6707d34a, type: 3}
+  MaxHealth: 18
+  MaxSp: 20
+  speed: 7
+  description: "\u4F2A\u88C5\u6210\u597D\u4EBA\u8FDB\u884C\u52AB\u6740\u7684\u76D7\u8D3C\uFF0C\u53EA\u8981\u8BC6\u7834\u5C31\u4E00\u5B9A\u8981\u5E72\u6389\uFF0C\u5426\u5219\u540E\u60A3\u65E0\u7A77\u3002"
+  HandCardNum: 5
+  Power: "\u80CC\u523A"
+  HeroImage: {fileID: 21300000, guid: 867a3ea2178b13445bc88da925a1551d, type: 3}
+  PowerImage: {fileID: 21300000, guid: f1a70423e29c9c34b8c521c3a5f5b557, type: 3}
   PowerEffect: []
-  PowerCost: 0
+  PowerCost: 4

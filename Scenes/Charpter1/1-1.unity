@@ -4413,14 +4413,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b20b5c81ff0fc4d44a6fd33530671dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _PlayerData: {fileID: 0}
+  _PlayerData: {fileID: 11400000, guid: 66cf9050d27f60849af3bac255dc53a4, type: 2}
   _PlayerWeapons:
   - {fileID: 0}
   - {fileID: 0}
   _PlayerAllWeapons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
+  - {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
+  - {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
   DrewWeapon: {fileID: 0}
   HandArea: {fileID: 1126826420}
   SkillArea: {fileID: 122270463}
@@ -4428,9 +4428,9 @@ MonoBehaviour:
   CardPrefab: {fileID: 3163413792254164860, guid: c9d99fefbb015ea4eb181ed9a6fc8ae8, type: 3}
   CharacterPrefab: {fileID: 3216423774540130171, guid: 953042453feb32b4e9e30da14515fcf4, type: 3}
   WeaponPrefeb: {fileID: 0}
-  HpText: {fileID: 0}
-  SpText: {fileID: 0}
-  MpText: {fileID: 0}
+  HpText: {fileID: 797690830}
+  SpText: {fileID: 1354679235}
+  MpText: {fileID: 290552171}
   Weapon1Acc: {fileID: 1023279073}
   Weapon2Acc: {fileID: 1957045173}
   Purple: {fileID: 1231228806}
@@ -4457,14 +4457,14 @@ MonoBehaviour:
   Place: {fileID: 1857775657}
   Player: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
   Enemy: {fileID: 11400000, guid: 1a5f203a65c3ab342828df6e319b07cd, type: 2}
-  PlayerData: {fileID: 0}
+  PlayerData: {fileID: 11400000, guid: 000e5d88b1cd0ef48b0c5b0385540fce, type: 2}
   PlayerWeapons:
   - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
   - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
   PlayerAllWeapons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
+  - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
+  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
   DrewWeapon: {fileID: 0}
   EnemyManager: {fileID: 1255767321}
   HandArea: {fileID: 407110079}
@@ -4473,9 +4473,9 @@ MonoBehaviour:
   CardPrefab: {fileID: 3163413792254164860, guid: c9d99fefbb015ea4eb181ed9a6fc8ae8, type: 3}
   CharacterPrefeb: {fileID: 3216423774540130171, guid: 953042453feb32b4e9e30da14515fcf4, type: 3}
   WeaponPrefeb: {fileID: 3031318929838873099, guid: dfa7a28c661571740aeafe422094e0c8, type: 3}
-  HpText: {fileID: 0}
-  SpText: {fileID: 0}
-  MpText: {fileID: 0}
+  HpText: {fileID: 1498742383}
+  SpText: {fileID: 908325656}
+  MpText: {fileID: 1532942869}
   Weapon1Acc: {fileID: 1291588701}
   Weapon2Acc: {fileID: 1165906582}
   Purple: {fileID: 2137181154}

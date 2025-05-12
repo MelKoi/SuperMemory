@@ -24,7 +24,7 @@ public class MusicManager : MonoBehaviour
         {
             PlayMusic(GameBGM[1]);
         }
-        else if(scene.name == "GreenHand")
+        else if(scene.name == "GreenHand" || scene.name == "1-1" || scene.name == "1-2" || scene.name == "1-3")
         {
             PlayMusic(GameBGM[2]);
         }

@@ -66,7 +66,7 @@ public class BattleListen : MonoBehaviour
             isHide = true;
             Sequence sequence = DOTween.Sequence();
             //第一阶段：向指定方向移动
-            sequence.Append(transform.DOMoveX(currentPosition.x + dir * hideDistance, duration));
+            sequence.Append(transform.DOMoveX(currentPosition.y + dir * hideDistance, duration));
             //第二阶段：停留wait秒
             sequence.AppendInterval(wait);
             //第三阶段：移回原位

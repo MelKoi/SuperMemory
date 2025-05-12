@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf5830348aabc646acfb470780db150, type: 3}
   m_Name: DaoZei
   m_EditorClassIdentifier: 
-  Player: 0
-  CharacterAsset: {fileID: 0}
+  Player: 3
+  CharacterAsset: {fileID: 11400000, guid: aa77da0ee4b4f004fbe4398a0841b0a5, type: 2}
   hp: 0
   mp: 0
   maxSp: 0
   NowSp: 0
   WeaponAsset:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
+  - {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
+  - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
   Weapon1Acc: 0
   Weapon2Acc: 0
   Weapon1: 0

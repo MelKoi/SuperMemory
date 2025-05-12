@@ -35,6 +35,45 @@ public class NoOneTwo : BattleManager
     private int acc = 0;//蓄能临时储存
     private bool hasAttackedThisTurn = false;//本回合是否进行过攻击,用于回合内判断行动模式
     private bool FirstEnemyTurn = true;
+
+    private void Update()
+    {
+        if(hasAttackedThisTurn = false && (Enemy.Weapon1Acc >= 4 || Enemy.Weapon2Acc >= 4))//检测是否需要改变权重,以下同理
+        {
+            actionWeights["UseCardAA"] = 3;
+        }
+        else
+        {
+            actionWeights["UseCardAA"] = 8;
+        }
+
+        if(Enemy.hp - EnemyLastHP <= -3)
+        {
+            actionWeights["UseCardCS"] = 7;
+        }
+        else
+        {
+            actionWeights["UseCardCS"] = 5;
+        }
+
+        if(Enemy.Weapon1Acc >= 4 || Enemy.Weapon2Acc >= 4)
+        {
+            actionWeights["WeaponAtt"] = 5;
+        }
+        else
+        {
+            actionWeights["WeaponAtt"] = 6;
+        }
+
+        if(Player.hp < PlayerLastHP && Enemy.mp >= EnemyManager._PlayerData.PowerCost)
+        {
+            actionWeights["SkillUse"] = 8;
+        }
+        else
+        {
+            actionWeights["SkillUse"] = 2;
+        }
+    }
     private IEnumerator PerformAIActions()//总体的敌人AI
     {
         RectTransform ZeroPosition = ZeroPoint.GetComponent<RectTransform>();//获取战斗场地中点
@@ -146,6 +185,12 @@ public class NoOneTwo : BattleManager
             }
         }
         EndTurn();
+        if (!FirstEnemyTurn)
+        {
+            PlayerLastHP = Player.hp;
+            PlayerLastMP = Player.mp;
+            EnemyLastHP = Enemy.hp;
+        }
         yield return null;
     }
     private IEnumerator UseCardWithAnimation(GameObject card)//敌方使用卡牌

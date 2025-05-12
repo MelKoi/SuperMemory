@@ -13,6 +13,7 @@ public class BagDataManager : MonoBehaviour
     [Header("当前装备")]
     public CharactorAsset fightCharactor;
     public List<WeaponAsset> fightWeapons;
+    public PlayerAsset Player;//玩家
     private int currentChooseWeapon = 0;
     
     private void Awake()
@@ -93,6 +94,7 @@ public class BagDataManager : MonoBehaviour
     public void ChangeFightCharactor(CharactorAsset charactor)
     {
         fightCharactor = charactor;
+        Player.CharacterAsset = fightCharactor;
     }
 
     //切换武器
@@ -101,9 +103,9 @@ public class BagDataManager : MonoBehaviour
         if (!fightWeapons.Contains(weapon))
         {
             fightWeapons[currentChooseWeapon] = weapon;
+            Player.WeaponAsset[currentChooseWeapon] = weapon;
             currentChooseWeapon++;
             currentChooseWeapon %= 3;
         }
-        
     }
 }
