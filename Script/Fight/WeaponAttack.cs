@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
 {
     public BattleManager battleManager;
     public float doubleClickThreshold = 0.3f;//双击时间阈值(s)
-    public float cooldown = 1f;//冷却时间
+    public float cooldown = 0.5f;//冷却时间
     private bool isCooldown = false;//是否在冷却
 
     public bool isAttacted = false;
@@ -34,7 +35,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // Update is called once per frame
     void Update()
     {
-
+      
     }
     // 实现 IPointerClickHandler 接口（适用于UI元素）
     public void OnPointerClick(PointerEventData eventData)
@@ -43,8 +44,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
         if (Time.time - lastClickTime < doubleClickThreshold)
         {
             // 触发攻击逻辑
-            StartCoroutine(AttackEnemyCoroutine(Enemy, Player));
-
+           StartCoroutine(AttackEnemyCoroutine(Enemy, Player));
         }
         lastClickTime = Time.time;
     }
@@ -71,8 +71,9 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             }
             Acc = attack.Weapon2Acc;
         }
-        if (attacked.hp != 0)
+        if (attacked.hp != 0 && !isCooldown)
         {
+            isCooldown = !isCooldown;
             foreach (var damage in Weapon.Accumulation)
             {
                 if (Acc >= damage.Acc)
@@ -126,14 +127,9 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 attack.Weapon2Acc = Acc;
                 attack.Weapon2 = true;
             }
-            StartCoroutine(CooldownTimer());
+            yield return new WaitForSeconds(cooldown);
+            isCooldown = !isCooldown;
         }
-    }
-    private IEnumerator CooldownTimer()
-    {
-        isCooldown = true;
-        yield return new WaitForSeconds(cooldown);
-        isCooldown = false;
     }
     private IEnumerator Pointed()
     {
