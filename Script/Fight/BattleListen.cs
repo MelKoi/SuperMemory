@@ -66,11 +66,11 @@ public class BattleListen : MonoBehaviour
             isHide = true;
             Sequence sequence = DOTween.Sequence();
             //第一阶段：向指定方向移动
-            sequence.Append(transform.DOMoveX(currentPosition.y + dir * hideDistance, duration));
+            sequence.Append(transform.DOMoveY(currentPosition.y + dir * hideDistance, duration));
             //第二阶段：停留wait秒
             sequence.AppendInterval(wait);
             //第三阶段：移回原位
-            sequence.Append(transform.DOMoveX(currentPosition.x, duration)
+            sequence.Append(transform.DOMoveY(currentPosition.y, duration)
                             .SetEase(Ease.OutQuad));
             // 动画结束时重置标志
             sequence.OnComplete(() => isHide = false);
