@@ -5333,6 +5333,7 @@ MonoBehaviour:
   bagDataManager: {fileID: 0}
   charactorList: []
   weaponList: []
+  Player: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
 --- !u!1 &2080694500
 GameObject:
   m_ObjectHideFlags: 0
