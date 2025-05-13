@@ -20,7 +20,7 @@ MonoBehaviour:
   NowSp: 25
   WeaponAsset:
   - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
-  - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
+  - {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
   - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
   Weapon1Acc: 0
   Weapon2Acc: 0
