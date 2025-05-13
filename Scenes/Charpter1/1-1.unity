@@ -1221,7 +1221,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1255767322}
         m_TargetAssemblyTypeName: BattleManager, Assembly-CSharp
-        m_MethodName: UseSkill
+        m_MethodName: PlayerUseSkill
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4496,6 +4496,7 @@ MonoBehaviour:
   _currentPhase: 0
   hasEnemyTurnStarted: 0
   PlayerSkillIsUsed: 0
+  Bag: {fileID: 0}
   sceneLoadEvent: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
   BS: {fileID: 1413065157}
   room: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}

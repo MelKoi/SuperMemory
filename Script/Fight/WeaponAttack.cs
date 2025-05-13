@@ -11,7 +11,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     public BattleManager battleManager;
     public float doubleClickThreshold = 0.3f;//双击时间阈值(s)
     public float cooldown = 0.5f;//冷却时间
-    private bool isCooldown = false;//是否在冷却
+    public bool isCooldown = false;//是否在冷却
 
     public bool isAttacted = false;
     private float lastClickTime; // 上次点击时间
@@ -35,7 +35,10 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // Update is called once per frame
     void Update()
     {
-      
+      if(battleManager._currentPhase == GamePhase.playerReady)
+        {
+            isCooldown = false;
+        }
     }
     // 实现 IPointerClickHandler 接口（适用于UI元素）
     public void OnPointerClick(PointerEventData eventData)
@@ -73,16 +76,19 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
         }
         if (attacked.hp != 0 && !isCooldown)
         {
-            isCooldown = !isCooldown;
             foreach (var damage in Weapon.Accumulation)
             {
                 if (Acc >= damage.Acc)
                 {
+                    isCooldown = !isCooldown;
                     Player.Damage = damage.Value;
                 }
             }
             if (Player.Damage == 0)
+            {
+                Debug.Log("武器蓄能不够");
                 yield break;
+            }   
             battleManager.BS.attEvent.RaiseEvent();
 
             // 等待攻击命中判定
