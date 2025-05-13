@@ -367,7 +367,16 @@ public class BattleManager : MonoBehaviour
     }
     public void ChooseWeapons(Text text)//我方ban对方一个武器牌
     {
-        int j = 0;
+        int j = 0,k = 0;
+        int random = new System.Random().Next(0, 3);
+        for (int i = 0; i < 3; i++)
+        {
+            if (i != random)
+            {
+                PlayerWeapons[k] = PlayerAllWeapons[i];
+                k++;
+            }
+        }
         foreach (WeaponAsset i in EnemyManager._PlayerAllWeapons)
         {
             if (!i.WeaponName.Equals(text.text))
@@ -383,8 +392,6 @@ public class BattleManager : MonoBehaviour
             FirstDrew.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i-1].WeaponName;
             FirstDrew.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i-1].CardFace;
         }
-
-            
 
         BanEnemyWeapon.SetActive(false);
         CreateWeapon(PlayerWeapons[0], transform.Find("Place/WeaponCard1"));
