@@ -26,7 +26,6 @@ public class BagPanel : MonoBehaviour
     public List<GameObject> weaponList;
     private float currentPosY;
     private RectTransform rectTransform;
-    public PlayerAsset Player;
 
     private void Awake()
     {
@@ -53,7 +52,6 @@ public class BagPanel : MonoBehaviour
             Transform chooseTransform = charactor.transform.Find("isChoose");
             GameObject isChoose = chooseTransform.gameObject;
             isChoose.SetActive(charactor.GetComponent<CharacterCardManager>().charactorasset.Cardname.Equals(bagDataManager.fightCharactor.Cardname));
-            Player.CharacterAsset = charactor.GetComponent<CharacterCardManager>().charactorasset;
         }
         foreach (GameObject weapon in weaponList)
         {
@@ -68,7 +66,6 @@ public class BagPanel : MonoBehaviour
                 {
                     flag = true;
                 }
-                Player.WeaponAsset[weaponnum] = fightWeapon;
                 weaponnum++;
             }
             isChoose.SetActive(flag);
