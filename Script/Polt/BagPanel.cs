@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class BagPanel : MonoBehaviour
@@ -25,6 +26,7 @@ public class BagPanel : MonoBehaviour
     public List<GameObject> weaponList;
     private float currentPosY;
     private RectTransform rectTransform;
+    public PlayerAsset Player;
 
     private void Awake()
     {
@@ -51,6 +53,7 @@ public class BagPanel : MonoBehaviour
             Transform chooseTransform = charactor.transform.Find("isChoose");
             GameObject isChoose = chooseTransform.gameObject;
             isChoose.SetActive(charactor.GetComponent<CharacterCardManager>().charactorasset.Cardname.Equals(bagDataManager.fightCharactor.Cardname));
+            Player.CharacterAsset = charactor.GetComponent<CharacterCardManager>().charactorasset;
         }
         foreach (GameObject weapon in weaponList)
         {
@@ -59,13 +62,17 @@ public class BagPanel : MonoBehaviour
             bool flag = false;
             foreach (WeaponAsset fightWeapon in bagDataManager.fightWeapons)
             {
+                int weaponnum = 0;
                 if(weapon.GetComponent<WeaponCardManager>().
                     weaponAsset.WeaponName.Equals(fightWeapon.WeaponName))
                 {
                     flag = true;
                 }
+                Player.WeaponAsset[weaponnum] = fightWeapon;
+                weaponnum++;
             }
             isChoose.SetActive(flag);
+            
         }
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
