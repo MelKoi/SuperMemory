@@ -31,6 +31,14 @@ public class BagDataManager : MonoBehaviour
         changeFightCharactorEvent.ChangeFightCharactorEvent -= ChangeFightCharactor;
         changeFightWeaponEvent.ChangeFightWeaponEvent -= ChangeFightWeapon;
     }
+    private void Start()
+    {
+        Player.CharacterAsset = fightCharactor;
+        for (int i = 0; i < 3; i++)
+        {
+            Player.WeaponAsset[i] = fightWeapons[i];
+        }
+    }
     //加载背包数据
     private void InitializeBagData()
     {
@@ -103,7 +111,10 @@ public class BagDataManager : MonoBehaviour
         if (!fightWeapons.Contains(weapon))
         {
             fightWeapons[currentChooseWeapon] = weapon;
-            Player.WeaponAsset[currentChooseWeapon] = weapon;
+            for (int i = 0; i < 3; i++) {
+                Player.WeaponAsset[i] = fightWeapons[i];
+            }
+            
             currentChooseWeapon++;
             currentChooseWeapon %= 3;
         }
