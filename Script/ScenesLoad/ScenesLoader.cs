@@ -36,12 +36,12 @@ public class ScenesLoader : MonoBehaviour
     private void OnEnable()
     {
         loadEventSO.LoadRequestEvent += OnLoadRequestEvent;
-        newGameEvent.OnEventRiased += NewGame;
+        newGameEvent.OnEventRaised += NewGame;
     }
     private void OnDisable()
     {
         loadEventSO.LoadRequestEvent -= OnLoadRequestEvent;
-        newGameEvent.OnEventRiased -= NewGame;
+        newGameEvent.OnEventRaised -= NewGame;
     }
 
     private void NewGame()

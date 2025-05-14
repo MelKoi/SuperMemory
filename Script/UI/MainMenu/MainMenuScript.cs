@@ -9,22 +9,22 @@ using TMPro;
 
 public class MainMenuScript : MonoBehaviour
 {
-    public Button StartGameBotton;//µã»÷¿ªÊ¼ÓÎÏ·µÄ°´Å¥
+    public Button StartGameBotton;//ç‚¹å‡»å¼€å§‹æ¸¸æˆçš„æŒ‰é’®
     public TMP_Text StartGameText;
 
-    public Button NewGameBotton;//ĞÂÓÎÏ·µÄ°´Å¥
+    public Button NewGameBotton;//æ–°æ¸¸æˆçš„æŒ‰é’®
     public TMP_Text NewGameText;
 
-    public Button LoadGameBotton;//¶ÁÈ¡ÓÎÏ·µÄ°´Å¥
+    public Button LoadGameBotton;//è¯»å–æ¸¸æˆçš„æŒ‰é’®
     public TMP_Text LoadGameText;
 
-    public Button SettingBotton;//ÉèÖÃµÄ°´Å¥
+    public Button SettingBotton;//è®¾ç½®çš„æŒ‰é’®
     public TMP_Text SettingText;
 
-    public Button QuitGameBotton;//ÍË³öÓÎÏ·µÄ°´Å¥
+    public Button QuitGameBotton;//é€€å‡ºæ¸¸æˆçš„æŒ‰é’®
     public TMP_Text QuittGameText;
 
-    public Image MainMenuPanel;//·ÅÖÃÆäËû¶«Î÷µÄÃæ°å
+    public Image MainMenuPanel;//æ”¾ç½®å…¶ä»–ä¸œè¥¿çš„é¢æ¿
     public void StartGame()
     {
         StartGameText.DOFade(0, 0.6f);
@@ -41,4 +41,8 @@ public class MainMenuScript : MonoBehaviour
         QuittGameText.DOFade(1, 1.0f);
         QuitGameBotton.GetComponent<RectTransform>().DOAnchorPosX(610, 1.0f);
     }
+    public void QuitGame()
+    {
+        Application.Quit();
+     }
 }

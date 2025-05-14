@@ -25,13 +25,13 @@ public class FightAndDialogController : MonoBehaviour
     }
     private void OnEnable()
     {
-        afterSceneLoadedStartDialogEvent.OnEventRiased += StartDialog;  //场景转换完成后启动对话
-        dialogFinishEvent.OnEventRiased += FinishDialog;          //对话完成后开启对战
+        afterSceneLoadedStartDialogEvent.OnEventRaised += StartDialog;  //场景转换完成后启动对话
+        dialogFinishEvent.OnEventRaised += FinishDialog;          //对话完成后开启对战
     } 
     private void OnDisable()
     {
-        afterSceneLoadedStartDialogEvent.OnEventRiased -= StartDialog;
-        dialogFinishEvent.OnEventRiased -= FinishDialog;
+        afterSceneLoadedStartDialogEvent.OnEventRaised -= StartDialog;
+        dialogFinishEvent.OnEventRaised -= FinishDialog;
     }
     #region 对话相关
     public void StartDialog()

@@ -47,15 +47,15 @@ public class BattleListen : MonoBehaviour
     }
     private void OnEnable()         //设置监听
     {
-        hideEvent.OnEventRiased += OnHideEvent;
-        accEvent.OnEventRiased += OnAccEvent;
-        attEvent.OnEventRiased += OnAttEvent;
+        hideEvent.OnEventRaised += OnHideEvent;
+        accEvent.OnEventRaised += OnAccEvent;
+        attEvent.OnEventRaised += OnAttEvent;
     }
     private void OnDisable()        //移除监听
     {
-        hideEvent.OnEventRiased -= OnHideEvent;
-        accEvent.OnEventRiased -= OnAccEvent;
-        attEvent.OnEventRiased -= OnAttEvent;
+        hideEvent.OnEventRaised -= OnHideEvent;
+        accEvent.OnEventRaised -= OnAccEvent;
+        attEvent.OnEventRaised -= OnAttEvent;
     }
 
     //闪避监听

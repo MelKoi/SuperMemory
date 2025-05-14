@@ -22,13 +22,13 @@ public class PoltManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        givePaint.OnEventRiased += ShowPictrue;
-        showPanalOption.OnEventRiased += ShowPanalOption;
+        givePaint.OnEventRaised += ShowPictrue;
+        showPanalOption.OnEventRaised += ShowPanalOption;
     }
     private void OnDisable()
     {
-        givePaint.OnEventRiased -= ShowPictrue;
-        showPanalOption.OnEventRiased -= ShowPanalOption;
+        givePaint.OnEventRaised -= ShowPictrue;
+        showPanalOption.OnEventRaised -= ShowPanalOption;
     }
     
     public void ShowPictrue()

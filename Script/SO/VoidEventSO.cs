@@ -6,9 +6,9 @@ using UnityEngine.Events;
 [CreateAssetMenu(menuName = "Event/VoidEventSO")]
 public class VoidEventSO : ScriptableObject
 {
-    public UnityAction OnEventRiased;
+    public UnityAction OnEventRaised;
     public void RaiseEvent()
     {
-        OnEventRiased?.Invoke();
+        OnEventRaised?.Invoke();
     }
 }

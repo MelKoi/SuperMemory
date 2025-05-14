@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Perfabs
+  m_EditorClassIdentifier: 
+  m_GroupName: Perfabs
+  m_Data:
+    m_SerializedData: []
+  m_GUID: b6a3a1ee350f31047a870ccaa196c5ba
+  m_SerializeEntries:
+  - m_GUID: 9f24b8b483ac6884e8a16e621f92d737
+    m_Address: BagCharacterCard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4cf49db648a78f4089772030b8639ff
+    m_Address: BagWeaponCard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9d99fefbb015ea4eb181ed9a6fc8ae8
+    m_Address: CardPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 953042453feb32b4e9e30da14515fcf4
+    m_Address: CharacterCard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfa7a28c661571740aeafe422094e0c8
+    m_Address: WeaponCardPrefeb
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea4d18eb95ef4f04e830c4a56ca3d983
+    m_Address: ZiDan
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 46569492717de1a42bc1b4b9db5d916a, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 6d00d8cde8262674888358427349f25f, type: 2}
+    - {fileID: 11400000, guid: 4a73ec2a8456f084bb8fc0cf4c15711e, type: 2}

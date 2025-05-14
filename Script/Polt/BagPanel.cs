@@ -36,11 +36,11 @@ public class BagPanel : MonoBehaviour
     }
     private void OnEnable()
     {
-        showBagPanelEvent.OnEventRiased += ShowBagPanel;
+        showBagPanelEvent.OnEventRaised += ShowBagPanel;
     }
     private void OnDisable()
     {
-        showBagPanelEvent.OnEventRiased -= ShowBagPanel;
+        showBagPanelEvent.OnEventRaised -= ShowBagPanel;
     }
     private void Update()
     {
