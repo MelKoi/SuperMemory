@@ -26,6 +26,7 @@ public class BagPanel : MonoBehaviour
     public List<GameObject> weaponList;
     private float currentPosY;
     private RectTransform rectTransform;
+    public GameObject TextPanel;
 
     private void Awake()
     {
@@ -120,6 +121,8 @@ public class BagPanel : MonoBehaviour
     public void CloseBagPanel()
     {
         rectTransform.DOAnchorPosY(currentPosY, 1f);
+        TextPanel.SetActive(true);
+
     }
     public void ShowCharactorPanel()
     {   

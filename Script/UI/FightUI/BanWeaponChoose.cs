@@ -1,5 +1,7 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,20 +13,19 @@ public class BanWeaponChoose : MonoBehaviour
     public Button W2;
     public Button W3;
 
-    private Button CentreButton;
+    public BattleManager bs;
+    
 
 
 
     private void Start()
     {
-        CentreButton = W1;
+        bs.CentreButton = W1;
     }
-
     public void ChangeWeaponLast()
     {
         Vector3 temp;
-
-        switch(CentreButton.name)
+        switch (bs.CentreButton.name)
         {
             case "W1":
                 temp = W1.transform.position;
@@ -33,14 +34,15 @@ public class BanWeaponChoose : MonoBehaviour
                     W1.transform.position = W2.transform.position;
                     W2.transform.position = W3.transform.position;
                     W3.transform.position = temp;
-                    CentreButton = W3;
-
+                    bs.CentreButton = W3;
+                    bs.BanDescription.text = bs.EnemyManager._PlayerAllWeapons[2].description;
                 }
                 else
                 {
                     W1.transform.position = W2.transform.position;
                     W2.transform.position = temp;
-                    CentreButton = W2;
+                    bs.CentreButton = W2;
+                    bs.FirstDescription.text = bs.PlayerWeapons[1].description;
                 }
                     break;
             case "W2":
@@ -50,13 +52,15 @@ public class BanWeaponChoose : MonoBehaviour
                     W2.transform.position = W3.transform.position;
                     W3.transform.position = W1.transform.position;
                     W1.transform.position = temp;
-                    CentreButton = W1;
+                    bs.CentreButton = W1;
+                    bs.BanDescription.text = bs.EnemyManager._PlayerAllWeapons[0].description;
                 }
                 else
                 {
                     W2.transform.position = W1.transform.position;
                     W1.transform.position = temp;
-                    CentreButton = W1;
+                    bs.CentreButton = W1;
+                    bs.FirstDescription.text = bs.PlayerWeapons[0].description;
                 }
                 break;
             case "W3":
@@ -64,7 +68,8 @@ public class BanWeaponChoose : MonoBehaviour
                 W3.transform.position = W1.transform.position;
                 W1.transform.position = W2.transform.position;
                 W2.transform.position = temp;
-                CentreButton = W2;
+                bs.CentreButton = W2;
+                bs.BanDescription.text = bs.EnemyManager._PlayerAllWeapons[1].description;
                 break;
         }
     }
@@ -72,7 +77,7 @@ public class BanWeaponChoose : MonoBehaviour
     {
         Vector3 temp;
 
-        switch (CentreButton.name)
+        switch (bs.CentreButton.name)
         {
             case "W1":
                 temp = W1.transform.position;
@@ -81,13 +86,15 @@ public class BanWeaponChoose : MonoBehaviour
                     W1.transform.position = W3.transform.position;
                     W3.transform.position = W2.transform.position;
                     W2.transform.position = temp;
-                    CentreButton = W2;
+                    bs.CentreButton = W2;
+                    bs.BanDescription.text = bs.EnemyManager._PlayerAllWeapons[1].description;
                 }
                 else
                 {
                     W1.transform.position = W2.transform.position;
                     W2.transform.position = temp;
-                    CentreButton = W2;
+                    bs.CentreButton = W2;
+                    bs.FirstDescription.text = bs.PlayerWeapons[1].description;
                 }
                     break;
             case "W2":
@@ -97,13 +104,15 @@ public class BanWeaponChoose : MonoBehaviour
                     W2.transform.position = W1.transform.position;
                     W1.transform.position = W3.transform.position;
                     W3.transform.position = temp;
-                    CentreButton = W3;
+                    bs.CentreButton = W3;
+                    bs.BanDescription.text = bs.EnemyManager._PlayerAllWeapons[2].description;
                 }
                 else
                 {
                     W2.transform.position = W1.transform.position;
                     W1.transform.position = temp;
-                    CentreButton = W1;
+                    bs.CentreButton = W1;
+                    bs.FirstDescription.text = bs.PlayerWeapons[0].description;
                 }
                     
                     break;
@@ -112,7 +121,8 @@ public class BanWeaponChoose : MonoBehaviour
                 W3.transform.position = W2.transform.position;
                 W2.transform.position = W1.transform.position;
                 W1.transform.position = temp;
-                CentreButton = W1;
+                bs.CentreButton = W1;
+                bs.BanDescription.text = bs.EnemyManager._PlayerAllWeapons[0].description;
                 break;
         }
     }

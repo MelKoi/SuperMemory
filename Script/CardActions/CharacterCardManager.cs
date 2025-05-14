@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
-
 public class CharacterCardManager : MonoBehaviour
 {
     public CharactorAsset charactorasset;

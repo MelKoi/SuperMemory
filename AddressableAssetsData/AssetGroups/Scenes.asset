@@ -17,48 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: aa1f840875fd2ef40ac38bb18da64534
   m_SerializeEntries:
-  - m_GUID: 2232262a639a10641b7c27ba719726e8
-    m_Address: BagSystem
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 81bd90dc1fccd4344ba3b1dc786340ca
-    m_Address: Menu
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d9552bd1fb2e4b84385b1c81beabcdc9
-    m_Address: Room
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1bfbc64377ef824fb170dd26fd6e024
     m_Address: Fight
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 700e21f795ed5414cbdbd597edbf504e
-    m_Address: 1-1
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4be71d6d60334dd42b179870480ee71e
-    m_Address: GreenHand
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 587cd020a1a14bb46925a372146b2834
-    m_Address: Theater
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a02eb93b0d1c8f24fb3f1c29cc741908
-    m_Address: 1-2
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ba8a7f313fbdbee40b5c09d2110370bb
-    m_Address: 1-3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

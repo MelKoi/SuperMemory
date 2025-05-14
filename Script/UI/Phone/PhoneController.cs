@@ -15,6 +15,7 @@ public class PhoneController : MonoBehaviour
     public float returnSpeed = 0.5f;
     private bool isUnlocking;        //判断是否正在锁屏
     private RectTransform rectTransform;
+    public GameObject TextPanel;//文件显示面板
 
     [Header("广播")]
     public SceneLoadEventSO loadEventSO;
@@ -120,6 +121,7 @@ public class PhoneController : MonoBehaviour
     }
     IEnumerator WaitPhoneHideShowPanel()
     {
+        TextPanel.SetActive(false);
         yield return StartCoroutine(HidePhoneAndLock());
         while (isUnlocking)
         {

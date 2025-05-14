@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponName: "\u5E7D\u591C"
   Wight: 4
-  description: "\u5F13\u7BAD"
+  description: "\u65AD\u7F6A\u4E4B\u4EBA\u6240\u6301\u7684\u5F13\u7BAD\uFF0C\u9752\u7535\u4E0E\u7D2B\u7535\u7EA0\u7F20\uFF0C\u4EFF\u4F5B\u8D2F\u7A7F\u591C\u5E55\u7684\u5BD2\u9E26\u3002\n\u84C4\u529B\uFF1A1\uFF0C2\uFF0C3\n\u4F24\u5BB3\uFF1A2\uFF0C4\uFF0C5"
   OnceAccumulation: 1
   CardBack: {fileID: 21300000, guid: 93e80e2b6736a76499c4634b362436a1, type: 3}
   CardFace: {fileID: 21300000, guid: 02016d12f8162414eb17227fd1700b61, type: 3}

@@ -7,15 +7,8 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.ShaderKeywordFilter;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public enum GamePhase
 {
@@ -69,6 +62,9 @@ public class BattleManager : MonoBehaviour
     public Sprite POpen;//对应牌起效
     public Sprite PClose;//对应牌失效
     public GameObject GameOver;//游戏结束
+    public Button CentreButton;//选择武器的中心按钮
+    public Text BanDescription;//Ban掉敌方武器时的武器描述
+    public Text FirstDescription;//选择首选抽取武器时的武器描述
 
     [Header("功能性变量")]
     public GameObject BanEnemyWeapon;//ban武器界面
@@ -292,7 +288,7 @@ public class BattleManager : MonoBehaviour
         {
             BanEnemyWeapon.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i-1].WeaponName;
         }
-
+        BanDescription.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[0].description;
         StartCoroutine(PlayGameStartAnimation());
     }
     public void PlayerReady()//玩家准备阶段
@@ -392,7 +388,7 @@ public class BattleManager : MonoBehaviour
             FirstDrew.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i-1].WeaponName;
             FirstDrew.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i-1].CardFace;
         }
-
+        FirstDescription.GetComponent<Text>().text = PlayerWeapons[0].description;
         BanEnemyWeapon.SetActive(false);
         CreateWeapon(PlayerWeapons[0], transform.Find("Place/WeaponCard1"));
         CreateWeapon(PlayerWeapons[1], transform.Find("Place/WeaponCard2"));
@@ -512,7 +508,7 @@ public class BattleManager : MonoBehaviour
     {
         BS.gameObject.layer = LayerMask.NameToLayer("Default");
         BS.hideEvent.RaiseEvent();
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.3f);
         BS.gameObject.layer = LayerMask.NameToLayer("Player");
 
     }

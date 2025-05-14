@@ -86,7 +86,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             }
             if (Player.Damage == 0)
             {
-                Debug.Log("武器蓄能不够");
+               StartCoroutine(AccLow());
                 yield break;
             }   
             battleManager.BS.attEvent.RaiseEvent();
@@ -141,6 +141,13 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     {
         Point.gameObject.SetActive(true);
         Point.text = "此武器本回合已经用于攻击";
+        yield return new WaitForSeconds(0.8f);
+        Point.gameObject.SetActive(false);
+    }
+    private IEnumerator AccLow()
+    {
+        Point.gameObject.SetActive(true);
+        Point.text = "武器蓄能不足";
         yield return new WaitForSeconds(0.8f);
         Point.gameObject.SetActive(false);
     }
