@@ -57,9 +57,9 @@ public class FightAndDialogController : MonoBehaviour
         if (currentFight >= fight.Count)//此处为demo特定，设置从第一场正式战斗开始防止游戏崩坏
         {
             currentFight = 1;
-            loadEventSO.RaiseLoadRequestEvent(fight[currentFight], true);
+           
         }
-        
+        loadEventSO.RaiseLoadRequestEvent(fight[currentFight], true);
     }
     #endregion
 }

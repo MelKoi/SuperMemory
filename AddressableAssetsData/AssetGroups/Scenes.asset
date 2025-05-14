@@ -32,11 +32,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2232262a639a10641b7c27ba719726e8
-    m_Address: System
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9552bd1fb2e4b84385b1c81beabcdc9
     m_Address: Room
     m_ReadOnly: 0
@@ -64,6 +59,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 700e21f795ed5414cbdbd597edbf504e
     m_Address: 1-1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2232262a639a10641b7c27ba719726e8
+    m_Address: System
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5399de2e2f2c14489377d476ab9b0d8
+    m_Address: Initialization
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
