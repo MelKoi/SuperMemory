@@ -44,16 +44,22 @@ public class FightAndDialogController : MonoBehaviour
         yield return new WaitForSeconds(duration);
         conversationManager = GameObject.Find("ConversationManager").GetComponent<ConversationManager>();
         conversationManager.gameObject.SetActive(true);
+        if (currentDialog > 4) { //此处为demo特定，设置从头开始剧情防止游戏崩坏
+            currentDialog = 1;
+        }
         string dialogNum = "Dialog Part" + currentDialog.ToString();
         conversationManager.StartConversation(GameObject.Find(dialogNum).GetComponent<NPCConversation>());
-        currentDialog++;
     }
     //结束对话，开始战斗
     public void FinishDialog()
     {
         Debug.Log("战斗开始");
-        loadEventSO.RaiseLoadRequestEvent(fight[currentFight], true);
-        currentFight++;
+        if (currentFight >= fight.Count)//此处为demo特定，设置从第一场正式战斗开始防止游戏崩坏
+        {
+            currentFight = 1;
+            loadEventSO.RaiseLoadRequestEvent(fight[currentFight], true);
+        }
+        
     }
     #endregion
 }

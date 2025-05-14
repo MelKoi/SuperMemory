@@ -13,6 +13,7 @@ public class BagDataManager : MonoBehaviour
     [Header("当前装备")]
     public CharactorAsset fightCharactor;
     public List<WeaponAsset> fightWeapons;
+    public List<WeaponAsset> startWeapons;
     public PlayerAsset Player;//玩家
     private int currentChooseWeapon = 0;
     
@@ -37,6 +38,11 @@ public class BagDataManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             Player.WeaponAsset[i] = fightWeapons[i];
+        }
+        AcquireCharactor(fightCharactor);
+        foreach (var weapon in startWeapons)
+        {
+            AcquireWeapon(weapon);
         }
     }
     //加载背包数据

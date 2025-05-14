@@ -14,6 +14,7 @@ public class GreenHand : BattleManager
     private int acc = 0;// 蓄能临时储存
     private bool hasAttackedThisTurn = false;
     private int TurnNum = 0;//回合数：0,1,2分别进行不同的教程；1，2，3则用于控制敌方的基本行动
+    
 
     [Header("新手教程组件")]
     [SerializeField] private GameObject GreenHandPanel;//教程面板
@@ -53,6 +54,13 @@ public class GreenHand : BattleManager
             case GamePhase.gameEnd:
                 Debug.Log("对局结束");
                 GameOver.SetActive(true);
+                if (!addDialogFlag)
+                {
+                    addDialogFlag = true;
+                    GameObject.Find("FightAndDialogController").GetComponent<FightAndDialogController>().currentDialog++;
+                    GameObject.Find("FightAndDialogController").GetComponent<FightAndDialogController>().currentFight++;
+                }
+               
                 //这里放回到对话的方法或者函数
                 return;
         }

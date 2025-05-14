@@ -22,6 +22,51 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 587cd020a1a14bb46925a372146b2834
+    m_Address: Theater
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94b0850c9c1431b49928ed636b5553a2
+    m_Address: Talk
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2232262a639a10641b7c27ba719726e8
+    m_Address: System
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9552bd1fb2e4b84385b1c81beabcdc9
+    m_Address: Room
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81bd90dc1fccd4344ba3b1dc786340ca
+    m_Address: Menu
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4be71d6d60334dd42b179870480ee71e
+    m_Address: GreenHand
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba8a7f313fbdbee40b5c09d2110370bb
+    m_Address: 1-3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a02eb93b0d1c8f24fb3f1c29cc741908
+    m_Address: 1-2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 700e21f795ed5414cbdbd597edbf504e
+    m_Address: 1-1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 46569492717de1a42bc1b4b9db5d916a, type: 2}
   m_SchemaSet:

@@ -77,14 +77,17 @@ public class BattleManager : MonoBehaviour
     public bool hasEnemyTurnStarted = false;//进入敌人的回合
     public CardPool PlayerPool;//对象池
     public bool PlayerSkillIsUsed = false;//玩家技能已经使用
-    public GameObject Bag;//获取背包
+    public bool addDialogFlag = false;
+    public BagDataManager bagDataManager;//获取背包
     [Header("广播")]
     public SceneLoadEventSO sceneLoadEvent;
     [Header("事件监听")]
     public BattleListen BS;
     [Header("场景")]
     public GameSceneSO room;
-   
+    [Header("通关奖励")]
+    public List<CharactorAsset> passCharactorReward;
+    public List<WeaponAsset> passWeaponReward;
 
     void Start()
     {
@@ -92,7 +95,7 @@ public class BattleManager : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Z) && Player.NowSp >= 10)//按下z执行玩家闪避
+        if (Input.GetKeyDown(KeyCode.Z) && Player.NowSp >= 10)//按下z执行玩家闪避
         {
             Player.NowSp = Player.NowSp - 10;
             StartCoroutine(PlayerHide());
@@ -117,6 +120,13 @@ public class BattleManager : MonoBehaviour
                 break;
             case GamePhase.gameEnd:
                 Debug.Log("对局结束");
+                if(Enemy.hp <= 0 && !addDialogFlag)
+                {
+                    addDialogFlag = true;
+                    GetPassReward();
+                    GameObject.Find("FightAndDialogController").GetComponent<FightAndDialogController>().currentDialog++;
+                    GameObject.Find("FightAndDialogController").GetComponent<FightAndDialogController>().currentFight++;
+                }
                 GameOver.SetActive(true);
                 return;
         }
@@ -137,7 +147,7 @@ public class BattleManager : MonoBehaviour
             UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
         }
-        if(Player.hp <= 0 || Enemy.hp <= 0)
+        if (Player.hp <= 0 || Enemy.hp <= 0)
         {
             _currentPhase = GamePhase.gameEnd;
         }
@@ -216,10 +226,10 @@ public class BattleManager : MonoBehaviour
         cardShaderController.SetRampTex(cardShaderController.cardCost, asset.Ramp);
         if (newCard.transform.parent.name.Equals("EnemyHand"))
         {
-              newCard.GetComponent<OneCardManager>().CardBack.SetActive(true);
+            newCard.GetComponent<OneCardManager>().CardBack.SetActive(true);
             newCard.GetComponent<CardPreview>().CanPreview = false;
         }
-            
+
 
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)
@@ -247,6 +257,8 @@ public class BattleManager : MonoBehaviour
     {
         //读取玩家各种数据
         PlayerData = Player.CharacterAsset;
+        //获取背包管理器
+        bagDataManager = GameObject.Find("Bag").GetComponent<BagDataManager>();
         for (int i = 0; i < 3; i++)
         {
             PlayerAllWeapons[i] = Player.WeaponAsset[i];
@@ -281,7 +293,7 @@ public class BattleManager : MonoBehaviour
 
         for (int i = 1; i <= 3; i++)
         {
-            BanEnemyWeapon.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = EnemyManager._PlayerAllWeapons[i-1].CardFace;
+            BanEnemyWeapon.transform.GetChild(i + 1).gameObject.GetComponent<Image>().sprite = EnemyManager._PlayerAllWeapons[i - 1].CardFace;
         }
 
         //统一更新UI
@@ -290,7 +302,7 @@ public class BattleManager : MonoBehaviour
             EnemyManager.Weapon2Acc, Enemy);
         for (int i = 1; i <= 3; i++)
         {
-            BanEnemyWeapon.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i-1].WeaponName;
+            BanEnemyWeapon.transform.GetChild(i + 1).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i - 1].WeaponName;
         }
         BanDescription.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[0].description;
         StartCoroutine(PlayGameStartAnimation());
@@ -306,7 +318,7 @@ public class BattleManager : MonoBehaviour
         if (SkillEffect != null)
             foreach (var effect in SkillEffect)//先结算当前我方展开的战技牌
             {
-                effect.ApplyEffect(this, EnemyManager,false);
+                effect.ApplyEffect(this, EnemyManager, false);
             }
         if (EnemyManager.SkillEffect != null)
             foreach (var effect in EnemyManager.SkillEffect)//再结算当前敌方展开的战技牌，下方敌人同理
@@ -342,7 +354,7 @@ public class BattleManager : MonoBehaviour
     }
     public void EnemyReady()//敌方准备阶段
     {
-       
+
         Debug.Log(_currentPhase);
         PowerButton.interactable = false;
         EndTurnButton.interactable = false;//将两个功能性按钮设置为不可控制状态
@@ -350,7 +362,7 @@ public class BattleManager : MonoBehaviour
         if (EnemyManager.SkillEffect != null)
             foreach (var effect in EnemyManager.SkillEffect)
             {
-                effect.ApplyEffect(this, EnemyManager,false);
+                effect.ApplyEffect(this, EnemyManager, false);
             }
         if (SkillEffect != null)
             foreach (var effect in SkillEffect)
@@ -367,7 +379,7 @@ public class BattleManager : MonoBehaviour
     }
     public void ChooseWeapons(Text text)//我方ban对方一个武器牌
     {
-        int j = 0,k = 0;
+        int j = 0, k = 0;
         int random = new System.Random().Next(0, 3);
         for (int i = 0; i < 3; i++)
         {
@@ -389,8 +401,8 @@ public class BattleManager : MonoBehaviour
         FirstDrew.SetActive(true);
         for (int i = 1; i <= 2; i++)
         {
-            FirstDrew.transform.GetChild(i+1).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i-1].WeaponName;
-            FirstDrew.transform.GetChild(i+1).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i-1].CardFace;
+            FirstDrew.transform.GetChild(i + 1).GetChild(0).gameObject.GetComponent<Text>().text = PlayerWeapons[i - 1].WeaponName;
+            FirstDrew.transform.GetChild(i + 1).gameObject.GetComponent<Image>().sprite = PlayerWeapons[i - 1].CardFace;
         }
         FirstDescription.GetComponent<Text>().text = PlayerWeapons[0].description;
         BanEnemyWeapon.SetActive(false);
@@ -465,24 +477,24 @@ public class BattleManager : MonoBehaviour
         }
         var behaviour = CardBehaviourFactory.Create(card);
         behaviour.Onplay(this, EnemyManager, cardObject);
-        if(_currentPhase == GamePhase.playerAction)
+        if (_currentPhase == GamePhase.playerAction)
             Destroy(cardObject);
         User.NowSp = nowsp;
     }
 
     public void PlayerUseSkill()
     {
-        if(!PlayerSkillIsUsed)
+        if (!PlayerSkillIsUsed)
         {
-            if(Player.mp - PlayerData.PowerCost >= 0)
+            if (Player.mp - PlayerData.PowerCost >= 0)
             {
                 Player.mp = Player.mp - PlayerData.PowerCost;
                 foreach (var SkillEffect in PlayerData.PowerEffect)
-                    SkillEffect.ApplyEffect(this, EnemyManager,false);
+                    SkillEffect.ApplyEffect(this, EnemyManager, false);
                 Debug.Log("技能已经使用");
                 PlayerSkillIsUsed = !PlayerSkillIsUsed;
             }
-           else
+            else
                 Debug.Log("能量不足");
         }
     }
@@ -492,14 +504,14 @@ public class BattleManager : MonoBehaviour
         {
             Enemy.mp = Enemy.mp - EnemyManager._PlayerData.PowerCost;
             //foreach (var SkillEffect in EnemyManager._PlayerData.PowerEffect)
-                //SkillEffect.ApplyEffect(this, EnemyManager, false);
+            //SkillEffect.ApplyEffect(this, EnemyManager, false);
             Debug.Log("技能已经使用");
             EnemyManager.EnemySkillIsUsed = !EnemyManager.EnemySkillIsUsed;
         }
         else
             Debug.Log("能量不足");
     }
- 
+
     IEnumerator PlayGameStartAnimation()//对战开始动画
     {
         BackGroud.Play();
@@ -519,10 +531,27 @@ public class BattleManager : MonoBehaviour
 
     public void BackToRoom()
     {
-        sceneLoadEvent.RaiseLoadRequestEvent(room,true);
-    }
-}  
+        sceneLoadEvent.RaiseLoadRequestEvent(room, true);
+    }//返回房间
 
+    public void GetPassReward()
+    {
+        foreach (var charactor in passCharactorReward)
+        {
+            if (charactor != null)
+            {
+                bagDataManager.AcquireCharactor(charactor);
+            }
+        }
+        foreach (var weapon in passWeaponReward)
+        {
+            if (weapon != null)
+            {
+                bagDataManager.AcquireWeapon(weapon);
+            }
+        }
+    }
+}
 
 public static class CardBehaviourFactory
 {

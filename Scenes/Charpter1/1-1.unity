@@ -4798,10 +4798,14 @@ MonoBehaviour:
   _currentPhase: 0
   hasEnemyTurnStarted: 0
   PlayerSkillIsUsed: 0
-  Bag: {fileID: 0}
+  addDialogFlag: 0
+  bagDataManager: {fileID: 0}
   sceneLoadEvent: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
   BS: {fileID: 1413065157}
   room: {fileID: 11400000, guid: 89b2bd19cd934c143bbd6c62847e2e09, type: 2}
+  passCharactorReward:
+  - {fileID: 11400000, guid: 5c8adf614e00a2d4f9a6e92e30ed6759, type: 2}
+  passWeaponReward: []
 --- !u!1 &1265284580
 GameObject:
   m_ObjectHideFlags: 0
