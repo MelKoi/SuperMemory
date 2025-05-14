@@ -35,7 +35,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // Update is called once per frame
     void Update()
     {
-      if(battleManager._currentPhase == GamePhase.playerReady)
+      if(battleManager._currentPhase == GamePhase.enemyReady)
         {
             isCooldown = false;
         }
@@ -80,7 +80,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
             {
                 if (Acc >= damage.Acc)
                 {
-                    isCooldown = !isCooldown;
+                    isCooldown = true;
                     Player.Damage = damage.Value;
                 }
             }
@@ -134,7 +134,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 attack.Weapon2 = true;
             }
             yield return new WaitForSeconds(cooldown);
-            isCooldown = !isCooldown;
+            isCooldown = false;
         }
     }
     private IEnumerator Pointed()

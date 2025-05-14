@@ -16,4 +16,4 @@ MonoBehaviour:
   Used: {fileID: 0}
   who: 1
   WeaponNum: 2
-  WeaponCanAtk: 0
+  WeaponCanAtk: 1

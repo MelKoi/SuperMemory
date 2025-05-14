@@ -293,7 +293,7 @@ public class GreenHand : BattleManager
             }
 
             // 移动卡牌到武器位置的动画
-            Vector3 weaponPosition = targetWeapon.transform.position;
+            Vector3 weaponPosition = new Vector3(targetWeapon.transform.position.x, targetWeapon.transform.position.y, Card.transform.position.z);
             yield return StartCoroutine(MoveCardToPosition(Card.gameObject, weaponPosition));
             EnemyManager.BS.accEvent.RaiseEvent();
             // 增加蓄能值
@@ -317,14 +317,11 @@ public class GreenHand : BattleManager
         card.GetComponent<CardPreview>().CanPreview = false;
         // 移动卡牌到屏幕中央的动画
         // 隐藏卡牌背面
-        card.transform.DORotate(new Vector3(0, 90, 0), 1.0f)
-            .SetEase(Ease.OutQuad)
-            .OnComplete(() => {
-                card.GetComponent<OneCardManager>().CardBack.gameObject.SetActive(false);
-                card.transform.DORotate(new Vector3(0, 180, 0), 1.0f);
-            });
+        
+        card.GetComponent<OneCardManager>().CardBack.gameObject.SetActive(false);
+            
 
-        card.transform.DOMove(new Vector3(960, 540, 0), 2.0f)
+        card.transform.DOMove(new Vector3(960, 540, card.transform.position.z), 2.0f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() => {
                 // 动画完成后执行

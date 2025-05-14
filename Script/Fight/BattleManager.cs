@@ -215,7 +215,11 @@ public class BattleManager : MonoBehaviour
         cardShaderController.SetRampTex(cardShaderController.cardDescription, asset.Ramp);
         cardShaderController.SetRampTex(cardShaderController.cardCost, asset.Ramp);
         if (newCard.transform.parent.name.Equals("EnemyHand"))
-            newCard.GetComponent<OneCardManager>().CardBack.SetActive(true);
+        {
+              newCard.GetComponent<OneCardManager>().CardBack.SetActive(true);
+            newCard.GetComponent<CardPreview>().CanPreview = false;
+        }
+            
 
     }
     private void CreateCharacter(CharactorAsset character, Transform parent)

@@ -344,11 +344,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleManager: {fileID: 0}
   doubleClickThreshold: 0.3
-  cooldown: 1
+  cooldown: 0.5
+  isCooldown: 0
   isAttacted: 0
   Enemy: {fileID: 11400000, guid: 1a5f203a65c3ab342828df6e319b07cd, type: 2}
   Player: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
   Acc: 0
   Weapon: {fileID: 0}
-  Damage: 0
   Point: {fileID: 0}
