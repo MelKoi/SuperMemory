@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Matiral
+  m_EditorClassIdentifier: 
+  m_GroupName: Matiral
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 527288bb332df8e43b72cd5bc58f46c0
+  m_SerializeEntries:
+  - m_GUID: c510f8917282f8041b4f6f51b000075e
+    m_Address: CardBody
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbbcfb787b8c64547aeb3233ef81352b
+    m_Address: CardName
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d76aa7ff0e2491a448d58c79700be581
+    m_Address: IsChoose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b7ffa991467c174480f64a841550182
+    m_Address: Cost
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42e8ee7eab2b71548b015c7c76602676
+    m_Address: CardGround
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88367ec162333bc40b0add0203db6624
+    m_Address: CardBack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc3ec975bd3fee84fabba79358724896
+    m_Address: Description
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 029d330a86f3b394b9fc1524c907dc4b
+    m_Address: CardType
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 46569492717de1a42bc1b4b9db5d916a, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 734a1ff8d380d0445a889cfd3a60c3ac, type: 2}
+    - {fileID: 11400000, guid: b713ae6c3a69eca4ea8b666df31f530b, type: 2}

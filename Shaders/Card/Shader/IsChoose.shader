@@ -16,8 +16,9 @@ Shader "IsChoose"
 	SubShader
 	{
 		Tags{ "RenderType" = "Transparent"  "Queue" = "Overlay+0" "IsEmissive" = "true"  }
-		Cull Back
+		Cull Off
 		ZWrite Off
+		ZTest Always
 		Blend SrcAlpha OneMinusSrcAlpha
 		
 		CGINCLUDE
@@ -147,7 +148,7 @@ Shader "IsChoose"
 }
 /*ASEBEGIN
 Version=18500
-224;204.8;1456.8;613.4;1107.421;393.8211;1;True;False
+6.4;153.6;1456.8;571.8;1107.421;373.0211;1;True;False
 Node;AmplifyShaderEditor.RangedFloatNode;29;-1534.29,-178.4192;Inherit;False;Property;_Speed;_Speed;5;0;Create;True;0;0;False;0;False;0;2;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleTimeNode;25;-1393.489,-176.8192;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CustomExpressionNode;32;-1215.889,-172.0191;Inherit;False;float speed = _Speed@$float amplitude = 0.5@$float center = 4.5@$return sin(Time * speed) * amplitude + center@;1;False;1;True;Time;FLOAT;0;In;;Inherit;False;My Custom Expression;True;False;0;1;0;FLOAT;0;False;1;FLOAT;0
@@ -158,7 +159,7 @@ Node;AmplifyShaderEditor.SamplerNode;7;-925.6624,95.96931;Inherit;True;Property;
 Node;AmplifyShaderEditor.ColorNode;4;-478.2933,-236.1808;Inherit;False;Property;_Color;Color;1;1;[HDR];Create;True;0;0;False;0;False;0,0,0,0;0.5924529,0.01229618,0.06071957,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.StaticSwitch;12;-529.2671,-57.71208;Inherit;False;Property;_Switch;Switch;4;0;Create;True;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;6;-82.51904,-114.6775;Inherit;False;3;3;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StandardSurfaceOutputNode;2;196.0001,-172.8;Float;False;True;-1;2;ASEMaterialInspector;0;0;Unlit;IsChoose;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;Back;2;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Custom;0.5;True;True;0;True;Transparent;;Overlay;All;14;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;2;5;False;-1;10;False;-1;0;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;0;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;False;15;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.StandardSurfaceOutputNode;2;196.0001,-172.8;Float;False;True;-1;2;ASEMaterialInspector;0;0;Unlit;IsChoose;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;Off;2;False;-1;7;False;-1;False;0;False;-1;0;False;-1;False;0;Custom;0.5;True;True;0;True;Transparent;;Overlay;All;14;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;2;5;False;-1;10;False;-1;0;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;0;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;False;15;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 WireConnection;25;0;29;0
 WireConnection;32;0;25;0
 WireConnection;21;0;32;0
@@ -171,4 +172,4 @@ WireConnection;6;2;7;0
 WireConnection;2;2;6;0
 WireConnection;2;9;7;4
 ASEEND*/
-//CHKSM=22C84DFAAC917C066461822909BF0843DECFC8F2
+//CHKSM=42071496F1128AF751315F481E5326DC443AA657

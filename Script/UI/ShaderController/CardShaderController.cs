@@ -22,60 +22,15 @@ public class CardShaderController : MonoBehaviour
     public Material cardName;
     public Material cardDescription;
     public Material cardCost;
-    
 
+    private bool _materialsInitialized = false;
     private Sprite sprite;
 
     [Header("溶解进度")]
     [Range(0,1f)]
     public float _ChangeAmount;
 
-    void Start()
-    {
-       
-        if (cardGroundImage != null)
-        {
-            cardGround = new Material(cardGroundImage.material);
-            cardGroundImage.material = cardGround;
-        }
-        if (cardTypeImage != null)
-        {
-            cardType = new Material(cardTypeImage.material);
-            cardTypeImage.material = cardType;
-        }
-        if (cardBodyImage != null)
-        {
-            cardBody = new Material(cardBodyImage.material);
-            cardBodyImage.material = cardBody;
-        }
-        if (cardNameText != null)
-        {
-            cardName = new Material(cardNameText.material);
-            cardNameText.material = cardName;
-        }
-        if (cardDescriptionText != null)
-        {
-            cardDescription = new Material(cardDescriptionText.material);
-            cardDescriptionText.material = cardDescription;
-        }
-        if (cardCostText != null)
-        {
-            cardCost = new Material(cardCostText.material);
-            cardCostText.material = cardCost;
-        }
-
-        if (cardGround == null || cardGround.shader == false || cardGround.shader.isSupported == false ||
-            cardType == null || cardType.shader == false || cardType.shader.isSupported == false||
-            cardBody == null || cardBody.shader == false || cardBody.shader.isSupported == false||
-            cardName == null || cardName.shader == false || cardName.shader.isSupported == false ||
-            cardDescription == null || cardDescription.shader == false || cardDescription.shader.isSupported == false ||
-            cardCost == null || cardCost.shader == false || cardCost.shader.isSupported == false )
-        {
-            enabled = false;
-            return;
-        }
-    }
-
+    
     private void Update()
     {
         if (cardGround != null)
@@ -179,37 +134,36 @@ public class CardShaderController : MonoBehaviour
     //实例化卡牌材质
     public void InitializeMaterials()
     {
-        if (cardGroundImage != null)
-        {
-            cardGround = new Material(cardGroundImage.material);
-            cardGroundImage.material = cardGround;
-        }
-        if (cardTypeImage != null)
-        {
-            cardType = new Material(cardTypeImage.material);
-            cardTypeImage.material = cardType;
-        }
-        if (cardBodyImage != null)
-        {
-            cardBody = new Material(cardBodyImage.material);
-            cardBodyImage.material = cardBody;
-        }
-        if (cardNameText != null)
-        {
-            cardName = new Material(cardNameText.materialForRendering);
-            cardNameText.material = cardName;
-        }
-        if (cardDescriptionText != null)
-        {
-            cardDescription = new Material(cardDescriptionText.materialForRendering);
-            cardDescriptionText.material = cardDescription;
-        }
-        if (cardCostText != null)
-        {
-            cardCost = new Material(cardCostText.materialForRendering);
-            cardCostText.material = cardCost;
-        }
+        if (_materialsInitialized) return;
+
+        // 使用安全实例化方法
+        cardGround = CreateMaterialInstance(cardGroundImage);
+        cardType = CreateMaterialInstance(cardTypeImage);
+        cardBody = CreateMaterialInstance(cardBodyImage);
+        cardName = CreateMaterialInstance(cardNameText);
+        cardDescription = CreateMaterialInstance(cardDescriptionText);
+        cardCost = CreateMaterialInstance(cardCostText);
+
+        _materialsInitialized = true;
+
+        #if UNITY_EDITOR
+        // 编辑器专用调试
+        Debug.Log("Materials initialized");
+        #endif
     }
 
-    
+    private Material CreateMaterialInstance(Graphic graphic)
+    {
+        if (graphic == null) return null;
+
+        Material mat = new Material(graphic.materialForRendering)
+        {
+            name = $"{graphic.name}_Instance",
+            hideFlags = HideFlags.DontSave
+        };
+        graphic.material = mat;
+        return mat;
+    }
+
+
 }

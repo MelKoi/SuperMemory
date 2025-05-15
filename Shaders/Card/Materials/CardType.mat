@@ -12,12 +12,13 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _MANNULCONTROL_ON
+  m_InvalidKeywords:
   - _MANNULCONTROL1_ON
-  m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 4000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -70,6 +71,7 @@ Material:
     - _EdgeIntensity1: 2
     - _EdgeWidth: 0.57
     - _EdgeWidth1: 0.54
+    - _MANNULCONTROL: 1
     - _MANNULCONTROL1: 1
     - _NoiseScale: 16.51
     - _Speed: 0.5
@@ -82,6 +84,7 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _UseUIAlphaClip: 0
+    - _ZWrite: 0
     - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
