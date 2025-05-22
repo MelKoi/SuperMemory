@@ -12,34 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b88895c0f0583b945a216cf8c47c8dec, type: 3}
   m_Name: MyBag
   m_EditorClassIdentifier: 
-  initialCharacters:
+  characters:
   - {fileID: 11400000, guid: 000e5d88b1cd0ef48b0c5b0385540fce, type: 2}
   - {fileID: 11400000, guid: 5c8adf614e00a2d4f9a6e92e30ed6759, type: 2}
-  initialWeapons:
-  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
+  charactorOwned: 0100
+  weapons:
+  - {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
   - {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
-  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
   - {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
   - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
-  - {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
-  initialItems: []
-  runtimeBagData:
-    characterStates:
-    - asset: {fileID: 11400000, guid: 000e5d88b1cd0ef48b0c5b0385540fce, type: 2}
-      owned: 0
-    - asset: {fileID: 11400000, guid: 5c8adf614e00a2d4f9a6e92e30ed6759, type: 2}
-      owned: 0
-    weaponStates:
-    - asset: {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
-      owned: 0
-    - asset: {fileID: 11400000, guid: 776ae0f9e11f0454bab11eb6254e9a8e, type: 2}
-      owned: 0
-    - asset: {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
-      owned: 0
-    - asset: {fileID: 11400000, guid: 9b1150fd538de1e4d8b93ab2c8fb2293, type: 2}
-      owned: 0
-    - asset: {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
-      owned: 0
-    - asset: {fileID: 11400000, guid: 77742181a9e5b8a4b9f0070458dde0b6, type: 2}
-      owned: 0
-    itemStates: []
+  - {fileID: 11400000, guid: a44103057a20d7f4f956b6f308c210dd, type: 2}
+  - {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
+  weaponsOwned: 000101000101
+  items: []
+  itemsOwned: 

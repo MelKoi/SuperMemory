@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
@@ -21,13 +22,13 @@ public class BagPanel : MonoBehaviour
     [Header("广播")]
     public ChangeFightCharactorSO changeFightCharactorEvent;
 
-    public BagDataManager bagDataManager;
+    [HideInInspector]public BagDataManager bagDataManager;
+    [HideInInspector] public BagAsset bagAsset;
     public List<GameObject> charactorList;
     public List<GameObject> weaponList;
     private float currentPosY;
     private RectTransform rectTransform;
     public GameObject TextPanel;
-
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -92,11 +93,12 @@ public class BagPanel : MonoBehaviour
     {
         int charactorCount = 1;
         int weaponCount = 1;
+        bagAsset = bagDataManager.bagAsset;
         //生成角色卡
-        for (int i = 0; bagDataManager.bagAsset.runtimeBagData.characterStates.Count > i; i++) {
-            if (bagDataManager.bagAsset.runtimeBagData.characterStates[i].owned)
+        for (int i = 0; bagAsset.characters.Count > i; i++) {
+            if (bagDataManager.HasCharactor(bagAsset.characters[i]))
             {
-                var charactor = bagDataManager.bagAsset.runtimeBagData.characterStates[i].asset;
+                var charactor = bagDataManager.bagAsset.characters[i];
                 string place = "Charactor/CharacterCard" + charactorCount.ToString();
                 CreateCharacter(charactor, transform.Find(place));
                 Debug.Log("生成角色卡");
@@ -104,13 +106,13 @@ public class BagPanel : MonoBehaviour
             }
         }
         //生成武器卡
-        for(int i = 0; bagDataManager.bagAsset.runtimeBagData.weaponStates.Count > i; i++) {
-            if (bagDataManager.bagAsset.runtimeBagData.weaponStates[i].owned)
+        for (int i = 0; bagAsset.weapons.Count > i; i++) {
+            if (bagDataManager.HasWeapon(bagAsset.weapons[i]))
             {
-                var weapon = bagDataManager.bagAsset.runtimeBagData.weaponStates[i].asset;
+                var weapon = bagDataManager.bagAsset.weapons[i];
                 string place = "Weapon/WeaponCard" + weaponCount.ToString();
                 CreateWeapon(weapon, transform.Find(place));
-                Debug.Log("生成武器卡");
+                Debug.Log("生成武器卡"); 
                 weaponCount++;
             }
         }
