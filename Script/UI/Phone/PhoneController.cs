@@ -123,10 +123,7 @@ public class PhoneController : MonoBehaviour
     {
         TextPanel.SetActive(false);
         yield return StartCoroutine(HidePhoneAndLock());
-        while (isUnlocking)
-        {
-            yield return null;
-        }
+        
         showBagPanelEvent.RaiseEvent();
     }
     #endregion
