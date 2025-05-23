@@ -20,7 +20,10 @@ MonoBehaviour:
   description: "\u4F2A\u88C5\u6210\u597D\u4EBA\u8FDB\u884C\u52AB\u6740\u7684\u76D7\u8D3C\uFF0C\u53EA\u8981\u8BC6\u7834\u5C31\u4E00\u5B9A\u8981\u5E72\u6389\uFF0C\u5426\u5219\u540E\u60A3\u65E0\u7A77\u3002"
   HandCardNum: 5
   Power: "\u80CC\u523A"
+  PowerDescription: "\u654C\u65B9\u5F03\u4E4B1\u5F20\u724C\uFF0C\u6211\u65B9\u62BD\u53D61\u5F20\u724C\u3002"
   HeroImage: {fileID: 21300000, guid: 867a3ea2178b13445bc88da925a1551d, type: 3}
   PowerImage: {fileID: 21300000, guid: f1a70423e29c9c34b8c521c3a5f5b557, type: 3}
-  PowerEffect: []
+  PowerEffect:
+  - {fileID: 11400000, guid: 5d5c13756df53b74ea25399bb26527a7, type: 2}
+  - {fileID: 11400000, guid: 420c66c28e3b4d04d9ae3902f6ad4f67, type: 2}
   PowerCost: 4

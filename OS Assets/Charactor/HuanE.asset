@@ -19,7 +19,8 @@ MonoBehaviour:
   speed: 5
   description: "\u5931\u4E50\u56ED\u4E8B\u4EF6\u7684\u82F1\u96C4\u4E4B\u4E00\uFF0C\u518D\u73B0\u4E86\u5176\u5728\u6E38\u620F\u4E2D\u547C\u706B\u5524\u96F7\u7684\u5F62\u8C61"
   HandCardNum: 3
-  Power: "\u96F7\u706B\u8BC0"
+  Power: "\u96F7\u5F71\u8BC0"
+  PowerDescription: "\u6D88\u8017\u516D\u70B9\u80FD\u91CF\uFF0C\u4F7F\u654C\u65B9\u7684\u5BF9\u5E94\u724C\u5931\u6548\u3002\n\u2014\u2014\u96F7\u8361\u5148\u673A\uFF0C\u89C1\u624B\u89C9\u8FDF\u3002"
   HeroImage: {fileID: 21300000, guid: 403b8b5422253aa4fa64c53896571f95, type: 3}
   PowerImage: {fileID: 21300000, guid: df646aa788f2ff745b4843cc38ebe8e9, type: 3}
   PowerEffect:

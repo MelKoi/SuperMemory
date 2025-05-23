@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 7830952447960012722}
   - component: {fileID: 5361332195254140545}
   - component: {fileID: 2612979959180687503}
+  - component: {fileID: 4758251642679453613}
   m_Layer: 5
   m_Name: CardPanel
   m_TagString: Untagged
@@ -559,6 +560,21 @@ MonoBehaviour:
   useFinish: 0
   isGreenCard: 0
   manager: {fileID: 0}
+--- !u!114 &4758251642679453613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3163413792254164860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e69abdb5172364681d9c396b9a0617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MessageBoxPrefeb: {fileID: 5693483600422547310, guid: 8895f9a68aa743e448b322ba5026a3da, type: 3}
+  Message: 
+  BattleManager: {fileID: 0}
 --- !u!1 &5341508537412880906
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "属性变动效果", menuName = "Card Effects/属性加减")]
@@ -54,11 +55,15 @@ public class Attribute : CardEffectAsset
                     Used.Weapon2Acc = 0;
                 break;
             case AttributeType.WeaponAcc:
-                int ChangeAcc;
+                int ChangeAcc = 0;
                 if(AccChangeMode == 1)
                     ChangeAcc = Used.Weapon1Acc < Used.Weapon2Acc? 1 : 2;//采用较小的作为主要修改对象，1表示Weapon1，2表示Weapon2
-                else
+                else if(AccChangeMode == 2)
                     ChangeAcc = Used.Weapon1Acc < Used.Weapon2Acc ? 2 : 1;//采用较大的作为主要修改对象，1表示Weapon1，2表示Weapon2
+                else if(AccChangeMode == 3)//用于攻击牌，用于检测当前攻击的是哪张武器牌后，操作当前武器牌的蓄能
+                {
+                    ChangeAcc = battleManager.LastAttWeapon;
+                }
                 switch (ChangeAcc)
                 {
                     case 1:

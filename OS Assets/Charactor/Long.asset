@@ -19,9 +19,10 @@ MonoBehaviour:
   speed: 4
   description: "\u7537\u4EBA"
   HandCardNum: 4
-  Power: 
+  Power: "\u714C\u4E4B\u9F99\u708E"
+  PowerDescription: "\u6D88\u80174\u70B9\u80FD\u91CF\uFF0C\u4F7F\u6211\u65B9\u84C4\u80FD\u8F83\u5C11\u7684\u6B66\u5668\u84C4\u80FD\u589E\u52A03.\n\u2014\u2014\u68A6\u706B\uFF0C\u51FA\u9798\uFF01"
   HeroImage: {fileID: 21300000, guid: 7514ed683ea7e38499171d060ce08a3b, type: 3}
   PowerImage: {fileID: 21300000, guid: 6089b7868ed0fcd4e9a7f8e570f32128, type: 3}
   PowerEffect:
   - {fileID: 11400000, guid: f9bd7575de0fed340bdfa8c0448c2207, type: 2}
-  PowerCost: 3
+  PowerCost: 4

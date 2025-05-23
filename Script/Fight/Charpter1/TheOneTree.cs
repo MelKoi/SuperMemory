@@ -36,6 +36,62 @@ public class TheOneTree : BattleManager
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Z) && Player.NowSp >= 10)//按下z执行玩家闪避
+        {
+            Player.NowSp = Player.NowSp - 10;
+            StartCoroutine(PlayerHide());
+        }
+        switch (_currentPhase)//根据回合阶段进行具体的操作
+        {
+            case GamePhase.playerReady:
+                PlayerReady();
+                break;
+            case GamePhase.enemyReady:
+                EnemyReady();
+                break;
+            case GamePhase.enemyAction:
+                if (!hasEnemyTurnStarted)
+                {
+                    int cardsNum = HandArea.transform.childCount;
+                    for (int i = 0; i < cardsNum; i++)
+                        HandArea.transform.GetChild(i).GetComponent<CardDragContral>().canDrug = false;
+                    StartEnemyTurn();
+                    hasEnemyTurnStarted = true;
+                }
+                break;
+            case GamePhase.gameEnd:
+                Debug.Log("对局结束");
+                if (Enemy.hp <= 0 && !addDialogFlag)
+                {
+                    addDialogFlag = true;
+                    GetPassReward();
+                    GameObject.Find("FightAndDialogController").GetComponent<FightAndDialogController>().currentDialog++;
+                    GameObject.Find("FightAndDialogController").GetComponent<FightAndDialogController>().currentFight++;
+                }
+                GameOver.SetActive(true);
+                return;
+        }
+        if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
+            || Player.Weapon2Acc != int.Parse(Weapon2Acc.text)
+            || Player.hp != int.Parse(HpText.text)
+            || Player.NowSp != int.Parse(SpText.text)
+            || Player.mp != int.Parse(MpText.text))
+        {
+            UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
+        }
+        if (Enemy.Weapon1Acc != int.Parse(EnemyManager.Weapon1Acc.text)
+            || Enemy.Weapon2Acc != int.Parse(EnemyManager.Weapon2Acc.text)
+            || Enemy.hp != int.Parse(EnemyManager.HpText.text)
+            || Enemy.NowSp != int.Parse(EnemyManager.SpText.text)
+            || Enemy.mp != int.Parse(EnemyManager.MpText.text))
+        {
+            UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
+            EnemyManager.Weapon2Acc, Enemy);
+        }
+        if (Player.hp <= 0 || Enemy.hp <= 0)
+        {
+            _currentPhase = GamePhase.gameEnd;
+        }
         if (AccNum >= 2)//检测是否需要改变权重,以下同理
         {
             actionWeights["UseCardAA"] = 7;

@@ -4569,7 +4569,7 @@ MonoBehaviour:
   ChooseWeapon: {fileID: 550831471}
   Place: {fileID: 1857775657}
   Player: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
-  Enemy: {fileID: 11400000, guid: 4c9e85926b87a8d459af3c37bb413575, type: 2}
+  Enemy: {fileID: 11400000, guid: 112ab3503c795c347a1a886af3a917e8, type: 2}
   PlayerData: {fileID: 11400000, guid: 000e5d88b1cd0ef48b0c5b0385540fce, type: 2}
   PlayerWeapons:
   - {fileID: 11400000, guid: 4272d5b002d87c541900552207640df3, type: 2}
@@ -4612,6 +4612,7 @@ MonoBehaviour:
   _currentPhase: 0
   hasEnemyTurnStarted: 0
   PlayerSkillIsUsed: 0
+  addDialogFlag: 0
   bagDataManager: {fileID: 0}
   sceneLoadEvent: {fileID: 11400000, guid: 6a4fe67163a05c149bdacbd8bbb21f60, type: 2}
   BS: {fileID: 1413065157}

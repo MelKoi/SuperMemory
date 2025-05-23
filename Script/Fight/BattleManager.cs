@@ -83,6 +83,7 @@ public class BattleManager : MonoBehaviour
     public SceneLoadEventSO sceneLoadEvent;
     [Header("事件监听")]
     public BattleListen BS;
+    public int LastAttWeapon;//监听玩家最后一次使用于攻击的武器
     [Header("场景")]
     public GameSceneSO room;
     [Header("通关奖励")]
@@ -120,7 +121,7 @@ public class BattleManager : MonoBehaviour
                 break;
             case GamePhase.gameEnd:
                 Debug.Log("对局结束");
-                if(Enemy.hp <= 0 && !addDialogFlag)
+                if (Enemy.hp <= 0 && !addDialogFlag)
                 {
                     addDialogFlag = true;
                     GetPassReward();
@@ -406,6 +407,8 @@ public class BattleManager : MonoBehaviour
         }
         FirstDescription.GetComponent<Text>().text = PlayerWeapons[0].description;
         BanEnemyWeapon.SetActive(false);
+        Enemy.WeaponOne = EnemyManager._PlayerWeapons[0];
+        Enemy.WeaponTwo = EnemyManager._PlayerWeapons[1];
         CreateWeapon(PlayerWeapons[0], transform.Find("Place/WeaponCard1"));
         CreateWeapon(PlayerWeapons[1], transform.Find("Place/WeaponCard2"));
         CreateWeapon(EnemyManager._PlayerWeapons[0], transform.Find("Place/Enemy/WeaponCard1"));
@@ -442,6 +445,8 @@ public class BattleManager : MonoBehaviour
         DrowCards(PlayerData.HandCardNum, HandArea, _currentDeck);
         DrowCards(EnemyManager._PlayerData.HandCardNum, EnemyManager.HandArea, EnemyManager._currentDeck);
         Place.SetActive(true);
+        Player.WeaponOne = PlayerWeapons[0];
+        Player.WeaponTwo = PlayerWeapons[1];
         FirstDrew.SetActive(false);
         ChooseWeapon.SetActive(false);
         _currentPhase = GamePhase.playerReady;

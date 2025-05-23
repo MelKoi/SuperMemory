@@ -64,6 +64,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 yield break;
             }
             Acc = attack.Weapon1Acc;
+            battleManager.LastAttWeapon = 1;
         }
         else
         {
@@ -73,6 +74,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 yield break;
             }
             Acc = attack.Weapon2Acc;
+            battleManager.LastAttWeapon = 2;
         }
         if (attacked.hp != 0 && !isCooldown)
         {
@@ -114,15 +116,7 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 }
                 enemyManager.Purple.GetComponent<Image>().sprite = battleManager.PClose;
             }
-            foreach (var effect in battleManager.AttackEffect)
-            {
-                effect.ApplyEffect(battleManager, enemyManager, false);
-            }
-            attacked.hp = attacked.hp - Player.Damage;
-            Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
-            attack.mp = attack.mp + Acc;
             Acc = 0;
-            Player.Damage = 0;
             if (transform.parent.name.Equals("WeaponCard1"))
             {
                 attack.Weapon1Acc = Acc;
@@ -133,6 +127,14 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
                 attack.Weapon2Acc = Acc;
                 attack.Weapon2 = true;
             }
+            foreach (var effect in battleManager.AttackEffect)
+            {
+                effect.ApplyEffect(battleManager, enemyManager, false);
+            }
+            attacked.hp = attacked.hp - Player.Damage;
+            Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
+            attack.mp = attack.mp + Acc;
+            Player.Damage = 0;
             yield return new WaitForSeconds(cooldown);
             isCooldown = false;
         }

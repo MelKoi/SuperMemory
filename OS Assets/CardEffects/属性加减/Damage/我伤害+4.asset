@@ -15,6 +15,7 @@ MonoBehaviour:
   User: {fileID: 0}
   Used: {fileID: 0}
   who: 0
-  TargetAttribute: 5
+  TargetAttribute: 6
   ModifierValue: 4
   DamageChange: 3
+  AccChangeMode: 0

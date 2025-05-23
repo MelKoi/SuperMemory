@@ -28,7 +28,8 @@ public class CardAsset : ScriptableObject
 
     [Header("卡面效果")]
     public List<CardEffectAsset> Effects = new List<CardEffectAsset>();
-    
+   
+
 }
 public class CardState
 {

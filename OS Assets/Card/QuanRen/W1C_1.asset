@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponAsset: {fileID: 11400000, guid: 1ca0f6cc39ecfb44692ac0b2f0ce494f, type: 2}
   CardName: "\u901F\u51FB"
-  description: "\u6BCF\u5F20\u901F\u51FB\u4F7F\u4E0B\u6B21\u653B\u51FB\u589E\u52A02\u70B9\u4F24\u5BB3\u3002"
+  description: "\u6BCF\u5F20\u901F\u51FB\u4F7F\u4E0B\u6B21\u653B\u51FB\u540E\u6062\u590D1\u70B9\u84C4\u80FD\u3002"
   cardPic: {fileID: 21300000, guid: 5ee4cefd276889e478b9460829e8cb0f, type: 3}
   Type: 0
   TypePic: {fileID: 21300000, guid: 010c5bcce7a0a2e449b7ed878001d16d, type: 3}
   cost: 4
   Ramp: {fileID: 21300000, guid: 1b7d56937fccfcd4185c7db6571b5df7, type: 3}
   Effects:
-  - {fileID: 11400000, guid: 7b7816628fab0a54594b1bff601e1d9b, type: 2}
+  - {fileID: 11400000, guid: 4e34bd70de56c18439c081e75640106c, type: 2}

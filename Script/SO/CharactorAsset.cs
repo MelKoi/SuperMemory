@@ -25,6 +25,8 @@ public class CharactorAsset : ScriptableObject
 
     public string Power;//技能
 
+    [TextArea(2, 3)] public string PowerDescription;//技能描述
+
     public Sprite HeroImage;//图片
 
     public Sprite PowerImage;//技能图片

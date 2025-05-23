@@ -15,6 +15,9 @@ public class PlayerAsset : ScriptableObject
 
     public WeaponAsset[] WeaponAsset = new WeaponAsset[3];//主要使用的武器
 
+
+    public WeaponAsset WeaponOne;//武器1
+    public WeaponAsset WeaponTwo;//武器2
     public int Weapon1Acc;//武器1蓄能
     public int Weapon2Acc;//武器2蓄能
     public bool Weapon1;//武器一已经攻击
