@@ -23,6 +23,7 @@ public class CardAsset : ScriptableObject
     public Type Type;
     public Sprite TypePic;//卡牌种类图案
     public string cost;//花费
+    public int StaticTurn;//战技卡起效的回合
 
     public Sprite Ramp;//对应的Ramp图
 
@@ -35,4 +36,5 @@ public class CardState
 {
     public int TemporaryCost; // 临时消耗 
     public bool IsInPlayArea; // 是否在展开区
+    public int NowStaticTurn;//现在开始可以起效的回合
 }

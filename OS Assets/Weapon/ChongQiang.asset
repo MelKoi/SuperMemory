@@ -15,16 +15,17 @@ MonoBehaviour:
   WeaponName: "\u8DC3\u9CA4"
   Wight: 8
   description: "\u590D\u53E4\u9020\u578B\u88C5\u9970\u7684\u706B\u67AA\uFF0C\u6BCF\u4E00\u53D1\u5B50\u5F39\u90FD\u8FC5\u6377\u800C\u81F4\u547D\uFF0C\u5982\u540C\u8DC3\u95E8\u7684\u9526\u9CA4\u3002\n\u84C4\u80FD\uFF1A4\uFF0C6\uFF0C7\n\u4F24\u5BB3\uFF1A7\uFF0C10\uFF0C14"
+  Smalldescription: 
   OnceAccumulation: 1
   CardBack: {fileID: 21300000, guid: 93e80e2b6736a76499c4634b362436a1, type: 3}
   CardFace: {fileID: 21300000, guid: c5735df686abbfc4da546d2aa9faeb16, type: 3}
   Accumulation:
   - Acc: 4
-    Value: 7
+    Value: 6
   - Acc: 6
-    Value: 10
+    Value: 8
   - Acc: 7
-    Value: 14
+    Value: 10
   Allcard:
   - {fileID: 11400000, guid: f58cefe5e363ce041a3e7e3532ad64cb, type: 2}
   - {fileID: 11400000, guid: f58cefe5e363ce041a3e7e3532ad64cb, type: 2}

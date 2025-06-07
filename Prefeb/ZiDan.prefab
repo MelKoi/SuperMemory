@@ -161,5 +161,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f353d0bfccb5cdc4c934be68dca289c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: 0
   speed: 0
+  maxDistance: 0
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  shilderLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  startPosition: {x: 0, y: 0, z: 0}
   hasHit: 0
+  HitShilder: 0

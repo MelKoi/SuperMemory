@@ -245,7 +245,6 @@ GameObject:
   - component: {fileID: 1040820346555357584}
   - component: {fileID: 6029661176819838907}
   - component: {fileID: 6006082408841909507}
-  - component: {fileID: 5031773708844886133}
   m_Layer: 5
   m_Name: WeaponCardPrefeb
   m_TagString: Untagged
@@ -330,25 +329,3 @@ MonoBehaviour:
   WeaponCardFace: {fileID: 4189010593944743051}
   WeaponNameText: {fileID: 9106497586602050377}
   DescriptionText: {fileID: 7132579159929345033}
---- !u!114 &5031773708844886133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3031318929838873099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f2426cadf5961e49b2583bf04b45dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleManager: {fileID: 0}
-  doubleClickThreshold: 0.3
-  cooldown: 0.5
-  isCooldown: 0
-  isAttacted: 0
-  Enemy: {fileID: 11400000, guid: 1a5f203a65c3ab342828df6e319b07cd, type: 2}
-  Player: {fileID: 11400000, guid: 07f5a2bb740c68b458c59172d12c68e7, type: 2}
-  Acc: 0
-  Weapon: {fileID: 0}
-  Point: {fileID: 0}

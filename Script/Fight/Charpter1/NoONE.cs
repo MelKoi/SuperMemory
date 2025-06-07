@@ -31,7 +31,7 @@ public class NoONE : BattleManager
             }
             //优先使用攻击牌
            GameObject attackCard = FindCardOfType(Type.攻击, EnemyCards);
-            if (attackCard != null && (Enemy.NowSp - int.Parse(attackCard.GetComponent<OneCardManager>().cardAsset.cost) >= 0))
+            if (attackCard != null && (Enemy.NowMp - int.Parse(attackCard.GetComponent<OneCardManager>().cardAsset.cost) >= 0))
             {
                 yield return StartCoroutine(UseCardWithAnimation(attackCard));
                 continue;
@@ -48,7 +48,7 @@ public class NoONE : BattleManager
             if (hasAttackedThisTurn)
             {
                 GameObject nonAttackCard = FindNonAttackCard(EnemyCards);
-                if (nonAttackCard != null && (Enemy.NowSp - int.Parse(nonAttackCard.GetComponent<OneCardManager>().cardAsset.cost) >= 0))
+                if (nonAttackCard != null && (Enemy.NowMp - int.Parse(nonAttackCard.GetComponent<OneCardManager>().cardAsset.cost) >= 0))
                 {
                     yield return StartCoroutine(UseCardWithAnimation(nonAttackCard));
                     continue;
@@ -129,7 +129,9 @@ public class NoONE : BattleManager
 
             if (Enemy.Damage != 0)
             {
-                StartCoroutine(PerformWeaponAttack(true));
+                gameObject.GetComponent<WeaponAttack>().Weapon = EnemyManager._PlayerWeapons[0];
+                StartCoroutine(gameObject.GetComponent<WeaponAttack>().Weapon1AttackEnemyCoroutine(Player,Enemy));
+                Behavior--;
                 didAttack = true; // 表示已开始攻击
                 return true; // 表示尝试了攻击
             }
@@ -148,86 +150,15 @@ public class NoONE : BattleManager
 
             if (Enemy.Damage != 0)
             {
-                StartCoroutine(PerformWeaponAttack(false));
+                gameObject.GetComponent<WeaponAttack>().Weapon = EnemyManager._PlayerWeapons[1];
+                StartCoroutine(gameObject.GetComponent<WeaponAttack>().Weapon1AttackEnemyCoroutine(Player, Enemy));
+                Behavior--;
                 didAttack = true; // 表示已开始攻击
                 return true; // 表示尝试了攻击
             }
         }
 
         return false;
-    }
-    // 新增协程方法处理实际攻击逻辑
-    private IEnumerator PerformWeaponAttack(bool isWeapon1)
-    {
-        // 触发攻击事件
-        EnemyManager.BS.attEvent.RaiseEvent();
-
-        // 等待攻击命中判定
-        float timeout = 3f; // 超时时间
-        float elapsed = 0f;
-
-        while (!EnemyManager.BS.bulletController.hasHit && elapsed < timeout)
-        {
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        if (!EnemyManager.BS.bulletController.hasHit)
-        {
-            Debug.LogWarning("攻击未命中或超时");
-            Enemy.mp += acc;//处理攻击后逻辑
-            acc = 0;
-            Enemy.Damage = Enemy.Damage/2;
-
-            if (isWeapon1)
-            {
-                Enemy.Weapon1Acc = 0;
-                Enemy.Weapon1 = true;
-            }
-            else
-            {
-                Enemy.Weapon2Acc = 0;
-                Enemy.Weapon2 = true;
-            }
-
-            hasAttackedThisTurn = true;
-            Behavior--;
-            yield break;
-        }
-
-        // 执行攻击命中后的逻辑
-        if (Purple.GetComponent<Image>().sprite == POpen)
-        {
-            foreach (var effect in CounterEffect)
-            {
-                effect.ApplyEffect(this, EnemyManager,true);
-            }
-            Purple.GetComponent<Image>().sprite = PClose;
-        }
-        foreach (var effect in EnemyManager.AttackEffect)
-        {
-            effect.ApplyEffect(this, EnemyManager, false);
-        }
-        Player.hp -= Enemy.Damage;
-        Debug.Log($"对我方造成{Enemy.Damage}点伤害！");
-        Enemy.mp += acc;//处理攻击后逻辑
-        acc = 0;
-        Enemy.Damage = 0;
-
-        if (isWeapon1)
-        {
-            Enemy.Weapon1Acc = 0;
-            Enemy.Weapon1 = true;
-        }
-        else
-        {
-            Enemy.Weapon2Acc = 0;
-            Enemy.Weapon2 = true;
-        }
-
-        hasAttackedThisTurn = true;
-        Behavior--;
-        
     }
     private GameObject FindNonAttackCard(List<Transform> EnemyCards)//寻找非攻击牌
     {

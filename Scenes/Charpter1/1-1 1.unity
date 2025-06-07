@@ -2703,7 +2703,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!111 &642813227
 Animation:
   m_ObjectHideFlags: 0
@@ -5591,6 +5591,9 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 128
+  BulletLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bulletController: {fileID: 0}
 --- !u!70 &1413065158
 CapsuleCollider2D:
@@ -5819,6 +5822,9 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64
+  BulletLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bulletController: {fileID: 0}
 --- !u!70 &1504436625
 CapsuleCollider2D:

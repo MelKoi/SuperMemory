@@ -9,8 +9,10 @@ public class BulletController : MonoBehaviour
     public float speed;
     public float maxDistance;
     public LayerMask collisionLayer;
+    public LayerMask shilderLayer;
     public Vector3 startPosition;
     public bool hasHit;
+    public bool HitShilder;
 
     public void Initialize(int dir, float spd, float maxDist, LayerMask layer)
     {
@@ -32,24 +34,38 @@ public class BulletController : MonoBehaviour
 
     private IEnumerator MoveBullet()
     {
-        while (Vector3.Distance(startPosition, transform.position) < maxDistance && !hasHit)
+        while (Vector3.Distance(startPosition, transform.position) < maxDistance && !hasHit && !HitShilder)
         {
             // 检测碰撞
             RaycastHit2D hit = Physics2D.Raycast(
                 transform.position,
                 Vector2.right * direction,
                 speed * Time.deltaTime,
-                collisionLayer);
+                shilderLayer);
 
-            if (hit.collider != null)
+             if (hit.collider != null)
             {
                 // 命中目标
-                HandleHit(hit.collider);
+                HitOnShilder(hit.collider);
                 yield break;
             }
+            else
+            {
+                hit = Physics2D.Raycast(
+               transform.position,
+               Vector2.right * direction,
+               speed * Time.deltaTime,
+               collisionLayer);
+                if (hit.collider != null)
+                {
+                    // 命中目标
+                    HandleHit(hit.collider);
+                    yield break;
+                }
+            }
 
-            // 移动子弹
-            transform.Translate(Vector3.right * direction * speed * Time.deltaTime);
+                // 移动子弹
+                transform.Translate(Vector3.right * direction * speed * Time.deltaTime);
             yield return null;
         }
 
@@ -61,13 +77,21 @@ public class BulletController : MonoBehaviour
     private void HandleHit(Collider2D other)
     {
         hasHit = true;
+        HitShilder = false;
         Debug.Log("子弹命中: " + other.gameObject.name);
 
         //这里可以添加命中效果，如爆炸动画等
 
         Destroy(gameObject);
     }
+    private void HitOnShilder(Collider2D other)
+    {
+        HitShilder = true;
+        hasHit = false;
+        Debug.Log("子弹命中: " + other.gameObject.name);
 
+        Destroy(gameObject);
+    }
     // 可选：使用物理碰撞检测替代射线检测
     //private void OnTriggerEnter2D(Collider2D other)
     //{

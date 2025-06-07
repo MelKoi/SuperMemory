@@ -14,7 +14,9 @@ public class CharactorAsset : ScriptableObject
 
     public int MaxHealth;//生命
 
-    public int MaxSp;//最大精力
+    public int MaxMp;//最大精力
+
+    public int MaxSynchronization;//最大同步率
 
     public int speed;//速度
 

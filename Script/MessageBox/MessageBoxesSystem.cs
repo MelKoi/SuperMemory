@@ -17,8 +17,10 @@ public class MessageBoxesSystem : MonoBehaviour,IPointerEnterHandler,IPointerExi
         string text = Message;
 
         //实例化提示框
-        currentTooltip = Instantiate(MessageBoxPrefeb, transform.root);
+        //currentTooltip = Instantiate(MessageBoxPrefeb, transform.root);
         if (gameObject.name.Equals("Power"))
+        {
+            currentTooltip = Instantiate(MessageBoxPrefeb, transform.root);
             if (gameObject.transform.parent.name.Equals("Enemy"))
             {
                 currentTooltip.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = BattleManager.Enemy.CharacterAsset.Power + "\n" +
@@ -31,16 +33,22 @@ public class MessageBoxesSystem : MonoBehaviour,IPointerEnterHandler,IPointerExi
                                   BattleManager.Player.CharacterAsset.PowerCost + "\n" +
                                   BattleManager.Player.CharacterAsset.PowerDescription;
             }
-        if(gameObject.name.Equals("CardPanel(Clone)"))
+        }
+        if (gameObject.name.Equals("CardPanel(Clone)") && transform.parent.name.Equals("Hand"))
+        {
+            currentTooltip = Instantiate(MessageBoxPrefeb, transform.root);
             currentTooltip.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = gameObject.GetComponent<OneCardManager>().cardAsset.CardName + "\n" +
-                  gameObject.GetComponent<OneCardManager>().cardAsset.cost + "\n" +
-                  gameObject.GetComponent<OneCardManager>().cardAsset.description;
+                 gameObject.GetComponent<OneCardManager>().cardAsset.cost + "\n" +
+                 gameObject.GetComponent<OneCardManager>().cardAsset.description;
+        }
+
 
         //currentTooltip.GetComponent<TMP_Text>().text = text;
 
         //设置位置
         Vector3 offset = new Vector3(0,-0,0);
-        currentTooltip.transform.position = Input.mousePosition + offset;
+        if(currentTooltip != null)
+            currentTooltip.transform.position = Input.mousePosition + offset;
     }
 
     public void OnPointerExit(PointerEventData eventData)

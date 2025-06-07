@@ -7,12 +7,13 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public enum GamePhase
 {
-    gameStart,playerAction,enemyAction,playerReady,enemyReady,gameEnd
+    gameStart,AllReady,playerAction,enemyAction,playerReady,enemyReady,playerEnd,enemyEnd,gameEnd
 }
 public class BattleManager : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class BattleManager : MonoBehaviour
     public WeaponAsset[] PlayerWeapons = new WeaponAsset[2];//禁用后武器卡
     public WeaponAsset[] PlayerAllWeapons = new WeaponAsset[3];//初始武器卡
     public WeaponAsset DrewWeapon;//第一个抽的武器
+    public bool Weapon1CardEmpety = false;//第一个武器卡组被抽空
+    public bool Weapon2CardEmpety = false;//第二个武器卡组被抽空
 
     [Header("敌方数据引用")]
     public EnemyManager EnemyManager;//敌方管理器
@@ -48,14 +51,14 @@ public class BattleManager : MonoBehaviour
     public GameObject WeaponPrefeb;//武器卡牌预制体
 
     [Header("UI组件")]
-    public Text HpText;//我方生命
-    public Text SpText;//我方体力
-    public Text MpText;//我方能量
+    public TextMeshProUGUI HpText;//我方生命
+    public TextMeshProUGUI MpText;//我方能量
+    public Text SynchronizationText;//我方架势条
     public Text Weapon1Acc;//武器1蓄能
     public Text Weapon2Acc;//武器2蓄能
     public GameObject Purple;//对应卡是否使用
     public GameObject ZeroPoint;//战斗场地中心
-    public Button PowerButton;//能量按钮
+    public Button PowerButton;//技能按钮
     public Button EndTurnButton;//回合结束按钮
     public Image PlayerPower;//玩家的技能图片
     public Image EnemyPower;//敌人的技能图片
@@ -77,7 +80,7 @@ public class BattleManager : MonoBehaviour
     public bool hasEnemyTurnStarted = false;//进入敌人的回合
     public CardPool PlayerPool;//对象池
     public bool PlayerSkillIsUsed = false;//玩家技能已经使用
-    public bool addDialogFlag = false;
+    public bool addDialogFlag = false;//？
     public BagDataManager bagDataManager;//获取背包
     [Header("广播")]
     public SceneLoadEventSO sceneLoadEvent;
@@ -96,10 +99,10 @@ public class BattleManager : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && Player.NowSp >= 10)//按下z执行玩家闪避
+        if (Input.GetKeyDown(KeyCode.Z) && Player.NowMp >= 5 && !Player.Injured)//按下z执行玩家格挡，对于韧性条的根据伤害伤害衰减：标准：原始伤害5以下为1档，7以下为2档，7以上为3档
         {
-            Player.NowSp = Player.NowSp - 10;
-            StartCoroutine(PlayerHide());
+            Player.NowMp = Player.NowMp - 5;
+            PlayerHide();
         }
         switch (_currentPhase)//根据回合阶段进行具体的操作
         {
@@ -119,9 +122,13 @@ public class BattleManager : MonoBehaviour
                     hasEnemyTurnStarted = true;
                 }
                 break;
+            case GamePhase.playerEnd:
+                PlayerEnd(); break;
+            case GamePhase.enemyEnd:
+                EnemyEnd(); break;
             case GamePhase.gameEnd:
                 Debug.Log("对局结束");
-                if (Enemy.hp <= 0 && !addDialogFlag)
+                if (Enemy.NowHp <= 0 && !addDialogFlag)
                 {
                     addDialogFlag = true;
                     GetPassReward();
@@ -131,26 +138,34 @@ public class BattleManager : MonoBehaviour
                 GameOver.SetActive(true);
                 return;
         }
-        if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
-            || Player.Weapon2Acc != int.Parse(Weapon2Acc.text)
-            || Player.hp != int.Parse(HpText.text)
-            || Player.NowSp != int.Parse(SpText.text)
-            || Player.mp != int.Parse(MpText.text))
+        if(_currentPhase != GamePhase.gameStart)
         {
-            UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
-        }
-        if (Enemy.Weapon1Acc != int.Parse(EnemyManager.Weapon1Acc.text)
-            || Enemy.Weapon2Acc != int.Parse(EnemyManager.Weapon2Acc.text)
-            || Enemy.hp != int.Parse(EnemyManager.HpText.text)
-            || Enemy.NowSp != int.Parse(EnemyManager.SpText.text)
-            || Enemy.mp != int.Parse(EnemyManager.MpText.text))
-        {
-            UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
-            EnemyManager.Weapon2Acc, Enemy);
-        }
-        if (Player.hp <= 0 || Enemy.hp <= 0)
-        {
-            _currentPhase = GamePhase.gameEnd;
+            if (Player.Weapon1Acc != int.Parse(Weapon1Acc.text)
+           || Player.Weapon2Acc != int.Parse(Weapon2Acc.text)
+           || Player.NowMp != int.Parse(HpText.text)
+           || Player.NowMp != int.Parse(MpText.text)
+           || Player.NowSynchronization != int.Parse(SynchronizationText.text))
+            {
+                UpdateUI(HpText, MpText, SynchronizationText, Weapon1Acc, Weapon2Acc, Player);
+            }
+            if (Enemy.Weapon1Acc != int.Parse(EnemyManager.Weapon1Acc.text)
+                || Enemy.Weapon2Acc != int.Parse(EnemyManager.Weapon2Acc.text)
+                || Enemy.NowHp != int.Parse(EnemyManager.HpText.text)
+                || Enemy.NowMp != int.Parse(EnemyManager.MpText.text)
+                || Enemy.NowSynchronization != int.Parse(EnemyManager.SynchronizationText.text))
+            {
+                UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SynchronizationText, EnemyManager.Weapon1Acc,
+                EnemyManager.Weapon2Acc, Enemy);
+            }
+            if (Player.NowSynchronization > Player.MaxSynchronization)
+                Player.NowSynchronization = Player.MaxSynchronization;
+            if (Enemy.NowSynchronization > Enemy.MaxSynchronization)
+                Enemy.NowSynchronization = Enemy.MaxSynchronization;
+            if ((Player.NowHp <= 0 || Enemy.NowHp <= 0) || ((Weapon1CardEmpety && Weapon2CardEmpety) ||
+                (EnemyManager.Weapon1CardEmpety && EnemyManager.Weapon2CardEmpety)))//任何一方生命值归零或者手牌抽完判负
+            {
+                _currentPhase = GamePhase.gameEnd;
+            }
         }
     }
     public void DrowCards(int amount, GameObject HandArea, List<CardAsset> _currentDeck)//抽取卡牌
@@ -158,12 +173,18 @@ public class BattleManager : MonoBehaviour
         if (_currentDeck.Count == 0)//本次抽卡时发现牌库为空
             if (_currentPhase == GamePhase.playerReady)//如果是玩家抽卡发现的
             {
-                foreach (WeaponAsset second in PlayerWeapons)
-                    if (!second.WeaponName.Equals(DrewWeapon.WeaponName))//检索玩家拥有的第二把武器
+                if(!Weapon1CardEmpety)//确定是第几把武器抽空了
+                    Weapon1CardEmpety = true;
+                else
+                    Weapon2CardEmpety = true;
+                    foreach (WeaponAsset second in PlayerWeapons)
                     {
-                        DrewWeapon = second;//更新抽取的武器
-                        break;
-                    }
+                        if (!second.WeaponName.Equals(DrewWeapon.WeaponName))//检索玩家拥有的第二把武器
+                        {
+                            DrewWeapon = second;//更新抽取的武器
+                            break;
+                        }
+                    }  
                 foreach (CardAsset card in DrewWeapon.Allcard)//拷贝卡牌
                 {
                     _currentDeck.Add(card);
@@ -176,6 +197,10 @@ public class BattleManager : MonoBehaviour
             }
             else if (_currentPhase == GamePhase.enemyReady)//如果是敌人抽卡发现的
             {
+                if (!EnemyManager.Weapon1CardEmpety)//确定是第几把武器抽空了
+                    EnemyManager.Weapon1CardEmpety = true;
+                else
+                    EnemyManager.Weapon2CardEmpety = true;
                 foreach (WeaponAsset second in EnemyManager._PlayerWeapons)
                     if (!second.WeaponName.Equals(EnemyManager.DrewWeapon.WeaponName))//检索敌人拥有的第二把武器
                     {
@@ -204,7 +229,8 @@ public class BattleManager : MonoBehaviour
             }
 
             int randomIndex = UnityEngine.Random.Range(0, _currentDeck.Count);
-            CreateCard(_currentDeck[randomIndex], HandArea.transform);
+            if(HandArea != null)
+                CreateCard(_currentDeck[randomIndex], HandArea.transform);
             _currentDeck.RemoveAt(randomIndex);
         }
     }
@@ -246,11 +272,11 @@ public class BattleManager : MonoBehaviour
         newWeapon.GetComponent<WeaponCardManager>().ReadCardFromAsset(weapon);
     }
     //UI更新
-    public void UpdateUI(Text Hptext, Text Mptext, Text Sptext, Text Weapon1Acc, Text Weapon2Acc, PlayerAsset player)
+    public void UpdateUI(TextMeshProUGUI Hptext, TextMeshProUGUI Mptext, Text SynchronizationText, Text Weapon1Acc, Text Weapon2Acc, PlayerAsset player)
     {
-        Hptext.text = player.hp.ToString();
-        Mptext.text = player.mp.ToString();
-        Sptext.text = player.NowSp.ToString();
+        Hptext.text = player.NowHp.ToString();
+        Mptext.text = player.NowMp.ToString();
+        SynchronizationText.text = player.NowSynchronization.ToString();
         Weapon1Acc.text = player.Weapon1Acc.ToString();
         Weapon2Acc.text = player.Weapon2Acc.ToString();
     }
@@ -264,16 +290,17 @@ public class BattleManager : MonoBehaviour
         {
             PlayerAllWeapons[i] = Player.WeaponAsset[i];
         }
-        Player.hp = PlayerData.MaxHealth;
-        Player.maxSp = PlayerData.MaxSp;
-        Player.NowSp = Player.maxSp;
-        PlayerPool = new CardPool();
-        _currentDeck = new List<CardAsset>();
-        Player.Weapon1Acc = Player.Weapon2Acc = Player.mp = 0;
-        Player.Weapon1 = Player.Weapon2 = false;
-        CreateCharacter(PlayerData, transform.Find("Place/CharacterCard"));
-        PlayerPower.sprite = PlayerData.PowerImage;
-        Purple.GetComponent<Image>().sprite = PClose;
+        Player.MaxHp = Player.NowHp = PlayerData.MaxHealth;//玩家游戏开始时的生命值
+        Player.MaxSynchronization = Player.NowSynchronization = PlayerData.MaxSynchronization;//玩家的架势条最大值
+        PlayerPool = new CardPool();//初始化玩家的卡牌对象池
+        _currentDeck = new List<CardAsset>();//初始化玩家可手牌list
+        Player.Weapon1Acc = Player.Weapon2Acc = Player.NowMp = 0;//玩家游戏开始时的两把武器蓄能，能量值
+        Player.Weapon1 = Player.Weapon2 = false;//将两把武器设置为可攻击状态
+        CreateCharacter(PlayerData, transform.Find("Place/CharacterCard"));//创建玩家卡
+        HpText = transform.Find("Place/CharacterCard/CharacterCard(Clone)/HP/HPText").GetComponent<TextMeshProUGUI>();
+        MpText = transform.Find("Place/CharacterCard/CharacterCard(Clone)/MP/MPText").GetComponent<TextMeshProUGUI>();
+        PlayerPower.sprite = PlayerData.PowerImage;//创建玩家技能
+        Purple.GetComponent<Image>().sprite = PClose;//将对应牌状态设置为否
 
         //读取敌方各种数据
         EnemyManager._PlayerData = Enemy.CharacterAsset;
@@ -281,14 +308,16 @@ public class BattleManager : MonoBehaviour
         {
             EnemyManager._PlayerAllWeapons[i] = Enemy.WeaponAsset[i];
         }
-        Enemy.hp = EnemyManager._PlayerData.MaxHealth;
-        Enemy.maxSp = EnemyManager._PlayerData.MaxSp;
-        Enemy.NowSp = Enemy.maxSp;
+        Enemy.MaxHp = Enemy.NowHp = EnemyManager._PlayerData.MaxHealth;
+        Enemy.MaxSynchronization = Enemy.NowSynchronization = EnemyManager._PlayerData.MaxSynchronization;
+        Enemy.NowMp = 10;
         EnemyManager.EnemyPool = new CardPool();
         EnemyManager._currentDeck = new List<CardAsset>();
-        Enemy.Weapon1Acc = Enemy.Weapon2Acc = Enemy.mp = 0;
+        Enemy.Weapon1Acc = Enemy.Weapon2Acc =0;
         Enemy.Weapon1 = Enemy.Weapon2 = false;
         CreateCharacter(EnemyManager._PlayerData, transform.Find("Place/Enemy/CharacterCard"));
+        EnemyManager.HpText = transform.Find("Place/Enemy/CharacterCard/CharacterCard(Clone)/HP/HPText").GetComponent<TextMeshProUGUI>();
+        EnemyManager.MpText = transform.Find("Place/Enemy/CharacterCard/CharacterCard(Clone)/MP/MPText").GetComponent<TextMeshProUGUI>();
         EnemyPower.sprite = EnemyManager._PlayerData.PowerImage;
         EnemyManager.Purple.GetComponent<Image>().sprite = PClose;
 
@@ -298,10 +327,10 @@ public class BattleManager : MonoBehaviour
         }
 
         //统一更新UI
-        UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);
-        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
+        UpdateUI(HpText, MpText, SynchronizationText, Weapon1Acc, Weapon2Acc, Player);
+        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SynchronizationText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
-        for (int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 3; i++)//将敌方武器赋给ban武器界面
         {
             BanEnemyWeapon.transform.GetChild(i + 1).GetChild(0).gameObject.GetComponent<Text>().text = EnemyManager._PlayerAllWeapons[i - 1].WeaponName;
         }
@@ -311,11 +340,11 @@ public class BattleManager : MonoBehaviour
     public void PlayerReady()//玩家准备阶段
     {
         hasEnemyTurnStarted = false;//敌方回合结束
-        Debug.Log(_currentPhase);
+        Debug.Log(_currentPhase);//显示回合阶段
         PowerButton.interactable = true;
         EndTurnButton.interactable = true;//将两个功能性按钮设置为可按下状态
-        Player.NowSp = Player.maxSp;//恢复体力
-        PlayerSkillIsUsed = false;
+        Player.NowMp += 10;//恢复体力,每个回合恢复10点，玩家每次攻击会将卡牌数量添加，不超过上线（MaxMp）
+        PlayerSkillIsUsed = false;//重置玩家技能使用情况
         if (SkillEffect != null)
             foreach (var effect in SkillEffect)//先结算当前我方展开的战技牌
             {
@@ -326,11 +355,20 @@ public class BattleManager : MonoBehaviour
             {
                 effect.ApplyEffect(this, EnemyManager, true);
             }
-        if (EnemyManager.CounterEffect.Count != 0)
+        if (EnemyManager.CounterEffect.Count != 0)//检测敌方是否有对应牌的保险代码，经测试决定是否可以删掉
             EnemyManager.Purple.GetComponent<Image>().sprite = POpen;
-        Player.Damage = 0;
-        UpdateUI(HpText, MpText, SpText, Weapon1Acc, Weapon2Acc, Player);//更新UI
-        DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);//抽卡
+        if (Enemy.Injured)//重置敌方韧性条
+        {
+            Enemy.Injured = false;
+            Enemy.NowSynchronization = Enemy.MaxSynchronization / 2;
+        }
+        else if (!Player.Weapon1 && !Player.Weapon2)//如果本回合没有攻击，敌方架势条恢复25%
+            Enemy.NowSynchronization += (Enemy.MaxSynchronization / 4);
+        Player.Damage = 0;//重置伤害
+        UpdateUI(HpText, MpText, SynchronizationText, Weapon1Acc, Weapon2Acc, Player);//更新UI
+        //重置武器攻击状态
+        Enemy.Weapon1 = false;
+        Enemy.Weapon2 = false;
         _currentPhase = GamePhase.playerAction;
         int cardsNum = HandArea.transform.childCount;
         for (int i = 0; i < cardsNum; i++)
@@ -340,17 +378,13 @@ public class BattleManager : MonoBehaviour
     {
         if (_currentPhase == GamePhase.playerAction)
         {
-            //重置武器攻击状态
-            Player.Weapon1 = false;
-            Player.Weapon2 = false;
-            _currentPhase = GamePhase.enemyReady;
+            
+            _currentPhase = GamePhase.playerEnd;
         }
         else if (_currentPhase == GamePhase.enemyAction)
         {
-            //重置武器攻击状态
-            Enemy.Weapon1 = false;
-            Enemy.Weapon2 = false;
-            _currentPhase = GamePhase.playerReady;
+           
+            _currentPhase = GamePhase.enemyEnd;
         }
     }
     public void EnemyReady()//敌方准备阶段
@@ -359,7 +393,7 @@ public class BattleManager : MonoBehaviour
         Debug.Log(_currentPhase);
         PowerButton.interactable = false;
         EndTurnButton.interactable = false;//将两个功能性按钮设置为不可控制状态
-        Enemy.NowSp = Enemy.maxSp;//恢复体力
+        Enemy.NowMp += 10;//恢复体力
         if (EnemyManager.SkillEffect != null)
             foreach (var effect in EnemyManager.SkillEffect)
             {
@@ -371,12 +405,31 @@ public class BattleManager : MonoBehaviour
                 effect.ApplyEffect(this, EnemyManager, true);
             }
         Enemy.Damage = 0;
+        if(Player.Injured)
+        {
+            Player.Injured = false;
+            Player.NowSynchronization = Player.MaxSynchronization / 2;
+        }
+        else if (!Player.Weapon1 && !Player.Weapon2)//如果本回合没有攻击，敌方架势条恢复25%
+            Enemy.NowSynchronization += (Enemy.MaxSynchronization / 4);
         if (CounterEffect.Count != 0)
             Purple.GetComponent<Image>().sprite = POpen;
-        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SpText, EnemyManager.Weapon1Acc,
+        UpdateUI(EnemyManager.HpText, EnemyManager.MpText, EnemyManager.SynchronizationText, EnemyManager.Weapon1Acc,
             EnemyManager.Weapon2Acc, Enemy);
-        DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount, EnemyManager.HandArea, EnemyManager._currentDeck);
+        //重置武器攻击状态
+        Player.Weapon1 = false;
+        Player.Weapon2 = false;
         _currentPhase = GamePhase.enemyAction;
+    }
+    public void PlayerEnd()//玩家的结束阶段
+    {
+        DrowCards(PlayerData.HandCardNum - HandArea.transform.childCount, HandArea, _currentDeck);//抽卡
+        _currentPhase = GamePhase.enemyReady;
+    }
+    public void EnemyEnd()//敌方的结束阶段
+    {
+        DrowCards(EnemyManager._PlayerData.HandCardNum - EnemyManager.HandArea.transform.childCount, EnemyManager.HandArea, EnemyManager._currentDeck);
+        _currentPhase = GamePhase.playerReady;
     }
     public void ChooseWeapons(Text text)//我方ban对方一个武器牌
     {
@@ -469,14 +522,14 @@ public class BattleManager : MonoBehaviour
         int nowsp;
         if (User.TemporaryCostReduction != 0)
         {
-            nowsp = User.NowSp + User.TemporaryCostReduction - int.Parse(card.cost);
+            nowsp = User.NowMp + User.TemporaryCostReduction - int.Parse(card.cost);
             User.TemporaryCostReduction = 0;
         }
         else
-            nowsp = User.NowSp - int.Parse(card.cost);
+            nowsp = User.NowMp - int.Parse(card.cost);
         if (nowsp < 0)
         {
-            nowsp = User.NowSp;
+            nowsp = User.NowMp;
             Debug.Log("当前体力不够使用此牌");
             return;
         }
@@ -484,16 +537,16 @@ public class BattleManager : MonoBehaviour
         behaviour.Onplay(this, EnemyManager, cardObject);
         if (_currentPhase == GamePhase.playerAction)
             Destroy(cardObject);
-        User.NowSp = nowsp;
+        User.NowMp = nowsp;
     }
 
     public void PlayerUseSkill()
     {
         if (!PlayerSkillIsUsed)
         {
-            if (Player.mp - PlayerData.PowerCost >= 0)
+            if (Player.NowMp - PlayerData.PowerCost >= 0)
             {
-                Player.mp = Player.mp - PlayerData.PowerCost;
+                Player.NowMp = Player.NowMp - PlayerData.PowerCost;
                 foreach (var SkillEffect in PlayerData.PowerEffect)
                     SkillEffect.ApplyEffect(this, EnemyManager, false);
                 Debug.Log("技能已经使用");
@@ -505,9 +558,9 @@ public class BattleManager : MonoBehaviour
     }
     public void EnemyUseSkill()
     {
-        if (Enemy.mp - EnemyManager._PlayerData.PowerCost >= 0)
+        if (Enemy.NowMp - EnemyManager._PlayerData.PowerCost >= 0)
         {
-            Enemy.mp = Enemy.mp - EnemyManager._PlayerData.PowerCost;
+            Enemy.NowMp = Enemy.NowMp - EnemyManager._PlayerData.PowerCost;
             //foreach (var SkillEffect in EnemyManager._PlayerData.PowerEffect)
             //SkillEffect.ApplyEffect(this, EnemyManager, false);
             Debug.Log("技能已经使用");
@@ -525,13 +578,9 @@ public class BattleManager : MonoBehaviour
         ChooseWeapon.SetActive(true);
 
     }
-    public IEnumerator PlayerHide()//玩家躲避
+    public void PlayerHide()//玩家格挡
     {
-        BS.gameObject.layer = LayerMask.NameToLayer("Default");
         BS.hideEvent.RaiseEvent();
-        yield return new WaitForSeconds(0.3f);
-        BS.gameObject.layer = LayerMask.NameToLayer("Player");
-
     }
 
     public void BackToRoom()

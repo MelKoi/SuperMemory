@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -13,6 +14,8 @@ public class EnemyManager : MonoBehaviour
     public WeaponAsset[] _PlayerWeapons = new WeaponAsset[2];//禁用后武器卡
     public WeaponAsset[] _PlayerAllWeapons = new WeaponAsset[3];//初始武器卡
     public WeaponAsset DrewWeapon;//第一个抽的武器
+    public bool Weapon1CardEmpety = false;//第一个武器卡组被抽空
+    public bool Weapon2CardEmpety = false;//第二个武器卡组被抽空
 
     [Header("敌方区域")]
     public GameObject HandArea;//手牌区域
@@ -25,9 +28,9 @@ public class EnemyManager : MonoBehaviour
     public GameObject WeaponPrefeb;//武器卡牌预制体
 
     [Header("UI组件")]
-    public Text HpText;//生命
-    public Text SpText;//体力
-    public Text MpText;//能量
+    public TextMeshProUGUI HpText;//敌方生命
+    public Text SynchronizationText;//敌方体力
+    public TextMeshProUGUI MpText;//敌方能量
     public Text Weapon1Acc;//武器1蓄能
     public Text Weapon2Acc;//武器2蓄能
     public GameObject Purple;//对应卡是否使用

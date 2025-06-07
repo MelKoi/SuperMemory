@@ -2,21 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WeaponAttack : MonoBehaviour, IPointerClickHandler
+public class WeaponAttack : MonoBehaviour
 {
-    public BattleManager battleManager;
-    public float doubleClickThreshold = 0.3f;//双击时间阈值(s)
-    public float cooldown = 0.5f;//冷却时间
-    public bool isCooldown = false;//是否在冷却
+    [System.Serializable]
+    public struct Syn//格挡值对应的减少关系
+    {
+        public int injured;//伤害阈值
+        public int synHarm;//格挡值衰减
+    }
+    public List<Syn> syn;
 
-    public bool isAttacted = false;
-    private float lastClickTime; // 上次点击时间
+    public BattleManager battleManager;
+    public float cooldown = 0.5f;//冷却时间
+   
+
+
+
     public PlayerAsset Enemy;
     public PlayerAsset Player;
+    public GameObject Weapon1;//第一武器
+    public GameObject Weapon2;//第二武器
     public int Acc;//蓄能
     public WeaponAsset Weapon;//武器
 
@@ -25,118 +35,259 @@ public class WeaponAttack : MonoBehaviour, IPointerClickHandler
     // Start is called before the first frame update
     void Start()
     {
-        Weapon = gameObject.GetComponent<WeaponCardManager>().weaponAsset;
-        battleManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<BattleManager>();
+        battleManager = GetComponent<BattleManager>();
         Enemy = battleManager.Enemy;
         Player = battleManager.Player;
-        GameObject PointObject = battleManager.transform.Find("Place/Point").gameObject;
+        GameObject PointObject = transform.Find("Place/Point").gameObject;
         Point = PointObject.GetComponent<Text>();
     }
     // Update is called once per frame
     void Update()
     {
-      if(battleManager._currentPhase == GamePhase.enemyReady)
+       if(Input.GetKeyDown(KeyCode.X))//按下X触发第一个武器攻击
         {
-            isCooldown = false;
+            Weapon = Weapon1.transform.Find("WeaponCardPrefeb(Clone)").GetComponent<WeaponCardManager>().weaponAsset;
+            StartCoroutine(Weapon1AttackEnemyCoroutine(Enemy, Player)); 
         }
-    }
-    // 实现 IPointerClickHandler 接口（适用于UI元素）
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        // 检测是否为双击
-        if (Time.time - lastClickTime < doubleClickThreshold)
+       else if(Input.GetKeyDown(KeyCode.C))//按下C触发第二个武器攻击
         {
-            // 触发攻击逻辑
-           StartCoroutine(AttackEnemyCoroutine(Enemy, Player));
+            Weapon = Weapon2.transform.Find("WeaponCardPrefeb(Clone)").GetComponent<WeaponCardManager>().weaponAsset;
+            StartCoroutine(Weapon2AttackEnemyCoroutine(Enemy, Player));
         }
-        lastClickTime = Time.time;
     }
     // 攻击敌方
-    private IEnumerator AttackEnemyCoroutine(PlayerAsset attacked, PlayerAsset attack)
+    public IEnumerator Weapon1AttackEnemyCoroutine(PlayerAsset attacked, PlayerAsset attack)
     {
-        BattleManager battleManager = transform.parent.parent.parent.GetComponent<BattleManager>();
-        EnemyManager enemyManager = transform.parent.parent.parent.GetComponent<EnemyManager>();
-        if (transform.parent.name.Equals("WeaponCard1"))
+        EnemyManager enemyManager = GetComponent<EnemyManager>();
+        if (attack.Weapon1)//如果本次我方/敌方行动阶段已经攻击过
         {
-            if (attack.Weapon1)
-            {
-                StartCoroutine(Pointed());
-                yield break;
-            }
-            Acc = attack.Weapon1Acc;
-            battleManager.LastAttWeapon = 1;
+            StartCoroutine(Pointed());//触发提示面板
+            yield break;
         }
-        else
-        {
-            if (attack.Weapon2)
-            {
-                StartCoroutine(Pointed());
-                yield break;
-            }
-            Acc = attack.Weapon2Acc;
-            battleManager.LastAttWeapon = 2;
-        }
-        if (attacked.hp != 0 && !isCooldown)
+        Acc = attack.Weapon1Acc;//获取蓄能
+           
+        if (attacked.NowHp != 0 && !attack.Weapon1isCooldown)//如果敌方的HP不等于零且武器1还没有正在攻击（攻击进入冷却）
         {
             foreach (var damage in Weapon.Accumulation)
             {
                 if (Acc >= damage.Acc)
                 {
-                    isCooldown = true;
-                    Player.Damage = damage.Value;
+                    attack.Weapon1isCooldown = true;
+                    attack.Damage = damage.Value;
                 }
             }
-            if (Player.Damage == 0)
+            if (attack.Damage == 0)
             {
                StartCoroutine(AccLow());
                 yield break;
-            }   
-            battleManager.BS.attEvent.RaiseEvent();
+            }
+            bool hasHit;
+            bool HitShilder;
+            Sprite purple;
+            List<CardEffectAsset> att;
+            List<CardEffectAsset> coun;
+            if (attack == Player)
+            {
+                battleManager.BS.attEvent.RaiseEvent();
+                // 等待攻击命中判定
+                float timeout = 1f; // 超时时间
+                float elapsed = 0f;
+
+                while (elapsed < timeout)
+                {
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+               
+                battleManager.LastAttWeapon = 1;//变更玩家最后攻击的武器
+                hasHit = battleManager.BS.bulletController.hasHit;
+                HitShilder = battleManager.BS.bulletController.HitShilder;
+                purple = enemyManager.Purple.GetComponent<Image>().sprite;
+                att = battleManager.AttackEffect;
+                coun = battleManager.CounterEffect;
+
+            }
+            else
+            {
+                enemyManager.BS.attEvent.RaiseEvent();
+                // 等待攻击命中判定
+                float timeout = 1f; // 超时时间
+                float elapsed = 0f;
+
+                while (elapsed < timeout)
+                {
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+                
+                hasHit = enemyManager.BS.bulletController.hasHit;
+                HitShilder = enemyManager.BS.bulletController.HitShilder;
+                purple = battleManager.Purple.GetComponent<Image>().sprite;
+                att = enemyManager.AttackEffect;
+                coun = enemyManager.CounterEffect; 
+            }
+            Debug.Log(hasHit);
+            Debug.Log(HitShilder);
+            if (HitShilder)//攻击到盾牌
+            {
+                Debug.LogWarning("攻击被格挡");
+                attack.Damage = attack.Damage * 3 / 4;
+            }
+            if (attacked.Injured)
+            {
+                attack.Damage = attack.Damage * 5 / 4;
+            }
+            if (purple == battleManager.POpen && HitShilder)//如果对方已经使用过对应牌
+            {
+                foreach (var effect in coun)//调用对应牌的效果
+                {
+                    effect.ApplyEffect(battleManager, enemyManager, true);
+                }
+                purple = battleManager.PClose;
+            }
+            attack.NowMp = attack.NowMp + Acc;
+            Acc = 0;
+            attack.Weapon1Acc = Acc;
+            attack.Weapon1 = true;
+            foreach (var effect in att)
+            {
+                effect.ApplyEffect(battleManager, enemyManager, false);
+            }
+            int TemporarySyn = 0;
+            foreach (var synChange in syn)//变动格挡值
+            { 
+                if (attack.Damage > synChange.injured)
+                    TemporarySyn = synChange.synHarm;
+            }
+            if(attacked.NowSynchronization != 0)//如果格挡值不为零则受到格挡值损伤
+            {
+                attacked.NowSynchronization -= TemporarySyn;
+            }
+            if(attacked.NowSynchronization == 0 && !attacked.Injured)//如果格挡值归零且不为破绽模式
+            {
+                attacked.Injured = true;
+            }
+            attacked.NowHp = attacked.NowHp - attack.Damage;
+            attack.NowSynchronization += (attack.MaxSynchronization * 3 / 20);
+            Debug.Log($"使用 {Weapon.WeaponName} 对敌方造成" + attack.Damage + "点伤害！");
+            attack.NowSynchronization = (int)(attack.NowSynchronization * 1.15f);
+            attack.Damage = 0;
+            yield return new WaitForSeconds(cooldown);
+            attack.Weapon1isCooldown = false;
+        }
+    }
+    private IEnumerator Weapon2AttackEnemyCoroutine(PlayerAsset attacked, PlayerAsset attack)
+    {
+        EnemyManager enemyManager = GetComponent<EnemyManager>();
+        if (attack.Weapon2)//如果本次我方/敌方行动阶段已经攻击过
+        {
+            StartCoroutine(Pointed());//触发提示面板
+            yield break;
+        }
+        Acc = attack.Weapon2Acc;//获取蓄能
+
+        if (attacked.NowHp != 0 && !attack.Weapon2isCooldown)//如果敌方的HP不等于零且武器1还没有正在攻击（攻击进入冷却）
+        {
+            foreach (var damage in Weapon.Accumulation)
+            {
+                if (Acc >= damage.Acc)
+                {
+                    attack.Weapon2isCooldown = true;
+                    attack.Damage = damage.Value;
+                }
+            }
+            if (attack.Damage == 0)
+            {
+                StartCoroutine(AccLow());
+                yield break;
+            }
+            bool hasHit;
+            bool HitShilder;
+            Sprite purple;
+            List<CardEffectAsset> att;
+            List<CardEffectAsset> coun;
+            if (attack == Player)
+            {
+                battleManager.LastAttWeapon = 2;//变更玩家最后攻击的武器
+                battleManager.BS.attEvent.RaiseEvent();
+                hasHit = battleManager.BS.bulletController.hasHit;
+                HitShilder = battleManager.BS.bulletController.HitShilder;
+                purple = enemyManager.Purple.GetComponent<Image>().sprite;
+                att = battleManager.AttackEffect;
+                coun = battleManager.CounterEffect;
+                
+            }
+            else
+            {
+                enemyManager.BS.attEvent.RaiseEvent();
+                hasHit = enemyManager.BS.bulletController.hasHit;
+                HitShilder = enemyManager.BS.bulletController.HitShilder;
+                purple = battleManager.Purple.GetComponent<Image>().sprite;
+                att = enemyManager.AttackEffect;
+                coun = enemyManager.CounterEffect;
+                
+
+            }
+
 
             // 等待攻击命中判定
-            float timeout = 3f; // 超时时间
+            float timeout = 2f; // 超时时间
             float elapsed = 0f;
 
-            while (!battleManager.BS.bulletController.hasHit && elapsed < timeout)
+            while (!hasHit && !HitShilder && elapsed < timeout)
             {
                 elapsed += Time.deltaTime;
                 yield return null;
             }
+            Debug.Log(hasHit);
+            Debug.Log(HitShilder);
 
-            if (!battleManager.BS.bulletController.hasHit)
+            if (HitShilder)//攻击到盾牌
             {
-                Debug.LogWarning("攻击未命中或超时");
-                yield break;
+                Debug.LogWarning("攻击被格挡");
+                attack.Damage = attack.Damage * 3 / 4;
             }
-            if (enemyManager.Purple.GetComponent<Image>().sprite == battleManager.POpen)//如果对方已经使用过对应牌
+            if (attacked.Injured)
             {
-                foreach (var effect in enemyManager.CounterEffect)//调用对应牌的效果
+                attack.Damage = attack.Damage * 5 / 4;
+            }
+            if (purple == battleManager.POpen && HitShilder)//如果对方已经使用过对应牌
+            {
+                foreach (var effect in coun)//调用对应牌的效果
                 {
-                    effect.ApplyEffect(battleManager, enemyManager,true);
+                    effect.ApplyEffect(battleManager, enemyManager, true);
                 }
-                enemyManager.Purple.GetComponent<Image>().sprite = battleManager.PClose;
+                purple = battleManager.PClose;
             }
+            attack.NowMp = attack.NowMp + Acc;
             Acc = 0;
-            if (transform.parent.name.Equals("WeaponCard1"))
-            {
-                attack.Weapon1Acc = Acc;
-                attack.Weapon1 = true;
-            }
-            else
-            {
-                attack.Weapon2Acc = Acc;
-                attack.Weapon2 = true;
-            }
-            foreach (var effect in battleManager.AttackEffect)
+            attack.Weapon2Acc = Acc;
+            attack.Weapon2 = true;
+            foreach (var effect in att)
             {
                 effect.ApplyEffect(battleManager, enemyManager, false);
             }
-            attacked.hp = attacked.hp - Player.Damage;
-            Debug.Log($"使用 {gameObject.name} 对敌方造成" + Player.Damage + "点伤害！");
-            attack.mp = attack.mp + Acc;
-            Player.Damage = 0;
+            int TemporarySyn = 0;
+            foreach (var synChange in syn)//变动格挡值
+            {
+                if (attack.Damage > synChange.injured)
+                    TemporarySyn = synChange.synHarm;
+            }
+            if (attacked.NowSynchronization != 0)//如果格挡值不为零则受到格挡值损伤
+            {
+                attacked.NowSynchronization -= TemporarySyn;
+            }
+            if (attacked.NowSynchronization == 0 && !attacked.Injured)//如果格挡值归零且不为破绽模式
+            {
+                attacked.Injured = true;
+            }
+            attacked.NowHp = attacked.NowHp - attack.Damage;
+            attack.NowSynchronization += (attack.MaxSynchronization * 3 / 20);
+            Debug.Log($"使用 {Weapon.WeaponName} 对敌方造成" + attack.Damage + "点伤害！");
+            attack.NowSynchronization = (int)(attack.NowSynchronization * 1.15f);
+            attack.Damage = 0;
             yield return new WaitForSeconds(cooldown);
-            isCooldown = false;
+            attack.Weapon2isCooldown = false;
         }
     }
     private IEnumerator Pointed()

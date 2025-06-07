@@ -17,6 +17,8 @@ public class WeaponAsset : ScriptableObject
     public int Wight;
     [TextArea(2, 3)]//填写框，最少2行，最多3行
     public string description;//卡牌描述
+    [TextArea(2, 3)]//填写框，最少2行，最多3行
+    public string Smalldescription;//卡牌特性描述
     public int OnceAccumulation;//单次蓄力
     public Sprite CardBack;//卡背
     public Sprite CardFace;//卡面

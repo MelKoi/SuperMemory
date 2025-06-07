@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.PlayerLoop;
 
 public class BattleListen : MonoBehaviour
 {
@@ -33,7 +34,9 @@ public class BattleListen : MonoBehaviour
     public float bulletSpeed = 10f;
     public float maxBulletDistance; // 子弹最大飞行距离
     public LayerMask collisionLayer; // 设置要检测的碰撞层
+    public LayerMask BulletLayer;//子弹碰撞层
     public BulletController bulletController = null;//子弹管理
+    public GameObject ShilderPrefeb;//盾牌预制体
 
 
     private void Awake()
@@ -62,19 +65,25 @@ public class BattleListen : MonoBehaviour
     public void OnHideEvent()
     {
         if (!isHide) {
-            Debug.Log("闪避");
+            Debug.Log("格挡");
             isHide = true;
+            GameObject Shilder = new GameObject();
             Sequence sequence = DOTween.Sequence();
-            //第一阶段：向指定方向移动
-            sequence.Append(transform.DOMoveY(currentPosition.y - dir * hideDistance, duration));
-            //第二阶段：停留wait秒
-            sequence.AppendInterval(0.2f);
-            //第三阶段：移回原位
-            sequence.Append(transform.DOMoveY(currentPosition.y, duration)
-                            .SetEase(Ease.OutQuad));
-            // 动画结束时重置标志
-            sequence.OnComplete(() => isHide = false);
-            //开始播放序列
+            sequence.Append(transform.DORotate(new Vector3(0,45,0), 0.1f)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    Shilder = Instantiate(ShilderPrefeb,
+                new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z),
+                Quaternion.identity);
+                }));
+            sequence.AppendInterval(0.3f);
+            sequence.Append(transform.DORotate(new Vector3(0, 0, 0), duration)
+               .SetEase(Ease.OutQuad));
+            sequence.OnComplete(() => {
+                Destroy(Shilder);
+                isHide = false;
+            });
             sequence.Play();
         }
         

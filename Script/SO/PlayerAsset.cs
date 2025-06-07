@@ -8,10 +8,11 @@ public class PlayerAsset : ScriptableObject
 
     public CharactorAsset CharacterAsset;//人物
 
-    public int hp;
-    public int mp;
-    public int maxSp;
-    public int NowSp;
+    public int MaxHp;//生命值
+    public int NowHp;
+    public int MaxSynchronization;//架势条
+    public int NowSynchronization;
+    public int NowMp;
 
     public WeaponAsset[] WeaponAsset = new WeaponAsset[3];//主要使用的武器
 
@@ -22,7 +23,11 @@ public class PlayerAsset : ScriptableObject
     public int Weapon2Acc;//武器2蓄能
     public bool Weapon1;//武器一已经攻击
     public bool Weapon2;//武器二已经攻击
+    public bool Weapon1isCooldown = false;//是否在冷却
+    public bool Weapon2isCooldown = false;
     public int TemporaryCostReduction;//减少的卡牌消耗
     public int Damage;//攻击的伤害
+    public bool Injured = false;//是否进入重伤
+    public int InjuredTurn = 0;//进入重伤的回合,到1清零
 
 }

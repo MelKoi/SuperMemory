@@ -133,7 +133,9 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         else if (!RectTransformUtility.RectangleContainsScreenPoint(//发现了无法移动原处的bug
             handArea.GetComponent<RectTransform>(),
             eventData.position,
-            eventData.pressEventCamera))
+            eventData.pressEventCamera)
+            && handArea.transform.parent.parent.GetComponent<BattleManager>().Player.NowMp > 
+            int.Parse(GetComponent<OneCardManager>().cardAsset.cost))
         {
             // 触发卡牌使用逻辑
             Debug.Log("卡牌已拖出手牌区！");
@@ -152,7 +154,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private void HandleCardUsage()
     {
-        int UserSp = CardUser.NowSp;//记录玩家现在的sp
+        int UserSp = CardUser.NowMp;//记录玩家现在的sp
         // 在此处实现卡牌效果逻辑
         OneCardManager cardManager = GetComponent<OneCardManager>();
         if(cardManager == null)
@@ -165,7 +167,7 @@ public class CardDragContral : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             battleManager.UseCard(cardManager.cardAsset, gameObject, battleManager.Player);
         }
-        if(UserSp != CardUser.NowSp)
+        if(UserSp != CardUser.NowMp)
             rectTransform.DOAnchorPos(originalPosition, 0.3f).SetEase(Ease.OutBack)
                 .OnComplete(() => transform.SetParent(originalParent));
     }
