@@ -9,10 +9,44 @@ namespace DialogueEditor
         public KeyCode m_UpKey;
         public KeyCode m_DownKey;
         public KeyCode m_SelectKey;
+        public GameObject DialogCanvas;
+        [Header("广播监听")]
+        public VoidEventSO closeBagPanel;
+        public VoidEventSO showBagPanel;
+        public VoidEventSO checkPicture;
 
+        private bool bagOpenFlag = false;
+        private bool checkPictureFlag = false;
+        private void OnEnable()
+        {
+            showBagPanel.OnEventRaised += ShowBagPanel;
+            closeBagPanel.OnEventRaised += CloseBagPanel;
+            checkPicture.OnEventRaised += CheckPictureState;
+        }
+        private void OnDisable()
+        {
+            showBagPanel.OnEventRaised -= ShowBagPanel;
+            closeBagPanel.OnEventRaised -= CloseBagPanel;
+            checkPicture.OnEventRaised -= CheckPictureState;
+        }
+
+        public void ShowBagPanel()
+        {
+            bagOpenFlag = true;
+            //DialogCanvas.SetActive(false);
+        }
+
+        public void CloseBagPanel()
+        {
+            //DialogCanvas.SetActive(true);
+            bagOpenFlag = false;
+        }
+        public void CheckPictureState() {
+            checkPictureFlag = !checkPictureFlag;
+        }
         private void Update()
         {
-            if (ConversationManager.Instance != null)
+            if (ConversationManager.Instance != null && !bagOpenFlag && !checkPictureFlag)
             {
                 UpdateConversationInput();
             }

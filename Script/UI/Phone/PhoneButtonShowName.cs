@@ -7,6 +7,29 @@ using UnityEngine.UI;
 public class PhoneButtonShowName : MonoBehaviour
 {
     public Text ButtonName;
+    public GameObject textPanel;
+    [Header("å¹¿æ’­")]
+    public VoidEventSO bagPanelOpen;
+
+    
+    private bool textPanelFlag = true;
+    private void Awake()
+    {
+        textPanel.SetActive(true);
+    }
+    private void OnEnable()
+    {
+        bagPanelOpen.OnEventRaised += OnBagPannalOpen;
+    }
+    private void OnDisable()
+    {
+        bagPanelOpen.OnEventRaised -= OnBagPannalOpen;
+    }
+    public void OnBagPannalOpen()
+    {
+        textPanelFlag = !textPanelFlag;
+        textPanel.SetActive(textPanelFlag);
+    }
     // Start is called before the first frame update
     public GameObject GetOverUI(GameObject canvas)
     {
@@ -27,28 +50,28 @@ public class PhoneButtonShowName : MonoBehaviour
         switch (GetOverUI(transform.parent.gameObject).name)
         {
             case "Load":
-                ButtonName.text = "ÊÖ»úÊı¾İ¶ÁÈ¡£º´ËDemoÖĞÓÃÀ´²é¿´±³°ü   ±³°ü";
+                ButtonName.text = "æ‰‹æœºæ•°æ®è¯»å–ï¼šæ­¤Demoä¸­ç”¨æ¥æŸ¥çœ‹èƒŒåŒ…   èƒŒåŒ…";
                 break;
             case "Music":
-                ButtonName.text = "ÈûÈÉÒôÀÖ£º¸øÄã´øÀ´º£Ñı°ãµÄÀÖÇúÌåÑé   ÒôÀÖ²¥·ÅÆ÷";
+                ButtonName.text = "å¡å£¬éŸ³ä¹ï¼šç»™ä½ å¸¦æ¥æµ·å¦–èˆ¬çš„ä¹æ›²ä½“éªŒ   éŸ³ä¹æ’­æ”¾å™¨";
                 break;
             case "Community":
-                ButtonName.text = "ÇÃÇÃÉçÇø£º»îÔ¾ÔÚ½»Á÷µÄ×îÇ°Ïß   ÉçÇø";
+                ButtonName.text = "æ•²æ•²ç¤¾åŒºï¼šæ´»è·ƒåœ¨äº¤æµçš„æœ€å‰çº¿   ç¤¾åŒº";
                 break;
             case "Shop":
-                ButtonName.text = "±À±ÀÆÌ×Ó£º±À»µµÄÊÀ½ç£¬ÈÃÍø¹ºÀ´Õü¾È   Íø¹ºÖĞĞÄ";
+                ButtonName.text = "å´©å´©é“ºå­ï¼šå´©åçš„ä¸–ç•Œï¼Œè®©ç½‘è´­æ¥æ‹¯æ•‘   ç½‘è´­ä¸­å¿ƒ";
                 break;
             case "Challenge":
-                ButtonName.text = "Ã·Â¶ĞÁÌıÊé£ºÓÃ×îºÃµÄÓïÆøËßËµ¹ÊÊÂ    ÌôÕ½";
+                ButtonName.text = "æ¢…éœ²è¾›å¬ä¹¦ï¼šç”¨æœ€å¥½çš„è¯­æ°”è¯‰è¯´æ•…äº‹    æŒ‘æˆ˜";
                 break;
             case "News":
-                ButtonName.text = "ĞÂÎÅÁùºÅ£ºÈÃÎÒÃÇ³¯×ÅÃ¿ÈÕÈÈµãÎ§¹¥   ĞÂÎÅ";
+                ButtonName.text = "æ–°é—»å…­å·ï¼šè®©æˆ‘ä»¬æœç€æ¯æ—¥çƒ­ç‚¹å›´æ”»   æ–°é—»";
                 break;
             case "Taxi":
-                ButtonName.text = "Ã·Â¶ĞÁ´î³µ£ºÈÃÄã³ÉÎª´©Ô½±ß½çµÄ¾ŞÁú£¡  ¿ÉÒÔÍ¨¹ı´ËÏîÈ¥¾çÔº";
+                ButtonName.text = "æ¢…éœ²è¾›æ­è½¦ï¼šè®©ä½ æˆä¸ºç©¿è¶Šè¾¹ç•Œçš„å·¨é¾™ï¼  å¯ä»¥é€šè¿‡æ­¤é¡¹å»å‰§é™¢";
                 break;
             default:
-                ButtonName.text = "ĞìÁµÁ§£º°¡£¬ÎÒÂèÓÖÔÚ·¢ºÃ³ÔµÄ²öÎÒÁË¡­¡­";
+                ButtonName.text = "å¾æ‹ç’ƒï¼šå•Šï¼Œæˆ‘å¦ˆåˆåœ¨å‘å¥½åƒçš„é¦‹æˆ‘äº†â€¦â€¦";
                 break;
         }
     }

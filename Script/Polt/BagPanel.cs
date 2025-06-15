@@ -21,14 +21,18 @@ public class BagPanel : MonoBehaviour
     public VoidEventSO showBagPanelEvent;  //监听显示背包广播
     [Header("广播")]
     public ChangeFightCharactorSO changeFightCharactorEvent;
+    public VoidEventSO bagPanelOpen;
 
     [HideInInspector]public BagDataManager bagDataManager;
     [HideInInspector] public BagAsset bagAsset;
     public List<GameObject> charactorList;
+    public List<CharactorAsset> charactorAssetsList;
     public List<GameObject> weaponList;
+    public List<WeaponAsset> weaponAssetsList;
+    private int charactorCount = 1;
+    private int weaponCount = 1;
     private float currentPosY;
     private RectTransform rectTransform;
-    public GameObject TextPanel;
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -74,12 +78,13 @@ public class BagPanel : MonoBehaviour
             
         }
     }
-    private void CreateCharacter(CharactorAsset character, Transform parent)
+    private void CreateCharactor(CharactorAsset charactor, Transform parent)
     {
-        GameObject newCharacter = Instantiate(characterPrefeb, parent);
-        newCharacter.GetComponent<CharacterCardManager>().charactorasset = character;
-        newCharacter.GetComponent<CharacterCardManager>().ReadCardFromAsset(character);
-        charactorList.Add(newCharacter);
+        GameObject newCharactor = Instantiate(characterPrefeb, parent);
+        newCharactor.GetComponent<CharacterCardManager>().charactorasset = charactor;
+        newCharactor.GetComponent<CharacterCardManager>().ReadCardFromAsset(charactor);
+        charactorList.Add(newCharactor);
+        charactorAssetsList.Add(charactor);
     }
     private void CreateWeapon(WeaponAsset weapon, Transform parent)
     {
@@ -88,11 +93,11 @@ public class BagPanel : MonoBehaviour
         newWeapon.GetComponent<WeaponCardManager>().weaponAsset = weapon;
         newWeapon.GetComponent<WeaponCardManager>().ReadCardFromAsset(weapon);
         weaponList.Add(newWeapon);
+        weaponAssetsList.Add(weapon);
     }
     public void ShowBagPanel()
     {
-        int charactorCount = 1;
-        int weaponCount = 1;
+       
         bagAsset = bagDataManager.bagAsset;
         //生成角色卡
         for (int i = 0; bagAsset.characters.Count > i; i++) {
@@ -100,9 +105,12 @@ public class BagPanel : MonoBehaviour
             {
                 var charactor = bagDataManager.bagAsset.characters[i];
                 string place = "Charactor/CharacterCard" + charactorCount.ToString();
-                CreateCharacter(charactor, transform.Find(place));
+                if (!charactorAssetsList.Contains(charactor))
+                {
+                    CreateCharactor(charactor, transform.Find(place));
+                    charactorCount++;
+                }
                 Debug.Log("生成角色卡");
-                charactorCount++;
             }
         }
         //生成武器卡
@@ -111,9 +119,12 @@ public class BagPanel : MonoBehaviour
             {
                 var weapon = bagDataManager.bagAsset.weapons[i];
                 string place = "Weapon/WeaponCard" + weaponCount.ToString();
-                CreateWeapon(weapon, transform.Find(place));
+                if (!weaponAssetsList.Contains(weapon))
+                {
+                    CreateWeapon(weapon, transform.Find(place));
+                    weaponCount++;
+                }
                 Debug.Log("生成武器卡"); 
-                weaponCount++;
             }
         }
 
@@ -123,8 +134,7 @@ public class BagPanel : MonoBehaviour
     public void CloseBagPanel()
     {
         rectTransform.DOAnchorPosY(currentPosY, 1f);
-        TextPanel.SetActive(true);
-
+        bagPanelOpen.RaiseEvent();
     }
     public void ShowCharactorPanel()
     {   
