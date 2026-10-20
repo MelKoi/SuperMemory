@@ -36,9 +36,11 @@ public static class BattleTableReader
         }
     }
 
-    public static bool TryReadWeapon(int weaponId, out string weaponName)
+    public static bool TryReadWeapon(int weaponId, out string weaponName, out WeaponChargeTier light, out WeaponChargeTier heavy)
     {
         weaponName = null;
+        light = default;
+        heavy = default;
         if (weaponId < 0)
         {
             return false;
@@ -52,12 +54,16 @@ public static class BattleTableReader
             }
 
             weaponName = table.GetString(weaponId, "name");
+            light = WeaponChargeTier.FromArray(table.GetIntArray(weaponId, "charge1"));
+            heavy = WeaponChargeTier.FromArray(table.GetIntArray(weaponId, "charge2"));
             return true;
         }
         catch (Exception exception)
         {
             Debug.LogWarning("武器数据读取失败：" + exception.Message);
             weaponName = null;
+            light = default;
+            heavy = default;
             return false;
         }
     }

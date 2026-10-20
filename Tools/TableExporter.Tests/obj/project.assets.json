@@ -1242,7 +1242,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\b14a70c7b7618b317a19bb70d4e9ccd4\\nuget": {},
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -1251,7 +1251,7 @@
       "projectUniqueName": "D:\\Card\\My project\\Tools\\TableExporter.Tests\\TableExporter.Tests.csproj",
       "projectName": "TableExporter.Tests",
       "projectPath": "D:\\Card\\My project\\Tools\\TableExporter.Tests\\TableExporter.Tests.csproj",
-      "packagesPath": "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\b14a70c7b7618b317a19bb70d4e9ccd4\\nuget",
+      "packagesPath": "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget",
       "outputPath": "D:\\Card\\My project\\Tools\\TableExporter.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [

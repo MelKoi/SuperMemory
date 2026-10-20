@@ -19,6 +19,7 @@ namespace CardTables
         DoubleArray = 10,
         BoolArray = 11,
         StringArray = 12,
+        IntArray2 = 13,
     }
 
     public sealed class TableField
@@ -51,6 +52,7 @@ namespace CardTables
             DoubleArrays = Array.Empty<double[]>();
             BoolArrays = Array.Empty<bool[]>();
             StringArrays = Array.Empty<string[]>();
+            IntArray2s = Array.Empty<int[][]>();
             switch (type)
             {
                 case TableFieldType.Int:
@@ -89,6 +91,9 @@ namespace CardTables
                 case TableFieldType.StringArray:
                     StringArrays = new string[rowCount][];
                     break;
+                case TableFieldType.IntArray2:
+                    IntArray2s = new int[rowCount][][];
+                    break;
                 default:
                     throw new InvalidDataException("未知字段类型：" + type);
             }
@@ -108,6 +113,7 @@ namespace CardTables
         public double[][] DoubleArrays { get; }
         public bool[][] BoolArrays { get; }
         public string[][] StringArrays { get; }
+        public int[][][] IntArray2s { get; }
     }
 
     public sealed class TableData
@@ -196,6 +202,8 @@ namespace CardTables
         public bool[] GetBoolArray(int id, string field) => GetBoolArray(IdText(id), field);
         public string[] GetStringArray(string id, string field) => GetStringArrayAt(RequireRow(id), field);
         public string[] GetStringArray(int id, string field) => GetStringArray(IdText(id), field);
+        public int[][] GetIntArray2(string id, string field) => GetIntArray2At(RequireRow(id), field);
+        public int[][] GetIntArray2(int id, string field) => GetIntArray2(IdText(id), field);
 
         public int GetIntAt(int rowIndex, string field)
         {
@@ -267,6 +275,12 @@ namespace CardTables
         {
             var column = RequireColumn(field, TableFieldType.StringArray);
             return column.StringArrays[rowIndex];
+        }
+
+        public int[][] GetIntArray2At(int rowIndex, string field)
+        {
+            var column = RequireColumn(field, TableFieldType.IntArray2);
+            return column.IntArray2s[rowIndex];
         }
 
         int RequireRow(string id)
@@ -403,7 +417,7 @@ namespace CardTables
             {
                 var fieldName = ReadUtf8(reader, stream);
                 var typeValue = reader.ReadByte();
-                if (typeValue < (byte)TableFieldType.Int || typeValue > (byte)TableFieldType.StringArray)
+                if (typeValue < (byte)TableFieldType.Int || typeValue > (byte)TableFieldType.IntArray2)
                 {
                     throw new InvalidDataException("未知字段类型");
                 }
@@ -474,6 +488,9 @@ namespace CardTables
                         WriteUtf8(writer, texts[i] ?? string.Empty);
                     }
                     break;
+                case TableFieldType.IntArray2:
+                    WriteIntArray2(writer, column.IntArray2s[row]);
+                    break;
                 default:
                     throw new InvalidDataException("未知字段类型");
             }
@@ -526,9 +543,39 @@ namespace CardTables
 
                     column.StringArrays[row] = texts;
                     break;
+                case TableFieldType.IntArray2:
+                    column.IntArray2s[row] = ReadIntArray2(reader, stream);
+                    break;
                 default:
                     throw new InvalidDataException("未知字段类型");
             }
+        }
+
+        static void WriteIntArray2(BinaryWriter writer, int[][] groups)
+        {
+            groups ??= Array.Empty<int[]>();
+            if (groups.Length > MaxArrayLength)
+            {
+                throw new InvalidDataException("数组长度超过 " + MaxArrayLength);
+            }
+
+            writer.Write(groups.Length);
+            for (var i = 0; i < groups.Length; i++)
+            {
+                WriteArray(writer, groups[i] ?? Array.Empty<int>(), (itemWriter, value) => itemWriter.Write(value));
+            }
+        }
+
+        static int[][] ReadIntArray2(BinaryReader reader, Stream stream)
+        {
+            var count = ReadCount(reader, stream);
+            var groups = new int[count][];
+            for (var i = 0; i < count; i++)
+            {
+                groups[i] = ReadArray(reader, stream, itemReader => itemReader.ReadInt32());
+            }
+
+            return groups;
         }
 
         static void WriteArray<T>(BinaryWriter writer, T[] values, Action<BinaryWriter, T> writeItem)
@@ -602,6 +649,8 @@ namespace CardTables
                     return column.BoolArrays.Length;
                 case TableFieldType.StringArray:
                     return column.StringArrays.Length;
+                case TableFieldType.IntArray2:
+                    return column.IntArray2s.Length;
                 default:
                     throw new InvalidDataException("未知字段类型");
             }

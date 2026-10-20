@@ -1,4 +1,6 @@
+using System.Globalization;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class BattleArea : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public sealed class BattleArea : MonoBehaviour
     private BattleWeaponView weapon1;
     private BattleWeaponView weapon2;
     private HandZone hand;
+    private Text deckCount;
 
     public BattleSide Side => side;
     public BattleVitals Vitals { get; private set; }
@@ -20,6 +23,7 @@ public sealed class BattleArea : MonoBehaviour
     public string CharacterName { get; private set; }
     public string WeaponName1 { get; private set; }
     public string WeaponName2 { get; private set; }
+    public int DeckCount { get; private set; }
 
     public void Initialize(
         BattleSide owner,
@@ -29,7 +33,8 @@ public sealed class BattleArea : MonoBehaviour
         EnergyRing energy,
         BattleWeaponView firstWeapon,
         BattleWeaponView secondWeapon,
-        HandZone handZone)
+        HandZone handZone,
+        Text deckLabel)
     {
         side = owner;
         portrait = portraitView;
@@ -39,8 +44,10 @@ public sealed class BattleArea : MonoBehaviour
         weapon1 = firstWeapon;
         weapon2 = secondWeapon;
         hand = handZone;
+        deckCount = deckLabel;
         Vitals = new BattleVitals();
         hand.Initialize(owner);
+        SetDeckCount(0);
     }
 
     public void LoadOpeningState(int characterId, int weaponId1, int weaponId2, Sprite portraitSprite, Sprite weaponSprite1, Sprite weaponSprite2)
@@ -65,7 +72,29 @@ public sealed class BattleArea : MonoBehaviour
         HasWeapon2 = PresentWeapon(weapon2, weaponId2, weaponSprite2, out var secondName);
         WeaponName1 = firstName;
         WeaponName2 = secondName;
+        SetDeckCount(0);
         RefreshBars();
+    }
+
+    public void SetDeckCount(int count)
+    {
+        DeckCount = Mathf.Max(0, count);
+        if (deckCount != null)
+        {
+            deckCount.text = "牌库：" + DeckCount.ToString(CultureInfo.InvariantCulture);
+        }
+    }
+
+    public void SetWeaponCharge(int weaponNumber, int charge)
+    {
+        if (weaponNumber == 1)
+        {
+            weapon1.SetCharge(charge);
+        }
+        else if (weaponNumber == 2)
+        {
+            weapon2.SetCharge(charge);
+        }
     }
 
     public void SetHealth(int value)
@@ -95,13 +124,13 @@ public sealed class BattleArea : MonoBehaviour
 
     private static bool PresentWeapon(BattleWeaponView view, int weaponId, Sprite sprite, out string weaponName)
     {
-        if (!BattleTableReader.TryReadWeapon(weaponId, out weaponName))
+        if (!BattleTableReader.TryReadWeapon(weaponId, out weaponName, out var light, out var heavy))
         {
-            view.SetIcon(null);
+            view.ClearWeapon();
             return false;
         }
 
-        view.SetIcon(sprite);
+        view.Present(sprite, light, heavy);
         return true;
     }
 }

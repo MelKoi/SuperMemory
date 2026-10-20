@@ -107,3 +107,4 @@ D:\Card\My project\Tools\TableExporter.Tests\obj\Release\net9.0-windows\refint\T
 D:\Card\My project\Tools\TableExporter.Tests\obj\Release\net9.0-windows\TableExporter.Tests.pdb
 D:\Card\My project\Tools\TableExporter.Tests\obj\Release\net9.0-windows\TableExporter.Tests.genruntimeconfig.cache
 D:\Card\My project\Tools\TableExporter.Tests\obj\Release\net9.0-windows\ref\TableExporter.Tests.dll
+D:\Card\My project\Tools\TableExporter.Tests\obj\Release\net9.0-windows\TableExporter.Tests.sourcelink.json

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 static class BattleUiFactory
 {
@@ -32,5 +33,31 @@ static class BattleUiFactory
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.anchoredPosition = Vector2.zero;
+    }
+
+    public static Text CreateText(string name, Transform parent, string content, int fontSize, TextAnchor alignment)
+    {
+        var rect = Create(name, parent);
+        var text = rect.gameObject.AddComponent<Text>();
+        text.font = LabelFont();
+        text.text = content;
+        text.fontSize = fontSize;
+        text.alignment = alignment;
+        text.color = new Color(0.96f, 0.97f, 0.98f, 1f);
+        text.horizontalOverflow = HorizontalWrapMode.Overflow;
+        text.verticalOverflow = VerticalWrapMode.Overflow;
+        text.raycastTarget = false;
+        return text;
+    }
+
+    static Font LabelFont()
+    {
+        var font = ChineseFonts.Legacy;
+        if (font == null)
+        {
+            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        }
+
+        return font;
     }
 }

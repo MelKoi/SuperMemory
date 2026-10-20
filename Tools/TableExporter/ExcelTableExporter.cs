@@ -229,7 +229,7 @@ namespace TableExporterApp
                     var cell = ReadCell(worksheet, rowNumber, mappedColumns[i].ColumnNumber);
                     try
                     {
-                        values[i] = ConvertCell(cell, mappedColumns[i].Type, mappedColumns[i].IsId);
+                        values[i] = ConvertCell(cell, mappedColumns[i]);
                     }
                     catch (FormatException exception)
                     {
@@ -339,11 +339,21 @@ namespace TableExporterApp
                 }
 
                 var typeText = Origin(worksheet, TypeRow, columnNumber).GetString();
-                if (!TryParseType(typeText, out var type))
+                if (!TryParseType(typeText, out var type, out var outerSeparator, out var innerSeparator, out var typeReason))
                 {
-                    error = string.IsNullOrWhiteSpace(typeText)
-                        ? "字段 " + name + " 缺少类型。"
-                        : "字段 " + name + " 的类型无法识别：" + typeText.Trim();
+                    if (string.IsNullOrWhiteSpace(typeText))
+                    {
+                        error = "字段 " + name + " 缺少类型。";
+                    }
+                    else if (typeReason != null)
+                    {
+                        error = "字段 " + name + "：" + typeReason;
+                    }
+                    else
+                    {
+                        error = "字段 " + name + " 的类型无法识别：" + typeText.Trim();
+                    }
+
                     return false;
                 }
 
@@ -354,7 +364,7 @@ namespace TableExporterApp
                     return false;
                 }
 
-                columns.Add(new MappedColumn(columnNumber, name, type, isId));
+                columns.Add(new MappedColumn(columnNumber, name, type, isId, outerSeparator, innerSeparator));
             }
 
             if (!sawName)
@@ -420,7 +430,7 @@ namespace TableExporterApp
             return value.Type == XLDataType.Blank;
         }
 
-        static object? ConvertCell(XLCellValue value, TableFieldType type, bool isId)
+        static object? ConvertCell(XLCellValue value, MappedColumn column)
         {
             if (value.Type == XLDataType.Error)
             {
@@ -429,15 +439,16 @@ namespace TableExporterApp
 
             if (IsBlank(value))
             {
-                if (isId)
+                if (column.IsId)
                 {
                     return null;
                 }
 
-                return DefaultValue(type);
+                return DefaultValue(column.Type);
             }
 
-            switch (type)
+            var separator = column.OuterSeparator ?? "|";
+            switch (column.Type)
             {
                 case TableFieldType.Int:
                     return checked((int)RequireInteger(value));
@@ -452,17 +463,19 @@ namespace TableExporterApp
                 case TableFieldType.String:
                     return RequireText(value);
                 case TableFieldType.IntArray:
-                    return ParseArray(RequireText(value), text => checked((int)ParseIntegerText(text)));
+                    return ParseArray(RequireText(value), separator, text => checked((int)ParseIntegerText(text)));
                 case TableFieldType.LongArray:
-                    return ParseArray(RequireText(value), ParseIntegerText);
+                    return ParseArray(RequireText(value), separator, ParseIntegerText);
                 case TableFieldType.FloatArray:
-                    return ParseArray(RequireText(value), text => (float)ParseNumberText(text));
+                    return ParseArray(RequireText(value), separator, text => (float)ParseNumberText(text));
                 case TableFieldType.DoubleArray:
-                    return ParseArray(RequireText(value), ParseNumberText);
+                    return ParseArray(RequireText(value), separator, ParseNumberText);
                 case TableFieldType.BoolArray:
-                    return ParseArray(RequireText(value), ParseBoolText);
+                    return ParseArray(RequireText(value), separator, ParseBoolText);
                 case TableFieldType.StringArray:
-                    return SplitText(RequireText(value));
+                    return SplitText(RequireText(value), separator);
+                case TableFieldType.IntArray2:
+                    return ParseIntArray2(RequireText(value), column.OuterSeparator!, column.InnerSeparator!);
                 default:
                     throw new FormatException("类型无效。");
             }
@@ -496,6 +509,8 @@ namespace TableExporterApp
                     return Array.Empty<bool>();
                 case TableFieldType.StringArray:
                     return Array.Empty<string>();
+                case TableFieldType.IntArray2:
+                    return Array.Empty<int[]>();
                 default:
                     throw new FormatException("类型无效。");
             }
@@ -670,9 +685,26 @@ namespace TableExporterApp
             return value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
-        static T[] ParseArray<T>(string text, Func<string, T> parse)
+        static int[][] ParseIntArray2(string text, string outerSeparator, string innerSeparator)
         {
-            var parts = SplitText(text);
+            var groups = SplitText(text, outerSeparator);
+            if (groups.Length > TableBinary.MaxArrayLength)
+            {
+                throw new FormatException("数组长度超过 " + TableBinary.MaxArrayLength + "。");
+            }
+
+            var values = new int[groups.Length][];
+            for (var i = 0; i < groups.Length; i++)
+            {
+                values[i] = ParseArray(groups[i], innerSeparator, part => checked((int)ParseIntegerText(part)));
+            }
+
+            return values;
+        }
+
+        static T[] ParseArray<T>(string text, string separator, Func<string, T> parse)
+        {
+            var parts = SplitText(text, separator);
             if (parts.Length > TableBinary.MaxArrayLength)
             {
                 throw new FormatException("数组长度超过 " + TableBinary.MaxArrayLength + "。");
@@ -687,14 +719,14 @@ namespace TableExporterApp
             return values;
         }
 
-        static string[] SplitText(string text)
+        static string[] SplitText(string text, string separator)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return Array.Empty<string>();
             }
 
-            var parts = text.Split('|');
+            var parts = text.Split(separator, StringSplitOptions.None);
             var values = new List<string>(parts.Length);
             for (var i = 0; i < parts.Length; i++)
             {
@@ -765,13 +797,138 @@ namespace TableExporterApp
                 case TableFieldType.StringArray:
                     column.StringArrays[row] = (string[])value!;
                     break;
+                case TableFieldType.IntArray2:
+                    column.IntArray2s[row] = (int[][])value!;
+                    break;
             }
         }
 
-        static bool TryParseType(string text, out TableFieldType type)
+        static bool TryParseType(
+            string text,
+            out TableFieldType type,
+            out string? outerSeparator,
+            out string? innerSeparator,
+            out string? reason)
+        {
+            type = default;
+            outerSeparator = null;
+            innerSeparator = null;
+            reason = null;
+            var trimmed = text.Trim();
+            if (trimmed.IndexOf('(') >= 0)
+            {
+                return TryParseLayeredType(trimmed, out type, out outerSeparator, out innerSeparator, out reason);
+            }
+
+            return TryParseSimpleType(trimmed, out type);
+        }
+
+        static bool TryParseLayeredType(
+            string text,
+            out TableFieldType type,
+            out string? outerSeparator,
+            out string? innerSeparator,
+            out string? reason)
+        {
+            type = default;
+            outerSeparator = null;
+            innerSeparator = null;
+            reason = null;
+            var separators = new List<string>();
+            var index = 0;
+            while (index < text.Length && text[index] == '(')
+            {
+                var close = text.IndexOf(')', index);
+                if (close < 0)
+                {
+                    return false;
+                }
+
+                var body = text.Substring(index + 1, close - index - 1).Trim();
+                const string prefix = "array#sep=";
+                if (!body.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) || body.Length == prefix.Length)
+                {
+                    return false;
+                }
+
+                separators.Add(body.Substring(prefix.Length));
+                index = close + 1;
+                while (index < text.Length && char.IsWhiteSpace(text[index]))
+                {
+                    index++;
+                }
+
+                if (index >= text.Length || text[index] != ',')
+                {
+                    return false;
+                }
+
+                index++;
+                while (index < text.Length && char.IsWhiteSpace(text[index]))
+                {
+                    index++;
+                }
+            }
+
+            if (separators.Count == 0)
+            {
+                return false;
+            }
+
+            if (separators.Count > 2)
+            {
+                reason = "数组最多两层。";
+                return false;
+            }
+
+            if (!TryParseScalar(text.Substring(index), out var scalar))
+            {
+                return false;
+            }
+
+            if (separators.Count == 1)
+            {
+                if (!TryAsArray(scalar, out type))
+                {
+                    return false;
+                }
+
+                outerSeparator = separators[0];
+                return true;
+            }
+
+            if (scalar != TableFieldType.Int)
+            {
+                reason = "两层数组目前只支持 int。";
+                return false;
+            }
+
+            type = TableFieldType.IntArray2;
+            outerSeparator = separators[0];
+            innerSeparator = separators[1];
+            return true;
+        }
+
+        static bool TryParseSimpleType(string text, out TableFieldType type)
         {
             var key = text.Trim().Replace(" ", string.Empty).ToLowerInvariant();
-            switch (key)
+            if (key.EndsWith("[]", StringComparison.Ordinal))
+            {
+                if (!TryParseScalar(key.Substring(0, key.Length - 2), out var scalar) || !TryAsArray(scalar, out type))
+                {
+                    type = default;
+                    return false;
+                }
+
+                return true;
+            }
+
+            return TryParseScalar(key, out type);
+        }
+
+        static bool TryParseScalar(string text, out TableFieldType type)
+        {
+            switch (text.Trim().Replace(" ", string.Empty).ToLowerInvariant())
             {
                 case "int":
                 case "int32":
@@ -800,31 +957,32 @@ namespace TableExporterApp
                 case "text":
                     type = TableFieldType.String;
                     return true;
-                case "int[]":
-                case "int32[]":
-                case "integer[]":
+                default:
+                    type = default;
+                    return false;
+            }
+        }
+
+        static bool TryAsArray(TableFieldType scalar, out TableFieldType type)
+        {
+            switch (scalar)
+            {
+                case TableFieldType.Int:
                     type = TableFieldType.IntArray;
                     return true;
-                case "long[]":
-                case "int64[]":
+                case TableFieldType.Long:
                     type = TableFieldType.LongArray;
                     return true;
-                case "float[]":
-                case "single[]":
-                case "float32[]":
+                case TableFieldType.Float:
                     type = TableFieldType.FloatArray;
                     return true;
-                case "double[]":
-                case "float64[]":
+                case TableFieldType.Double:
                     type = TableFieldType.DoubleArray;
                     return true;
-                case "bool[]":
-                case "boolean[]":
+                case TableFieldType.Bool:
                     type = TableFieldType.BoolArray;
                     return true;
-                case "string[]":
-                case "str[]":
-                case "text[]":
+                case TableFieldType.String:
                     type = TableFieldType.StringArray;
                     return true;
                 default:
@@ -943,18 +1101,28 @@ namespace TableExporterApp
 
         sealed class MappedColumn
         {
-            public MappedColumn(int columnNumber, string name, TableFieldType type, bool isId)
+            public MappedColumn(
+                int columnNumber,
+                string name,
+                TableFieldType type,
+                bool isId,
+                string? outerSeparator,
+                string? innerSeparator)
             {
                 ColumnNumber = columnNumber;
                 Name = name;
                 Type = type;
                 IsId = isId;
+                OuterSeparator = outerSeparator;
+                InnerSeparator = innerSeparator;
             }
 
             public int ColumnNumber { get; }
             public string Name { get; }
             public TableFieldType Type { get; }
             public bool IsId { get; }
+            public string? OuterSeparator { get; }
+            public string? InnerSeparator { get; }
         }
 
         sealed class SheetExportException : Exception

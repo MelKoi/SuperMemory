@@ -21,3 +21,4 @@ D:\Card\My project\Tools\TableExporter\obj\Release\net9.0-windows\refint\导表�
 D:\Card\My project\Tools\TableExporter\obj\Release\net9.0-windows\导表工具.pdb
 D:\Card\My project\Tools\TableExporter\obj\Release\net9.0-windows\TableExporter.genruntimeconfig.cache
 D:\Card\My project\Tools\TableExporter\obj\Release\net9.0-windows\ref\导表工具.dll
+D:\Card\My project\Tools\TableExporter\obj\Release\net9.0-windows\TableExporter.sourcelink.json

@@ -113,6 +113,62 @@ public class ExportTests
         Assert.False(ExcelTableExporter.TryFindProjectRoot(Path.GetTempPath(), out _, out _));
     }
 
+    [Fact]
+    public void Export_ReadsNestedIntArraysWithDeclaredSeparators()
+    {
+        var root = CreateRoot();
+        var source = Path.Combine(root, "excel");
+        Directory.CreateDirectory(source);
+        using (var workbook = new XLWorkbook())
+        {
+            var sheet = workbook.AddWorksheet("ActionCard");
+            sheet.Cell(1, 1).Value = "Id";
+            sheet.Cell(1, 2).Value = "effect";
+            sheet.Cell(1, 3).Value = "scores";
+            sheet.Cell(2, 1).Value = "int";
+            sheet.Cell(2, 2).Value = "(array#sep=,), (array#sep=_),int";
+            sheet.Cell(2, 3).Value = "(array#sep=_),int";
+            sheet.Cell(3, 1).Value = "注释";
+            sheet.Cell(4, 1).Value = 0;
+            sheet.Cell(4, 2).Value = "5_0_1_1_0,10_1_0";
+            sheet.Cell(4, 3).Value = "1_2_3";
+            sheet.Cell(5, 1).Value = 1;
+            sheet.Cell(5, 2).Value = -1;
+            sheet.Cell(6, 1).Value = 2;
+            sheet.Cell(6, 2).Value = "4_0_-2_1";
+            sheet.Cell(7, 1).Value = 3;
+            var tooDeep = workbook.AddWorksheet("TooDeep");
+            tooDeep.Cell(1, 1).Value = "Id";
+            tooDeep.Cell(1, 2).Value = "effect";
+            tooDeep.Cell(2, 1).Value = "int";
+            tooDeep.Cell(2, 2).Value = "(array#sep=,), (array#sep=_), (array#sep=|),int";
+            tooDeep.Cell(4, 1).Value = 1;
+            workbook.SaveAs(Path.Combine(source, "effects.xlsx"));
+        }
+
+        var report = ExcelTableExporter.Export(root, source);
+
+        Assert.Equal(1, report.Succeeded);
+        Assert.Equal(1, report.Failed);
+        Assert.Contains(report.Lines, line => line.Contains("数组最多两层", StringComparison.Ordinal));
+        var table = TableBinary.Read(File.ReadAllBytes(Path.Combine(ExcelTableExporter.GetTargetDirectory(root), "ActionCard.bytes")));
+        AssertGroups(new[] { new[] { 5, 0, 1, 1, 0 }, new[] { 10, 1, 0 } }, table.GetIntArray2(0, "effect"));
+        AssertGroups(new[] { new[] { -1 } }, table.GetIntArray2(1, "effect"));
+        AssertGroups(new[] { new[] { 4, 0, -2, 1 } }, table.GetIntArray2(2, "effect"));
+        Assert.Empty(table.GetIntArray2(3, "effect"));
+        Assert.Equal(new[] { 1, 2, 3 }, table.GetIntArray(0, "scores"));
+        Assert.Empty(table.GetIntArray(1, "scores"));
+    }
+
+    static void AssertGroups(int[][] expected, int[][] actual)
+    {
+        Assert.Equal(expected.Length, actual.Length);
+        for (var i = 0; i < expected.Length; i++)
+        {
+            Assert.Equal(expected[i], actual[i]);
+        }
+    }
+
     static string CreateRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "table-export-" + Guid.NewGuid().ToString("N"));

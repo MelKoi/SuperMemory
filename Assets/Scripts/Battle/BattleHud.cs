@@ -193,6 +193,26 @@ public sealed class BattleHud : MonoBehaviour
         var secondWeapon = weapon2Rect.gameObject.AddComponent<BattleWeaponView>();
         firstWeapon.Initialize();
         secondWeapon.Initialize();
+        var firstReadout = CreateWeaponReadout(weapon1Rect, player);
+        var secondReadout = CreateWeaponReadout(weapon2Rect, player);
+        firstWeapon.SetReadout(firstReadout[0], firstReadout[1]);
+        secondWeapon.SetReadout(secondReadout[0], secondReadout[1]);
+
+        var pileAnchor = weaponAnchor;
+        var discardLabel = BattleUiFactory.CreateText("Discard", areaRect, "弃牌", 28, TextAnchor.MiddleRight);
+        var deckLabel = BattleUiFactory.CreateText("Deck", areaRect, "牌库：0", 28, TextAnchor.MiddleRight);
+        if (player)
+        {
+            BattleUiFactory.Place(discardLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(-406f, 247f), new Vector2(160f, 40f));
+            BattleUiFactory.Place(deckLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(-406f, 293f), new Vector2(160f, 40f));
+        }
+        else
+        {
+            discardLabel.alignment = TextAnchor.MiddleLeft;
+            deckLabel.alignment = TextAnchor.MiddleLeft;
+            BattleUiFactory.Place(deckLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(406f, -247f), new Vector2(160f, 40f));
+            BattleUiFactory.Place(discardLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(406f, -293f), new Vector2(160f, 40f));
+        }
 
         var handRect = BattleUiFactory.Create("HandZone", areaRect);
         if (player)
@@ -205,8 +225,23 @@ public sealed class BattleHud : MonoBehaviour
         }
 
         var hand = handRect.gameObject.AddComponent<HandZone>();
-        area.Initialize(side, portrait, health, toughness, energy, firstWeapon, secondWeapon, hand);
+        area.Initialize(side, portrait, health, toughness, energy, firstWeapon, secondWeapon, hand, deckLabel);
         return area;
+    }
+
+    private static Text[] CreateWeaponReadout(RectTransform weapon, bool above)
+    {
+        var readout = BattleUiFactory.Create("Readout", weapon);
+        readout.anchorMin = new Vector2(0f, above ? 1f : 0f);
+        readout.anchorMax = new Vector2(1f, above ? 1f : 0f);
+        readout.pivot = new Vector2(0.5f, above ? 0f : 1f);
+        readout.anchoredPosition = new Vector2(0f, above ? 8f : -8f);
+        readout.sizeDelta = new Vector2(0f, 80f);
+        var charge = BattleUiFactory.CreateText("Charge", readout, "蓄能数 0", 24, TextAnchor.MiddleCenter);
+        var damage = BattleUiFactory.CreateText("Damage", readout, "伤害 0/0", 24, TextAnchor.MiddleCenter);
+        BattleUiFactory.Stretch(charge.rectTransform, new Vector2(0f, 0.5f), Vector2.one);
+        BattleUiFactory.Stretch(damage.rectTransform, Vector2.zero, new Vector2(1f, 0.5f));
+        return new[] { charge, damage };
     }
 
     private Sprite FindPortrait(int characterId)
