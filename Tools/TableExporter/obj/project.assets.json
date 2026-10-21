@@ -297,7 +297,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget": {},
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -306,7 +306,7 @@
       "projectUniqueName": "D:\\Card\\My project\\Tools\\TableExporter\\TableExporter.csproj",
       "projectName": "导表工具",
       "projectPath": "D:\\Card\\My project\\Tools\\TableExporter\\TableExporter.csproj",
-      "packagesPath": "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget",
+      "packagesPath": "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget",
       "outputPath": "D:\\Card\\My project\\Tools\\TableExporter\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [

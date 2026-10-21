@@ -11,7 +11,7 @@ public enum MatchTiming
     TurnEnergy,
     ToughnessRecovery,
     Main,
-    MainEnd,
+    OngoingEffects,
     RemoveTemporary,
     AdjustHand,
     ClearRoundMarks,

@@ -6145,6 +6145,7 @@ GameObject:
   m_Component:
   - component: {fileID: 400101}
   - component: {fileID: 400102}
+  - component: {fileID: 400103}
   m_Layer: 0
   m_Name: BattleHud
   m_TagString: Untagged
@@ -6187,6 +6188,25 @@ MonoBehaviour:
   enemyWeaponId2: -1
   characterPortraits: []
   weaponIcons: []
+--- !u!114 &400103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7b1c4a29d3f4e6a8c5b0d1e2f3a4b5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forwardEnergyCost: 2
+  backwardEnergyCost: 2
+  forwardCells: 1
+  backwardCells: 1
+  playerEnergy: 10
+  weaponCharge1: 0
+  weaponCharge2: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

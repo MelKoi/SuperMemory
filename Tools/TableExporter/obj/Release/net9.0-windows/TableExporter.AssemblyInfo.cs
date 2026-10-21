@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("导表工具")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+168222ac44d5b74ebb78cfed827d5c8198207ea7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+618d3f3d61c5365b79aeaefd57cf89b0eac25846")]
 [assembly: System.Reflection.AssemblyProductAttribute("导表工具")]
 [assembly: System.Reflection.AssemblyTitleAttribute("导表工具")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

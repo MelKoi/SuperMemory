@@ -60,6 +60,18 @@ public sealed class BattleWeaponView : MonoBehaviour
         RefreshReadout();
     }
 
+    public bool CanAttack => WeaponChargeTier.CanAttack(charge, light, heavy);
+
+    public void GetDamage(out int lifeDamage, out int toughnessDamage)
+    {
+        WeaponChargeTier.Resolve(charge, light, heavy, out lifeDamage, out toughnessDamage);
+    }
+
+    public void SpendAllCharge()
+    {
+        SetCharge(0);
+    }
+
     public void SetIcon(Sprite sprite)
     {
         if (plate == null)
@@ -98,6 +110,7 @@ public sealed class BattleWeaponView : MonoBehaviour
         }
 
         WeaponChargeTier.Resolve(charge, light, heavy, out var lifeDamage, out var toughnessDamage);
+        // 斜线前是生命，后是韧性，与效果 +x/+y 一致。
         damageText.text = "伤害 " + lifeDamage.ToString(CultureInfo.InvariantCulture) + "/" + toughnessDamage.ToString(CultureInfo.InvariantCulture);
     }
 }

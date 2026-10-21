@@ -9,9 +9,15 @@ public sealed class BattleBoardPerspective : MonoBehaviour
     [SerializeField] private float viewScale = 0.9f;
     [SerializeField] private float cellSize = 0.92f;
     [SerializeField] private string frameName = "BoardFrame";
+    [SerializeField] private int playerColumn = 1;
+    [SerializeField] private int playerRow;
+    [SerializeField] private int enemyColumn = 1;
+    [SerializeField] private int enemyRow = 11;
 
     private const string LabelRootName = "BoardLabels";
+    private int boardRows;
     private const float LabelCanvasScale = 0.01f;
+    private static Mesh cylinderMesh;
 
     private Transform frame;
     private Font labelFont;
@@ -63,6 +69,7 @@ public sealed class BattleBoardPerspective : MonoBehaviour
             }
         }
 
+        boardRows = rows;
         if (frame == null)
         {
             var child = transform.Find(frameName);
@@ -84,10 +91,59 @@ public sealed class BattleBoardPerspective : MonoBehaviour
         SyncPieces(columns, rows);
     }
 
+    // 我方在近端，敌方在远端。前进增加行号，朝敌方走。
+    public bool CanMovePlayer(int rowDelta)
+    {
+        if (rowDelta == 0 || boardRows <= 0)
+        {
+            return false;
+        }
+
+        var nextRow = playerRow + rowDelta;
+        if (nextRow < 0 || nextRow >= boardRows)
+        {
+            return false;
+        }
+
+        if (playerColumn != enemyColumn)
+        {
+            return true;
+        }
+
+        if (enemyRow == nextRow)
+        {
+            return false;
+        }
+
+        if (rowDelta > 0 && enemyRow > playerRow && enemyRow < nextRow)
+        {
+            return false;
+        }
+
+        if (rowDelta < 0 && enemyRow < playerRow && enemyRow > nextRow)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool TryMovePlayer(int rowDelta)
+    {
+        if (!CanMovePlayer(rowDelta))
+        {
+            return false;
+        }
+
+        playerRow += rowDelta;
+        Apply();
+        return true;
+    }
+
     private void SyncPieces(int columns, int rows)
     {
-        PlacePiece("Unit_1B", 1, 0, columns, rows, new Color(0.30f, 0.76f, 0.92f, 1f));
-        PlacePiece("Unit_12B", 1, 11, columns, rows, new Color(0.48f, 0.10f, 0.13f, 1f));
+        PlacePiece("Unit_1B", playerColumn, playerRow, columns, rows, new Color(0.30f, 0.76f, 0.92f, 1f));
+        PlacePiece("Unit_12B", enemyColumn, enemyRow, columns, rows, new Color(0.48f, 0.10f, 0.13f, 1f));
     }
 
     private void PlacePiece(string pieceName, int column, int row, int columns, int rows, Color color)
@@ -100,24 +156,12 @@ public sealed class BattleBoardPerspective : MonoBehaviour
         var piece = transform.Find(pieceName);
         if (piece == null)
         {
-            var pieceObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            pieceObject.name = pieceName;
+            var pieceObject = new GameObject(pieceName);
             pieceObject.hideFlags = HideFlags.DontSave;
             pieceObject.transform.SetParent(transform, false);
-            var collider = pieceObject.GetComponent<Collider>();
-            if (collider != null)
-            {
-                if (Application.isPlaying)
-                {
-                    Destroy(collider);
-                }
-                else
-                {
-                    DestroyImmediate(collider);
-                }
-            }
-
-            var renderer = pieceObject.GetComponent<MeshRenderer>();
+            var filter = pieceObject.AddComponent<MeshFilter>();
+            filter.sharedMesh = CylinderMesh();
+            var renderer = pieceObject.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = PieceMaterial(color);
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows = false;
@@ -131,6 +175,83 @@ public sealed class BattleBoardPerspective : MonoBehaviour
         var rowCenter = (rows - 1) * 0.5f;
         var center = new Vector3((column - columnCenter) * cellSize, (row - rowCenter) * cellSize, height * 0.5f + 0.02f);
         SetLocal(piece, center, Quaternion.Euler(90f, 0f, 0f), new Vector3(diameter, height * 0.5f, diameter));
+    }
+
+    private static Mesh CylinderMesh()
+    {
+        if (cylinderMesh != null)
+        {
+            return cylinderMesh;
+        }
+
+        // 与 CreatePrimitive 圆柱一致：半径 0.5、高 2。不附带碰撞体，OnValidate 里不能立刻删组件。
+        const int segments = 24;
+        const float radius = 0.5f;
+        const float halfHeight = 1f;
+        var vertices = new Vector3[(segments + 1) * 2 + segments * 2 + 2];
+        var triangles = new int[segments * 4 * 3];
+        var vertex = 0;
+        var triangle = 0;
+
+        for (var i = 0; i <= segments; i++)
+        {
+            var angle = i * Mathf.PI * 2f / segments;
+            var x = Mathf.Cos(angle) * radius;
+            var z = Mathf.Sin(angle) * radius;
+            vertices[vertex++] = new Vector3(x, -halfHeight, z);
+            vertices[vertex++] = new Vector3(x, halfHeight, z);
+        }
+
+        for (var i = 0; i < segments; i++)
+        {
+            var bottom = i * 2;
+            var top = bottom + 1;
+            var nextBottom = bottom + 2;
+            var nextTop = bottom + 3;
+            triangles[triangle++] = bottom;
+            triangles[triangle++] = top;
+            triangles[triangle++] = nextBottom;
+            triangles[triangle++] = top;
+            triangles[triangle++] = nextTop;
+            triangles[triangle++] = nextBottom;
+        }
+
+        var bottomCenter = vertex;
+        vertices[vertex++] = new Vector3(0f, -halfHeight, 0f);
+        var topCenter = vertex;
+        vertices[vertex++] = new Vector3(0f, halfHeight, 0f);
+        var bottomRim = vertex;
+        for (var i = 0; i < segments; i++)
+        {
+            var angle = i * Mathf.PI * 2f / segments;
+            vertices[vertex++] = new Vector3(Mathf.Cos(angle) * radius, -halfHeight, Mathf.Sin(angle) * radius);
+        }
+
+        var topRim = vertex;
+        for (var i = 0; i < segments; i++)
+        {
+            var angle = i * Mathf.PI * 2f / segments;
+            vertices[vertex++] = new Vector3(Mathf.Cos(angle) * radius, halfHeight, Mathf.Sin(angle) * radius);
+        }
+
+        for (var i = 0; i < segments; i++)
+        {
+            var next = (i + 1) % segments;
+            triangles[triangle++] = bottomCenter;
+            triangles[triangle++] = bottomRim + next;
+            triangles[triangle++] = bottomRim + i;
+            triangles[triangle++] = topCenter;
+            triangles[triangle++] = topRim + i;
+            triangles[triangle++] = topRim + next;
+        }
+
+        cylinderMesh = new Mesh { name = "BattlePieceCylinder" };
+        cylinderMesh.hideFlags = HideFlags.HideAndDontSave;
+        cylinderMesh.vertices = vertices;
+        cylinderMesh.triangles = triangles;
+        cylinderMesh.RecalculateNormals();
+        cylinderMesh.RecalculateBounds();
+        return cylinderMesh;
     }
 
     private static Material PieceMaterial(Color color)

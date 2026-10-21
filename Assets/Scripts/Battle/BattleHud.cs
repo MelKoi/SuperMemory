@@ -1,16 +1,18 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 [ExecuteAlways]
+[RequireComponent(typeof(BattleActionSettings))]
 public sealed class BattleHud : MonoBehaviour
 {
     private const float PortraitSize = 280f;
     private const float BarWidth = 300f;
-    private const float WeaponSize = 168f;
 
     [SerializeField] private int playerCharacterId = -1;
     [SerializeField] private int playerWeaponId1 = -1;
@@ -23,6 +25,7 @@ public sealed class BattleHud : MonoBehaviour
 
     private BattleArea playerArea;
     private BattleArea enemyArea;
+    private Button playerActionButton;
     private bool editorBuildQueued;
 
     public BattleArea Player => playerArea;
@@ -30,6 +33,10 @@ public sealed class BattleHud : MonoBehaviour
 
     private void OnEnable()
     {
+        if (GetComponent<BattleActionSettings>() == null)
+        {
+            gameObject.AddComponent<BattleActionSettings>();
+        }
 #if UNITY_EDITOR
         if (!Application.isPlaying)
         {
@@ -93,9 +100,27 @@ public sealed class BattleHud : MonoBehaviour
         scaler.matchWidthOrHeight = 0.5f;
         canvasRect.gameObject.AddComponent<GraphicRaycaster>();
 
+        EnsureEventSystem();
         playerArea = CreateArea(canvasRect, BattleSide.Player);
         enemyArea = CreateArea(canvasRect, BattleSide.Enemy);
         Apply();
+        var menu = BattleActionMenu.Create(canvasRect, playerArea, enemyArea, GetComponent<BattleActionSettings>());
+        if (playerActionButton != null)
+        {
+            playerActionButton.onClick.AddListener(menu.ShowActions);
+        }
+    }
+
+    private static void EnsureEventSystem()
+    {
+        if (!Application.isPlaying || FindFirstObjectByType<EventSystem>() != null)
+        {
+            return;
+        }
+
+        var eventObject = new GameObject("EventSystem");
+        eventObject.AddComponent<EventSystem>();
+        eventObject.AddComponent<InputSystemUIInputModule>();
     }
 
     private void ClearGenerated()
@@ -115,6 +140,7 @@ public sealed class BattleHud : MonoBehaviour
 
         playerArea = null;
         enemyArea = null;
+        playerActionButton = null;
     }
 
     private void Apply()
@@ -133,6 +159,12 @@ public sealed class BattleHud : MonoBehaviour
             FindPortrait(enemyCharacterId),
             FindWeaponIcon(enemyWeaponId1),
             FindWeaponIcon(enemyWeaponId2));
+        GetComponent<BattleActionSettings>()?.ApplyTo(playerArea);
+        var menu = GetComponentInChildren<BattleActionMenu>(true);
+        if (menu != null)
+        {
+            menu.Refresh();
+        }
     }
 
     private BattleArea CreateArea(RectTransform parent, BattleSide side)
@@ -147,26 +179,17 @@ public sealed class BattleHud : MonoBehaviour
         var direction = player ? 1f : -1f;
 
         var portraitRect = BattleUiFactory.Create("CharacterPortrait", areaRect);
-        BattleUiFactory.Place(portraitRect, corner, pivot, new Vector2(28f * direction, 12f * direction), new Vector2(PortraitSize, PortraitSize));
+        BattleUiFactory.Place(portraitRect, corner, pivot, new Vector2(24f * direction, 20f * direction), new Vector2(PortraitSize, PortraitSize));
         var portrait = portraitRect.gameObject.AddComponent<BattlePortraitView>();
         portrait.Initialize();
 
-        var barX = (28f + PortraitSize + 22f) * direction;
+        var barX = 322f * direction;
         var healthRect = BattleUiFactory.Create("HealthBar", areaRect);
         var toughnessRect = BattleUiFactory.Create("ToughnessBar", areaRect);
         var energyRect = BattleUiFactory.Create("EnergyRing", areaRect);
-        if (player)
-        {
-            BattleUiFactory.Place(healthRect, corner, pivot, new Vector2(barX, 128f), new Vector2(BarWidth, 30f));
-            BattleUiFactory.Place(toughnessRect, corner, pivot, new Vector2(barX, 96f), new Vector2(BarWidth, 22f));
-            BattleUiFactory.Place(energyRect, corner, pivot, new Vector2(barX, 8f), new Vector2(210f, 80f));
-        }
-        else
-        {
-            BattleUiFactory.Place(healthRect, corner, pivot, new Vector2(barX, -36f), new Vector2(BarWidth, 30f));
-            BattleUiFactory.Place(toughnessRect, corner, pivot, new Vector2(barX, -74f), new Vector2(BarWidth, 22f));
-            BattleUiFactory.Place(energyRect, corner, pivot, new Vector2(barX, -104f), new Vector2(210f, 80f));
-        }
+        BattleUiFactory.Place(healthRect, corner, pivot, new Vector2(barX, 156f * direction), new Vector2(BarWidth, 28f));
+        BattleUiFactory.Place(toughnessRect, corner, pivot, new Vector2(barX, 120f * direction), new Vector2(BarWidth, 22f));
+        BattleUiFactory.Place(energyRect, corner, pivot, new Vector2(barX, 24f * direction), new Vector2(190f, 72f));
 
         var health = healthRect.gameObject.AddComponent<BattleVitalBar>();
         health.Initialize(new Color(0.80f, 0.32f, 0.30f, 1f), !player);
@@ -174,45 +197,61 @@ public sealed class BattleHud : MonoBehaviour
         toughness.Initialize(new Color(0.93f, 0.62f, 0.46f, 1f), !player);
         var energy = energyRect.gameObject.AddComponent<EnergyRing>();
 
-        var weaponAnchor = player ? new Vector2(1f, 0f) : Vector2.up;
-        var weaponSize = new Vector2(WeaponSize, WeaponSize);
+        var weaponAnchor = player ? new Vector2(1f, 0f) : new Vector2(0f, 1f);
+        var weaponSize = new Vector2(136f, 136f);
         var weapon1Rect = BattleUiFactory.Create("Weapon1", areaRect);
         var weapon2Rect = BattleUiFactory.Create("Weapon2", areaRect);
-        if (player)
-        {
-            BattleUiFactory.Place(weapon1Rect, weaponAnchor, weaponAnchor, new Vector2(-224f, 206f), weaponSize);
-            BattleUiFactory.Place(weapon2Rect, weaponAnchor, weaponAnchor, new Vector2(-32f, 206f), weaponSize);
-        }
-        else
-        {
-            BattleUiFactory.Place(weapon1Rect, weaponAnchor, weaponAnchor, new Vector2(32f, -206f), weaponSize);
-            BattleUiFactory.Place(weapon2Rect, weaponAnchor, weaponAnchor, new Vector2(224f, -206f), weaponSize);
-        }
+        BattleUiFactory.Place(weapon1Rect, weaponAnchor, weaponAnchor, new Vector2(-42f * direction, 187f * direction), weaponSize);
+        BattleUiFactory.Place(weapon2Rect, weaponAnchor, weaponAnchor, new Vector2(-240f * direction, 63f * direction), weaponSize);
 
         var firstWeapon = weapon1Rect.gameObject.AddComponent<BattleWeaponView>();
         var secondWeapon = weapon2Rect.gameObject.AddComponent<BattleWeaponView>();
         firstWeapon.Initialize();
         secondWeapon.Initialize();
-        var firstReadout = CreateWeaponReadout(weapon1Rect, player);
-        var secondReadout = CreateWeaponReadout(weapon2Rect, player);
+        var firstReadout = CreateWeaponReadout(weapon1Rect, !player);
+        var secondReadout = CreateWeaponReadout(weapon2Rect, !player);
         firstWeapon.SetReadout(firstReadout[0], firstReadout[1]);
         secondWeapon.SetReadout(secondReadout[0], secondReadout[1]);
 
-        var pileAnchor = weaponAnchor;
-        var discardLabel = BattleUiFactory.CreateText("Discard", areaRect, "弃牌", 28, TextAnchor.MiddleRight);
-        var deckLabel = BattleUiFactory.CreateText("Deck", areaRect, "牌库：0", 28, TextAnchor.MiddleRight);
+        var cardAnchor = weaponAnchor;
+        var cardPivot = new Vector2(0.5f, 0.5f);
+        var cardRect = BattleUiFactory.Create("CardTumb", areaRect);
+        var cardImage = cardRect.gameObject.AddComponent<Image>();
+        cardImage.sprite = BattleUiSprites.Square;
+        cardImage.color = Color.white;
+        cardImage.raycastTarget = false;
+        BattleUiFactory.Place(cardRect, cardAnchor, cardPivot, new Vector2(-590f * direction, 251f * direction), new Vector2(68f, 96f));
+        cardRect.localRotation = Quaternion.Euler(0f, 0f, -18f);
+
+        var textAlignment = player ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight;
+        var textPivot = player ? new Vector2(0f, 0.5f) : new Vector2(1f, 0.5f);
+        var discardLabel = BattleUiFactory.CreateText("Discard", areaRect, "弃牌：0", 26, textAlignment);
+        var deckLabel = BattleUiFactory.CreateText("Deck", areaRect, "牌库：0", 26, textAlignment);
+        BattleUiFactory.Place(deckLabel.rectTransform, cardAnchor, textPivot, new Vector2(-544f * direction, 280f * direction), new Vector2(120f, 34f));
+        BattleUiFactory.Place(discardLabel.rectTransform, cardAnchor, textPivot, new Vector2(-544f * direction, 242f * direction), new Vector2(120f, 34f));
+
+        var actionAnchor = player ? new Vector2(0.5f, 0f) : new Vector2(0.5f, 1f);
+        var actionRect = BattleUiFactory.Create("ActionButton", areaRect);
+        BattleUiFactory.Place(actionRect, actionAnchor, actionAnchor, new Vector2(-396f * direction, 272f * direction), new Vector2(114f, 44f));
+        var actionImage = actionRect.gameObject.AddComponent<Image>();
+        actionImage.sprite = BattleUiSprites.Square;
+        actionImage.color = new Color(0.93f, 0.93f, 0.94f, 1f);
+        actionImage.raycastTarget = player;
         if (player)
         {
-            BattleUiFactory.Place(discardLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(-406f, 247f), new Vector2(160f, 40f));
-            BattleUiFactory.Place(deckLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(-406f, 293f), new Vector2(160f, 40f));
+            playerActionButton = actionRect.gameObject.AddComponent<Button>();
+            playerActionButton.targetGraphic = actionImage;
+            playerActionButton.navigation = new Navigation { mode = Navigation.Mode.None };
+            var colors = playerActionButton.colors;
+            colors.highlightedColor = new Color(0.86f, 0.9f, 0.96f, 1f);
+            colors.pressedColor = new Color(0.72f, 0.75f, 0.8f, 1f);
+            colors.fadeDuration = 0.06f;
+            playerActionButton.colors = colors;
         }
-        else
-        {
-            discardLabel.alignment = TextAnchor.MiddleLeft;
-            deckLabel.alignment = TextAnchor.MiddleLeft;
-            BattleUiFactory.Place(deckLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(406f, -247f), new Vector2(160f, 40f));
-            BattleUiFactory.Place(discardLabel.rectTransform, pileAnchor, pileAnchor, new Vector2(406f, -293f), new Vector2(160f, 40f));
-        }
+
+        var actionLabel = BattleUiFactory.CreateText("Text", actionRect, "行动", 26, TextAnchor.MiddleCenter);
+        actionLabel.color = new Color(0.16f, 0.16f, 0.18f, 1f);
+        BattleUiFactory.Stretch(actionLabel.rectTransform, Vector2.zero, Vector2.one);
 
         var handRect = BattleUiFactory.Create("HandZone", areaRect);
         if (player)
@@ -232,11 +271,12 @@ public sealed class BattleHud : MonoBehaviour
     private static Text[] CreateWeaponReadout(RectTransform weapon, bool above)
     {
         var readout = BattleUiFactory.Create("Readout", weapon);
-        readout.anchorMin = new Vector2(0f, above ? 1f : 0f);
-        readout.anchorMax = new Vector2(1f, above ? 1f : 0f);
+        var edge = above ? 1f : 0f;
+        readout.anchorMin = new Vector2(0f, edge);
+        readout.anchorMax = new Vector2(1f, edge);
         readout.pivot = new Vector2(0.5f, above ? 0f : 1f);
-        readout.anchoredPosition = new Vector2(0f, above ? 8f : -8f);
-        readout.sizeDelta = new Vector2(0f, 80f);
+        readout.anchoredPosition = new Vector2(0f, above ? 4f : -4f);
+        readout.sizeDelta = new Vector2(0f, 56f);
         var charge = BattleUiFactory.CreateText("Charge", readout, "蓄能数 0", 24, TextAnchor.MiddleCenter);
         var damage = BattleUiFactory.CreateText("Damage", readout, "伤害 0/0", 24, TextAnchor.MiddleCenter);
         BattleUiFactory.Stretch(charge.rectTransform, new Vector2(0f, 0.5f), Vector2.one);

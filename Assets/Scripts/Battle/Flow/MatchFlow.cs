@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-// 局前 → 开局 → 回合开始 → 主要阶段 → 主要阶段结束 → 回合结束。
+// 局前 → 开局 → 回合开始 → 主要阶段 → 回合结束。
+// 回合结束从展开中效果开始，然后是手牌临时牌离场、手牌整理、本回合标记。
 // 洗牌和主要阶段会停住。武器攻击在主要阶段里另走一条时点，对应窗口也会停住。
 // 这里只排时点，不结算牌面。
 public sealed class MatchFlow
@@ -46,7 +47,12 @@ public sealed class MatchFlow
     public int TurnIndex { get; private set; }
     public int MainActionCount { get; private set; }
     public int TraitActionsThisTurn { get; private set; }
+    public int AttacksRemaining { get; private set; }
+    public int WeaponAttacksThisTurn { get; private set; }
+    public bool HasSwift { get; private set; }
     public bool PendingAllOut { get; private set; }
+    public EffectRow LastEffectRow { get; private set; }
+    public int LastChargeWeapon { get; private set; } = -1;
     public bool LastActionHadCombo { get; private set; }
     public bool HasMainEndReason { get; private set; }
     public MainEndReason MainEndReason { get; private set; }
@@ -97,6 +103,7 @@ public sealed class MatchFlow
         Advance();
     }
 
+    // 声明结束和全力都直接进入回合结束，第一步是展开中效果。
     public void EndMainPhase(MainEndReason reason)
     {
         if (finished || Timing != MatchTiming.Main || !waiting || CurrentAttack != null)
@@ -123,28 +130,56 @@ public sealed class MatchFlow
 
     public void CompleteCardPlay()
     {
-        CompleteCardPlay(false);
+        CompleteCardPlay(false, false, false);
     }
 
     public void CompleteCardPlay(bool allOut)
     {
+        CompleteCardPlay(allOut, false, false);
+    }
+
+    public void CompleteCardPlay(bool allOut, bool hasComboRow, bool restricted)
+    {
+        CompleteCardPlay(allOut, hasComboRow, restricted, ComboActive);
+    }
+
+    public void CompleteCardPlay(bool allOut, bool hasComboRow, bool restricted, bool comboAlreadyActive)
+    {
         EnsureIdleMain();
+        if (restricted && !MatchTimingPolicy.RestrictedCardCanBePlayed)
+        {
+            throw new InvalidOperationException("限制牌不能打出，只能用于蓄能。");
+        }
+
         if (allOut && MainActionCount != 0)
         {
             throw new InvalidOperationException("全力必须是主要阶段的第一个行动。");
         }
 
-        LastActionHadCombo = ComboActive;
+        LastActionHadCombo = comboAlreadyActive;
+        LastEffectRow = EffectRows.Choose(comboAlreadyActive, hasComboRow, false);
         MainActionCount++;
         TraitActionsThisTurn++;
         PendingAllOut = allOut;
         RecordAction(MainActionKind.PlayCard, LastActionHadCombo);
     }
 
-    public void CompleteCharge()
+    public void SetSwift(bool active)
+    {
+        HasSwift = active;
+    }
+
+    public void CompleteCharge(int weaponSlot)
     {
         EnsureIdleMain();
+        if (weaponSlot < 0)
+        {
+            throw new InvalidOperationException("蓄能要选择一把武器。");
+        }
+
+        LastChargeWeapon = weaponSlot;
         LastActionHadCombo = ComboActive;
+        LastEffectRow = EffectRow.Base;
         MainActionCount++;
         RecordAction(MainActionKind.Charge, LastActionHadCombo);
     }
@@ -160,7 +195,18 @@ public sealed class MatchFlow
     public void BeginAttack(bool canRespond)
     {
         EnsureIdleMain();
+        bool freeSwift = HasSwift && WeaponAttacksThisTurn == 0;
+        if (!freeSwift && AttacksRemaining <= 0)
+        {
+            throw new InvalidOperationException("本回合攻击次数已经用完。");
+        }
+
         CurrentAttack = new AttackContext(canRespond, ComboActive);
+        if (freeSwift)
+        {
+            CurrentAttack.ConsumesAttackCount = false;
+        }
+
         EnterAttackStep();
     }
 
@@ -187,6 +233,7 @@ public sealed class MatchFlow
             throw new InvalidOperationException("对应只能在对应窗口或对应结算时打出。");
         }
 
+        LastEffectRow = EffectRows.Choose(false, false, true);
         CurrentAttack.AddResponse();
     }
 
@@ -231,6 +278,9 @@ public sealed class MatchFlow
         if (timing == MatchTiming.ClearRoundMarks)
         {
             TraitActionsThisTurn = 0;
+            AttacksRemaining = 0;
+            WeaponAttacksThisTurn = 0;
+            HasSwift = false;
         }
 
         if (timing == MatchTiming.Main)
@@ -293,6 +343,8 @@ public sealed class MatchFlow
         TurnIndex++;
         MainActionCount = 0;
         TraitActionsThisTurn = 0;
+        AttacksRemaining = MatchTimingPolicy.AttacksPerTurn;
+        WeaponAttacksThisTurn = 0;
         PendingAllOut = false;
         HasMainEndReason = false;
         segment = Segment.Turn;
@@ -368,6 +420,12 @@ public sealed class MatchFlow
 
     private void CompleteAttack(AttackContext attack)
     {
+        WeaponAttacksThisTurn++;
+        if (attack.SpendsAttackCount)
+        {
+            AttacksRemaining--;
+        }
+
         MainActionCount++;
         LastActionHadCombo = attack.ComboAtDeclaration;
         RecordAction(MainActionKind.Attack, attack.ComboAtDeclaration);
@@ -430,11 +488,11 @@ public sealed class MatchFlow
 
     private static bool ShouldSkip(AttackContext attack, AttackTiming step)
     {
-        if (attack.CanRespond)
+        if (step != AttackTiming.ResponseWindow && step != AttackTiming.ResolveResponses)
         {
             return false;
         }
 
-        return step == AttackTiming.ResponseWindow || step == AttackTiming.ResolveResponses;
+        return !attack.CanRespond || attack.BlockResponses;
     }
 }

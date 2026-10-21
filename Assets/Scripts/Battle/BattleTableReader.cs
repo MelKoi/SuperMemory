@@ -67,4 +67,27 @@ public static class BattleTableReader
             return false;
         }
     }
+
+    public static bool TryLoadCards(out CardCatalog catalog)
+    {
+        catalog = null;
+        try
+        {
+            if (!TableDatabase.TryGet("ActionCard", out var action) ||
+                !TableDatabase.TryGet("AttackCard", out var attack) ||
+                !TableDatabase.TryGet("BuffCard", out var buff))
+            {
+                return false;
+            }
+
+            catalog = CardCatalog.Load(attack, action, buff);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Debug.LogWarning("卡牌数据读取失败：" + exception.Message);
+            catalog = null;
+            return false;
+        }
+    }
 }

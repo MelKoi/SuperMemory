@@ -1,21 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "hm/KyWVD8sQ=",
+  "dgSpecHash": "+eSvPa8741w=",
   "success": true,
   "projectFilePath": "D:\\Card\\My project\\Tools\\TableExporter\\TableExporter.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\closedxml\\0.104.2\\closedxml.0.104.2.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\closedxml.parser\\1.2.0\\closedxml.parser.1.2.0.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\documentformat.openxml\\3.1.1\\documentformat.openxml.3.1.1.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\documentformat.openxml.framework\\3.1.1\\documentformat.openxml.framework.3.1.1.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\excelnumberformat\\1.1.0\\excelnumberformat.1.1.0.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\rbush\\4.0.0\\rbush.4.0.0.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\sixlabors.fonts\\1.0.0\\sixlabors.fonts.1.0.0.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\system.io.packaging\\8.0.1\\system.io.packaging.8.0.1.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\microsoft.netcore.app.ref\\9.0.19\\microsoft.netcore.app.ref.9.0.19.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\microsoft.windowsdesktop.app.ref\\9.0.19\\microsoft.windowsdesktop.app.ref.9.0.19.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\microsoft.aspnetcore.app.ref\\9.0.19\\microsoft.aspnetcore.app.ref.9.0.19.nupkg.sha512",
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\6cb017a747aa569695b2e31c3d77bb09\\nuget\\microsoft.netcore.app.host.win-x64\\9.0.19\\microsoft.netcore.app.host.win-x64.9.0.19.nupkg.sha512"
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\closedxml\\0.104.2\\closedxml.0.104.2.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\closedxml.parser\\1.2.0\\closedxml.parser.1.2.0.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\documentformat.openxml\\3.1.1\\documentformat.openxml.3.1.1.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\documentformat.openxml.framework\\3.1.1\\documentformat.openxml.framework.3.1.1.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\excelnumberformat\\1.1.0\\excelnumberformat.1.1.0.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\rbush\\4.0.0\\rbush.4.0.0.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\sixlabors.fonts\\1.0.0\\sixlabors.fonts.1.0.0.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\system.io.packaging\\8.0.1\\system.io.packaging.8.0.1.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\microsoft.netcore.app.ref\\9.0.19\\microsoft.netcore.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\microsoft.windowsdesktop.app.ref\\9.0.19\\microsoft.windowsdesktop.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\microsoft.aspnetcore.app.ref\\9.0.19\\microsoft.aspnetcore.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\9a1381a672360eeb316f1ac001ac22f9\\nuget\\microsoft.netcore.app.host.win-x64\\9.0.19\\microsoft.netcore.app.host.win-x64.9.0.19.nupkg.sha512"
   ],
   "logs": []
 }

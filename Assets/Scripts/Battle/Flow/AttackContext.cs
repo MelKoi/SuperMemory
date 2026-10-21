@@ -17,6 +17,12 @@ public sealed class AttackContext
     public bool Negated { get; set; }
     public bool ConsumesAttackCount { get; set; }
     public bool Aborted { get; private set; }
+    public int WeaponSlot { get; set; } = -1;
+    public int Distance { get; set; }
+    public int LifeDamage { get; set; }
+    public int ToughnessDamage { get; set; }
+    public int Range { get; set; }
+    public bool BlockResponses { get; set; }
     public bool WaitingForResponses { get; private set; }
     public int ResponseCount { get; private set; }
     internal int Index { get; set; }

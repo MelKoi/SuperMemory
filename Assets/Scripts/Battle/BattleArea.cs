@@ -115,6 +115,43 @@ public sealed class BattleArea : MonoBehaviour
         energyRing.SetEnergy(Vitals.Energy, BattleVitals.EnergyCapacity);
     }
 
+    public BattleWeaponView GetWeapon(int weaponNumber)
+    {
+        if (weaponNumber == 1)
+        {
+            return weapon1;
+        }
+
+        if (weaponNumber == 2)
+        {
+            return weapon2;
+        }
+
+        return null;
+    }
+
+    public bool TrySpendEnergy(int cost)
+    {
+        if (Vitals == null || cost < 0 || Vitals.Energy < cost)
+        {
+            return false;
+        }
+
+        SetEnergy(Vitals.Energy - cost);
+        return true;
+    }
+
+    public void ApplyDamage(int lifeDamage, int toughnessDamage)
+    {
+        if (Vitals == null)
+        {
+            return;
+        }
+
+        SetHealth(Vitals.Health - Mathf.Max(0, lifeDamage));
+        SetToughness(Vitals.Toughness - Mathf.Max(0, toughnessDamage));
+    }
+
     private void RefreshBars()
     {
         healthBar.SetValue(Vitals.Health, BattleVitals.MaxHealth);
