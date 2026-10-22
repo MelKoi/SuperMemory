@@ -109,6 +109,8 @@ public sealed class BattleHud : MonoBehaviour
         {
             playerActionButton.onClick.AddListener(menu.ShowActions);
         }
+
+        BattleEndButton.Create(canvasRect);
     }
 
     private static void EnsureEventSystem()
