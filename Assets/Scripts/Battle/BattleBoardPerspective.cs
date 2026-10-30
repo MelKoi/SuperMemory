@@ -140,6 +140,15 @@ public sealed class BattleBoardPerspective : MonoBehaviour
         return true;
     }
 
+    public void PlaceFighters(int nextPlayerColumn, int nextPlayerRow, int nextEnemyColumn, int nextEnemyRow)
+    {
+        playerColumn = nextPlayerColumn;
+        playerRow = nextPlayerRow;
+        enemyColumn = nextEnemyColumn;
+        enemyRow = nextEnemyRow;
+        Apply();
+    }
+
     private void SyncPieces(int columns, int rows)
     {
         PlacePiece("Unit_1B", playerColumn, playerRow, columns, rows, new Color(0.30f, 0.76f, 0.92f, 1f));

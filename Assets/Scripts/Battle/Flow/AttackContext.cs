@@ -4,18 +4,16 @@ public sealed class AttackContext
 {
     private readonly List<AttackStepRecord> steps = new List<AttackStepRecord>();
 
-    internal AttackContext(bool canRespond, bool comboAtDeclaration)
+    internal AttackContext(bool canRespond, bool consumesAttackCount)
     {
         CanRespond = canRespond;
-        ComboAtDeclaration = comboAtDeclaration;
-        ConsumesAttackCount = true;
+        ConsumesAttackCount = consumesAttackCount;
     }
 
     public bool CanRespond { get; }
-    public bool ComboAtDeclaration { get; }
+    public bool ConsumesAttackCount { get; }
     public AttackTiming Timing { get; private set; }
     public bool Negated { get; set; }
-    public bool ConsumesAttackCount { get; set; }
     public bool Aborted { get; private set; }
     public int WeaponSlot { get; set; } = -1;
     public int Distance { get; set; }
@@ -28,7 +26,6 @@ public sealed class AttackContext
     internal int Index { get; set; }
 
     public bool DealsDamage => !Negated || MatchTimingPolicy.NegatedAttackDealsDamage;
-    public bool AppliesLingerBonus => !Negated || MatchTimingPolicy.NegatedAttackAppliesLinger;
     public bool ConsumesLinger => !Negated || MatchTimingPolicy.NegatedAttackConsumesLinger;
     public bool SpendsCharge => !Negated || MatchTimingPolicy.NegatedAttackSpendsCharge;
     public bool SpendsAttackCount => ConsumesAttackCount && (!Negated || MatchTimingPolicy.NegatedAttackSpendsAttackCount);

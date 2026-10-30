@@ -536,6 +536,10 @@ MonoBehaviour:
   viewScale: 0.9
   cellSize: 0.92
   frameName: BoardFrame
+  playerColumn: 1
+  playerRow: 0
+  enemyColumn: 1
+  enemyRow: 11
 --- !u!1 &200100
 GameObject:
   m_ObjectHideFlags: 0

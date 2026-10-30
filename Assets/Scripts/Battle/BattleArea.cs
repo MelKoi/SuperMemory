@@ -8,14 +8,15 @@ public sealed class BattleArea : MonoBehaviour
     private BattlePortraitView portrait;
     private BattleVitalBar healthBar;
     private BattleVitalBar toughnessBar;
-    private EnergyRing energyRing;
+    private BattleVitalBar energyBar;
     private BattleWeaponView weapon1;
     private BattleWeaponView weapon2;
     private HandZone hand;
     private Text deckCount;
+    private BattleVitals vitals = new BattleVitals();
 
     public BattleSide Side => side;
-    public BattleVitals Vitals { get; private set; }
+    public BattleVitals Vitals => vitals ??= new BattleVitals();
     public HandZone Hand => hand;
     public bool HasCharacter { get; private set; }
     public bool HasWeapon1 { get; private set; }
@@ -30,7 +31,7 @@ public sealed class BattleArea : MonoBehaviour
         BattlePortraitView portraitView,
         BattleVitalBar health,
         BattleVitalBar toughness,
-        EnergyRing energy,
+        BattleVitalBar energy,
         BattleWeaponView firstWeapon,
         BattleWeaponView secondWeapon,
         HandZone handZone,
@@ -40,13 +41,17 @@ public sealed class BattleArea : MonoBehaviour
         portrait = portraitView;
         healthBar = health;
         toughnessBar = toughness;
-        energyRing = energy;
+        energyBar = energy;
         weapon1 = firstWeapon;
         weapon2 = secondWeapon;
         hand = handZone;
         deckCount = deckLabel;
-        Vitals = new BattleVitals();
-        hand.Initialize(owner);
+        vitals = new BattleVitals();
+        if (hand != null)
+        {
+            hand.Initialize(owner);
+        }
+
         SetDeckCount(0);
     }
 
@@ -59,13 +64,19 @@ public sealed class BattleArea : MonoBehaviour
             CharacterName = characterName;
             Vitals.SetHealth(health);
             Vitals.SetToughness(toughness);
-            portrait.SetPortrait(portraitSprite);
+            if (portrait != null)
+            {
+                portrait.SetPortrait(portraitSprite);
+            }
         }
         else
         {
             HasCharacter = false;
             CharacterName = null;
-            portrait.SetPortrait(null);
+            if (portrait != null)
+            {
+                portrait.SetPortrait(null);
+            }
         }
 
         HasWeapon1 = PresentWeapon(weapon1, weaponId1, weaponSprite1, out var firstName);
@@ -89,9 +100,12 @@ public sealed class BattleArea : MonoBehaviour
     {
         if (weaponNumber == 1)
         {
-            weapon1.SetCharge(charge);
+            if (weapon1 != null)
+            {
+                weapon1.SetCharge(charge);
+            }
         }
-        else if (weaponNumber == 2)
+        else if (weaponNumber == 2 && weapon2 != null)
         {
             weapon2.SetCharge(charge);
         }
@@ -100,19 +114,28 @@ public sealed class BattleArea : MonoBehaviour
     public void SetHealth(int value)
     {
         Vitals.SetHealth(value);
-        healthBar.SetValue(Vitals.Health, BattleVitals.MaxHealth);
+        if (healthBar != null)
+        {
+            healthBar.SetValue(Vitals.Health, BattleVitals.MaxHealth);
+        }
     }
 
     public void SetToughness(int value)
     {
         Vitals.SetToughness(value);
-        toughnessBar.SetValue(Vitals.Toughness, BattleVitals.MaxToughness);
+        if (toughnessBar != null)
+        {
+            toughnessBar.SetValue(Vitals.Toughness, BattleVitals.MaxToughness);
+        }
     }
 
     public void SetEnergy(int value)
     {
         Vitals.SetEnergy(value);
-        energyRing.SetEnergy(Vitals.Energy, BattleVitals.EnergyCapacity);
+        if (energyBar != null)
+        {
+            energyBar.SetValue(Vitals.Energy, BattleVitals.EnergyCapacity);
+        }
     }
 
     public BattleWeaponView GetWeapon(int weaponNumber)
@@ -132,7 +155,7 @@ public sealed class BattleArea : MonoBehaviour
 
     public bool TrySpendEnergy(int cost)
     {
-        if (Vitals == null || cost < 0 || Vitals.Energy < cost)
+        if (cost < 0 || Vitals.Energy < cost)
         {
             return false;
         }
@@ -143,24 +166,36 @@ public sealed class BattleArea : MonoBehaviour
 
     public void ApplyDamage(int lifeDamage, int toughnessDamage)
     {
-        if (Vitals == null)
-        {
-            return;
-        }
-
         SetHealth(Vitals.Health - Mathf.Max(0, lifeDamage));
         SetToughness(Vitals.Toughness - Mathf.Max(0, toughnessDamage));
     }
 
     private void RefreshBars()
     {
-        healthBar.SetValue(Vitals.Health, BattleVitals.MaxHealth);
-        toughnessBar.SetValue(Vitals.Toughness, BattleVitals.MaxToughness);
-        energyRing.SetEnergy(Vitals.Energy, BattleVitals.EnergyCapacity);
+        if (healthBar != null)
+        {
+            healthBar.SetValue(Vitals.Health, BattleVitals.MaxHealth);
+        }
+
+        if (toughnessBar != null)
+        {
+            toughnessBar.SetValue(Vitals.Toughness, BattleVitals.MaxToughness);
+        }
+
+        if (energyBar != null)
+        {
+            energyBar.SetValue(Vitals.Energy, BattleVitals.EnergyCapacity);
+        }
     }
 
     private static bool PresentWeapon(BattleWeaponView view, int weaponId, Sprite sprite, out string weaponName)
     {
+        if (view == null)
+        {
+            weaponName = null;
+            return false;
+        }
+
         if (!BattleTableReader.TryReadWeapon(weaponId, out weaponName, out var light, out var heavy))
         {
             view.ClearWeapon();

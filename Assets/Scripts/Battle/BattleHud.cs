@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -26,6 +27,7 @@ public sealed class BattleHud : MonoBehaviour
     private BattleArea playerArea;
     private BattleArea enemyArea;
     private Button playerActionButton;
+    private Text playResult;
     private bool editorBuildQueued;
 
     public BattleArea Player => playerArea;
@@ -111,6 +113,127 @@ public sealed class BattleHud : MonoBehaviour
         }
 
         BattleEndButton.Create(canvasRect);
+        if (Application.isPlaying)
+        {
+            CreatePlayButton(canvasRect);
+            BattleDeckSelect.Create(canvasRect, this).Open();
+        }
+    }
+
+    public void ApplyOpeningHand(int deckCount, IReadOnlyList<string> handNames)
+    {
+        if (playerArea == null)
+        {
+            return;
+        }
+
+        playerArea.SetDeckCount(deckCount);
+        if (playerArea.Hand != null)
+        {
+            playerArea.Hand.Present(handNames);
+        }
+    }
+
+    public void ApplyTurnState(int playerEnergy, int enemyEnergy, int playerDeck, int enemyDeck)
+    {
+        ApplyOpeningEnergy(playerEnergy, enemyEnergy);
+        if (playerArea != null)
+        {
+            playerArea.SetDeckCount(playerDeck);
+        }
+
+        if (enemyArea != null)
+        {
+            enemyArea.SetDeckCount(enemyDeck);
+        }
+    }
+
+    public void ApplyOpeningEnergy(int playerEnergy, int enemyEnergy)
+    {
+        if (playerArea != null)
+        {
+            playerArea.SetEnergy(playerEnergy);
+        }
+
+        if (enemyArea != null)
+        {
+            enemyArea.SetEnergy(enemyEnergy);
+        }
+
+        GetComponent<BattleActionSettings>()?.AdoptEnergy(playerEnergy);
+        var menu = GetComponentInChildren<BattleActionMenu>(true);
+        if (menu != null)
+        {
+            menu.Refresh();
+        }
+    }
+
+    public void ClearOpeningHand()
+    {
+        if (playerArea != null && playerArea.Hand != null)
+        {
+            playerArea.Hand.Present(null);
+        }
+    }
+
+    public void ApplyPlayerDeck(DeckBuildResult result)
+    {
+        if (playerArea == null || result == null)
+        {
+            return;
+        }
+
+        playerArea.LoadOpeningState(
+            result.CharacterId,
+            result.WeaponId1,
+            result.WeaponId2,
+            FindPortrait(result.CharacterId),
+            FindWeaponIcon(result.WeaponId1),
+            FindWeaponIcon(result.WeaponId2));
+        playerArea.SetDeckCount(result.Deck.Count);
+        if (enemyArea != null)
+        {
+            enemyArea.SetDeckCount(0);
+        }
+    }
+
+    public void SetPlayResult(string message)
+    {
+        if (playResult != null)
+        {
+            playResult.text = message ?? string.Empty;
+        }
+    }
+
+    private void CreatePlayButton(RectTransform canvasRect)
+    {
+        var rect = BattleUiFactory.Create("PlayButton", canvasRect);
+        BattleUiFactory.Place(rect, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -16f), new Vector2(140f, 48f));
+        var image = rect.gameObject.AddComponent<Image>();
+        image.sprite = BattleUiSprites.Square;
+        image.color = new Color(0.93f, 0.93f, 0.94f, 1f);
+        var button = rect.gameObject.AddComponent<Button>();
+        button.targetGraphic = image;
+        button.navigation = new Navigation { mode = Navigation.Mode.None };
+        var colors = button.colors;
+        colors.highlightedColor = new Color(0.86f, 0.90f, 0.96f, 1f);
+        colors.pressedColor = new Color(0.72f, 0.75f, 0.80f, 1f);
+        colors.fadeDuration = 0.06f;
+        button.colors = colors;
+        var label = BattleUiFactory.CreateText("Text", rect, "Play", 26, TextAnchor.MiddleCenter);
+        label.color = new Color(0.16f, 0.16f, 0.18f, 1f);
+        BattleUiFactory.Stretch(label.rectTransform, Vector2.zero, Vector2.one);
+        playResult = BattleUiFactory.CreateText("PlayResult", canvasRect, string.Empty, 22, TextAnchor.MiddleCenter);
+        playResult.color = new Color(0.96f, 0.97f, 0.98f, 1f);
+        BattleUiFactory.Place(playResult.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -72f), new Vector2(720f, 32f));
+        button.onClick.AddListener(() =>
+        {
+            var select = GetComponentInChildren<BattleDeckSelect>(true);
+            if (select != null)
+            {
+                select.Open();
+            }
+        });
     }
 
     private static void EnsureEventSystem()
@@ -143,6 +266,7 @@ public sealed class BattleHud : MonoBehaviour
         playerArea = null;
         enemyArea = null;
         playerActionButton = null;
+        playResult = null;
     }
 
     private void Apply()
@@ -188,16 +312,17 @@ public sealed class BattleHud : MonoBehaviour
         var barX = 322f * direction;
         var healthRect = BattleUiFactory.Create("HealthBar", areaRect);
         var toughnessRect = BattleUiFactory.Create("ToughnessBar", areaRect);
-        var energyRect = BattleUiFactory.Create("EnergyRing", areaRect);
+        var energyRect = BattleUiFactory.Create("EnergyBar", areaRect);
         BattleUiFactory.Place(healthRect, corner, pivot, new Vector2(barX, 156f * direction), new Vector2(BarWidth, 28f));
         BattleUiFactory.Place(toughnessRect, corner, pivot, new Vector2(barX, 120f * direction), new Vector2(BarWidth, 22f));
-        BattleUiFactory.Place(energyRect, corner, pivot, new Vector2(barX, 24f * direction), new Vector2(190f, 72f));
+        BattleUiFactory.Place(energyRect, corner, pivot, new Vector2(barX, 84f * direction), new Vector2(BarWidth, 22f));
 
         var health = healthRect.gameObject.AddComponent<BattleVitalBar>();
         health.Initialize(new Color(0.80f, 0.32f, 0.30f, 1f), !player);
         var toughness = toughnessRect.gameObject.AddComponent<BattleVitalBar>();
         toughness.Initialize(new Color(0.93f, 0.62f, 0.46f, 1f), !player);
-        var energy = energyRect.gameObject.AddComponent<EnergyRing>();
+        var energy = energyRect.gameObject.AddComponent<BattleVitalBar>();
+        energy.Initialize(new Color(0.93f, 0.76f, 0.28f, 1f), !player);
 
         var weaponAnchor = player ? new Vector2(1f, 0f) : new Vector2(0f, 1f);
         var weaponSize = new Vector2(136f, 136f);
@@ -258,11 +383,11 @@ public sealed class BattleHud : MonoBehaviour
         var handRect = BattleUiFactory.Create("HandZone", areaRect);
         if (player)
         {
-            BattleUiFactory.Stretch(handRect, new Vector2(0.58f, 0.015f), new Vector2(0.985f, 0.175f));
+            BattleUiFactory.Stretch(handRect, new Vector2(0.338f, 0.012f), new Vector2(0.743f, 0.173f));
         }
         else
         {
-            BattleUiFactory.Stretch(handRect, new Vector2(0.015f, 0.825f), new Vector2(0.42f, 0.985f));
+            BattleUiFactory.Stretch(handRect, new Vector2(0.257f, 0.829f), new Vector2(0.661f, 0.990f));
         }
 
         var hand = handRect.gameObject.AddComponent<HandZone>();

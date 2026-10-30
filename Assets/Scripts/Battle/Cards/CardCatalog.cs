@@ -3,115 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using CardTables;
 
-public enum CardKind
-{
-    Attack = 0,
-    Action = 1,
-    Buff = 2,
-}
-
-public static class CardSubtypes
-{
-    public const int None = 0;
-    public const int Response = 1;
-    public const int AllOut = 2;
-    public const int Temporary = 3;
-    public const int Restricted = 4;
-}
-
-public static class CardStatuses
-{
-    public const int Combo = 0;
-    public const int Swift = 1;
-}
-
-public static class CardEffects
-{
-    public const int None = -1;
-    public const int Draw = 0;
-    public const int Energy = 1;
-    public const int Toughness = 2;
-    public const int Life = 3;
-    public const int Strike = 4;
-    public const int AddCard = 5;
-    public const int Range = 6;
-    public const int Cost = 7;
-    public const int CannotRespond = 8;
-    public const int Discard = 9;
-    public const int Status = 10;
-    public const int Negate = 11;
-    public const int RemoveSubtype = 12;
-    public const int DiscardOrNegate = 13;
-}
-
-// 一张表行。连击行和对应行挂在初始卡上，不单独进手牌。
-public sealed class CardDefinition
-{
-    public CardDefinition(
-        CardKind kind,
-        int id,
-        string name,
-        int subtype,
-        int cost,
-        int maxTake,
-        string owner,
-        int duration,
-        int[][] playEffect,
-        int[][] startEffect,
-        int[][] ongoingEffect,
-        int[][] endEffect)
-    {
-        Kind = kind;
-        Id = id;
-        Name = name ?? string.Empty;
-        Subtype = subtype;
-        Cost = cost;
-        MaxTake = maxTake;
-        Owner = string.IsNullOrEmpty(owner) || owner == "null" ? string.Empty : owner;
-        Duration = duration;
-        PlayEffect = playEffect ?? Array.Empty<int[]>();
-        StartEffect = startEffect ?? Array.Empty<int[]>();
-        OngoingEffect = ongoingEffect ?? Array.Empty<int[]>();
-        EndEffect = endEffect ?? Array.Empty<int[]>();
-    }
-
-    public CardKind Kind { get; }
-    public int Id { get; }
-    public string Name { get; }
-    public int Subtype { get; }
-    public int Cost { get; }
-    public int MaxTake { get; }
-    public string Owner { get; }
-    public int Duration { get; }
-    public int[][] PlayEffect { get; }
-    public int[][] StartEffect { get; }
-    public int[][] OngoingEffect { get; }
-    public int[][] EndEffect { get; }
-    public CardDefinition Combo { get; internal set; }
-    public CardDefinition Response { get; internal set; }
-}
-
-public sealed class CardInstance
-{
-    public CardInstance(CardKind kind, int cardId)
-    {
-        Kind = kind;
-        CardId = cardId;
-        EffectCardId = cardId;
-    }
-
-    public CardKind Kind { get; }
-    public int CardId { get; }
-    public int EffectCardId { get; set; }
-    public int Duration { get; set; }
-    public int? SubtypeOverride { get; set; }
-}
-
+// 三张卡牌表。读表时按名字挂上 (连击) 和 (对应) 行，并检查每段效果的参数和目标。
 public sealed class CardCatalog
 {
-    readonly Dictionary<int, CardDefinition> attacks = new Dictionary<int, CardDefinition>();
-    readonly Dictionary<int, CardDefinition> actions = new Dictionary<int, CardDefinition>();
-    readonly Dictionary<int, CardDefinition> buffs = new Dictionary<int, CardDefinition>();
+    readonly Dictionary<int, CardDefinition>[] tables =
+    {
+        new Dictionary<int, CardDefinition>(),
+        new Dictionary<int, CardDefinition>(),
+        new Dictionary<int, CardDefinition>(),
+    };
 
     CardCatalog()
     {
@@ -125,22 +25,15 @@ public sealed class CardCatalog
         }
 
         var catalog = new CardCatalog();
-        var attackRows = ReadBattleCards(attackCards, CardKind.Attack);
-        var actionRows = ReadBattleCards(actionCards, CardKind.Action);
-        var buffRows = ReadBuffCards(buffCards);
-        LinkVariants(attackRows);
-        LinkVariants(actionRows);
-        LinkVariants(buffRows);
-        Index(catalog.attacks, attackRows);
-        Index(catalog.actions, actionRows);
-        Index(catalog.buffs, buffRows);
+        catalog.Add(ReadRows(attackCards, CardKind.Attack));
+        catalog.Add(ReadRows(actionCards, CardKind.Action));
+        catalog.Add(ReadRows(buffCards, CardKind.Buff));
         return catalog;
     }
 
     public CardDefinition Get(CardKind kind, int id)
     {
-        var table = Table(kind);
-        if (!table.TryGetValue(id, out var card))
+        if (!Table(kind).TryGetValue(id, out var card))
         {
             throw new InvalidDataException(kind + " 表没有 Id " + id + "。");
         }
@@ -153,69 +46,88 @@ public sealed class CardCatalog
         return Table(kind).ContainsKey(id);
     }
 
+    // 去掉子类别的牌按 SubtypeOverride 算。
+    public int SubtypeOf(CardInstance card)
+    {
+        return card.SubtypeOverride ?? Get(card.Kind, card.CardId).Subtype;
+    }
+
+    public void CopyTo(List<CardDefinition> destination)
+    {
+        if (destination == null)
+        {
+            throw new ArgumentNullException(nameof(destination));
+        }
+
+        for (var i = 0; i < tables.Length; i++)
+        {
+            destination.AddRange(tables[i].Values);
+        }
+    }
+
     Dictionary<int, CardDefinition> Table(CardKind kind)
     {
-        if (kind == CardKind.Attack)
+        var index = (int)kind;
+        if (index < 0 || index >= tables.Length)
         {
-            return attacks;
+            throw new ArgumentOutOfRangeException(nameof(kind));
         }
 
-        if (kind == CardKind.Action)
-        {
-            return actions;
-        }
-
-        if (kind == CardKind.Buff)
-        {
-            return buffs;
-        }
-
-        throw new ArgumentOutOfRangeException(nameof(kind));
+        return tables[index];
     }
 
-    static List<CardDefinition> ReadBattleCards(TableData table, CardKind kind)
+    void Add(List<CardDefinition> rows)
+    {
+        LinkVariants(rows);
+        for (var i = 0; i < rows.Count; i++)
+        {
+            var card = rows[i];
+            Validate(card, card.PlayEffect, "effect");
+            Validate(card, card.StartEffect, "starteffect");
+            Validate(card, card.OngoingEffect, "effect");
+            Validate(card, card.EndEffect, "endeffect");
+            var table = Table(card.Kind);
+            if (table.ContainsKey(card.Id))
+            {
+                throw new InvalidDataException("卡牌 Id 重复：" + card.Id + " " + card.Name);
+            }
+
+            table.Add(card.Id, card);
+        }
+    }
+
+    // 攻击和行动牌的 effect 是打出时效果。加成牌的 effect 是展开中，另有 starteffect、endeffect 和 duration。
+    static List<CardDefinition> ReadRows(TableData table, CardKind kind)
     {
         var rows = new List<CardDefinition>(table.RowCount);
         for (var row = 0; row < table.RowCount; row++)
         {
             var id = table.GetIntAt(row, "id");
-            rows.Add(new CardDefinition(
-                kind,
-                id,
-                table.GetStringAt(row, "name"),
-                table.GetIntAt(row, "subtype"),
-                table.GetIntAt(row, "cost"),
-                table.GetIntAt(row, "MaxTake"),
-                table.GetStringAt(row, "owner"),
-                0,
-                table.GetIntArray2At(row, "effect"),
-                Array.Empty<int[]>(),
-                Array.Empty<int[]>(),
-                Array.Empty<int[]>()));
-        }
-
-        return rows;
-    }
-
-    static List<CardDefinition> ReadBuffCards(TableData table)
-    {
-        var rows = new List<CardDefinition>(table.RowCount);
-        for (var row = 0; row < table.RowCount; row++)
-        {
-            var id = table.GetIntAt(row, "id");
-            rows.Add(new CardDefinition(
-                CardKind.Buff,
-                id,
-                table.GetStringAt(row, "name"),
-                table.GetIntAt(row, "subtype"),
-                table.GetIntAt(row, "cost"),
-                table.GetIntAt(row, "MaxTake"),
-                table.GetStringAt(row, "owner"),
-                table.GetIntAt(row, "duration"),
-                Array.Empty<int[]>(),
-                table.GetIntArray2At(row, "starteffect"),
-                table.GetIntArray2At(row, "effect"),
-                table.GetIntArray2At(row, "endeffect")));
+            var name = table.GetStringAt(row, "name");
+            var subtype = table.GetIntAt(row, "subtype");
+            var cost = table.GetIntAt(row, "cost");
+            var maxTake = table.GetIntAt(row, "MaxTake");
+            var owner = table.GetStringAt(row, "owner");
+            if (kind == CardKind.Buff)
+            {
+                rows.Add(new CardDefinition(
+                    kind, id, name, subtype, cost, maxTake, owner,
+                    table.GetIntAt(row, "duration"),
+                    null,
+                    table.GetIntArray2At(row, "starteffect"),
+                    table.GetIntArray2At(row, "effect"),
+                    table.GetIntArray2At(row, "endeffect")));
+            }
+            else
+            {
+                rows.Add(new CardDefinition(
+                    kind, id, name, subtype, cost, maxTake, owner,
+                    0,
+                    table.GetIntArray2At(row, "effect"),
+                    null,
+                    null,
+                    null));
+            }
         }
 
         return rows;
@@ -237,31 +149,49 @@ public sealed class CardCatalog
 
         for (var i = 0; i < rows.Count; i++)
         {
-            rows[i].Combo = FindSuffix(byName, rows[i], "(连击)");
-            rows[i].Response = FindSuffix(byName, rows[i], "(对应)");
+            rows[i].Combo = FindVariant(byName, rows[i], "(连击)");
+            rows[i].Response = FindVariant(byName, rows[i], "(对应)");
         }
     }
 
-    static CardDefinition FindSuffix(Dictionary<string, List<CardDefinition>> byName, CardDefinition card, string suffix)
+    static CardDefinition FindVariant(Dictionary<string, List<CardDefinition>> byName, CardDefinition card, string suffix)
     {
         if (!byName.TryGetValue(card.Name + suffix, out var list) || list.Count != 1)
         {
             return null;
         }
 
+        list[0].IsAlternate = true;
         return list[0];
     }
 
-    static void Index(Dictionary<int, CardDefinition> destination, List<CardDefinition> rows)
+    static void Validate(CardDefinition card, int[][] effects, string column)
     {
-        for (var i = 0; i < rows.Count; i++)
+        for (var i = 0; i < effects.Length; i++)
         {
-            if (destination.ContainsKey(rows[i].Id))
+            var step = effects[i];
+            if (CardEffects.IsEmpty(step))
             {
-                throw new InvalidDataException("卡牌 Id 重复：" + rows[i].Id + " " + rows[i].Name);
+                continue;
             }
 
-            destination.Add(rows[i].Id, rows[i]);
+            var where = card.Kind + " " + card.Id + " " + card.Name + " 的 " + column + " 第 " + (i + 1) + " 段";
+            var length = CardEffects.Length(step[0]);
+            if (length < 0)
+            {
+                throw new InvalidDataException(where + "：未知效果 " + step[0] + "。");
+            }
+
+            if (step.Length != length)
+            {
+                throw new InvalidDataException(where + "：效果 " + step[0] + " 需要 " + (length - 1) + " 个参数，现在是 " + (step.Length - 1) + " 个。");
+            }
+
+            var target = step[step.Length - 1];
+            if (target != CardEffects.TargetSelf && target != CardEffects.TargetOpponent)
+            {
+                throw new InvalidDataException(where + "：目标只能是 0 或 1。");
+            }
         }
     }
 }

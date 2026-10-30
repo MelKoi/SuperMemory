@@ -102,7 +102,8 @@ public sealed class BattleEndButton : MonoBehaviour
             && flow.IsWaiting
             && flow.Timing == MatchTiming.Main
             && flow.ActiveSide == BattleSide.Player
-            && !flow.AttackInProgress;
+            && !flow.AttackInProgress
+            && !rules.WaitingForDiscard;
     }
 
     private void Apply(bool allowed)
