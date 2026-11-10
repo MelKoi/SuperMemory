@@ -1,7 +1,8 @@
-// 回合时点上牌区和状态的变化。
-// 加成：回合开始时敌我场上的读数都减 1。读数到 0 就结算弃置时，然后进弃牌堆。
-// 临时：回合结束时还在手牌里的临时牌移出本局。去掉了子类别的不算。
-// 连击：任何一方回合结束时，双方都去掉。迅捷：只在持有者自己的回合结束时去掉。
+// 流程真正走到的回合时点。只改牌区和状态。
+// 读数：敌我场上的加成都减 1，到 0 就结算弃置时，然后进弃牌堆。
+// 临时：还在手牌里的临时牌移出本局。去掉了子类别的不算。
+// 连击在任何一方回合结束时从双方去掉。迅捷只在持有者自己的回合结束时去掉。
+// 洗牌和回合能量不在这里，见 TurnShuffle。回合开始效果目前没有要结算的牌。韧性回复不改数值。
 sealed class TurnCardRules
 {
     readonly MatchState state;
@@ -17,17 +18,22 @@ sealed class TurnCardRules
     {
         switch (timing)
         {
+            case MatchTiming.TurnStartEffects:
+            case MatchTiming.TurnEnergy:
+            case MatchTiming.ToughnessRecovery:
+                break;
             case MatchTiming.TickStatuses:
-                TickBuffs(state.Player);
-                TickBuffs(state.Enemy);
+                BuffDurations.TickBoth(state.Player, state.Enemy);
                 break;
             case MatchTiming.ExpireStatuses:
-                ExpireBuffs(state.Player);
-                ExpireBuffs(state.Enemy);
+                BuffDurations.ExpireBoth(state.Player, state.Enemy, state.Cards, ResolveEndEffect);
                 break;
             case MatchTiming.RemoveTemporary:
                 RemoveTemporary(state.Player);
                 RemoveTemporary(state.Enemy);
+                break;
+            case MatchTiming.AdjustHand:
+                AdjustHand(state.Active);
                 break;
             case MatchTiming.ClearRoundMarks:
                 state.Active.RemoveStatus(CardStatuses.Swift);
@@ -37,26 +43,25 @@ sealed class TurnCardRules
         }
     }
 
-    static void TickBuffs(FighterState fighter)
+    void ResolveEndEffect(FighterState fighter, int[][] endEffect)
     {
-        for (var i = 0; i < fighter.Field.Count; i++)
-        {
-            fighter.Field[i].Duration--;
-        }
+        effects.Resolve(fighter.Side, endEffect);
     }
 
-    void ExpireBuffs(FighterState fighter)
+    static void AdjustHand(FighterState fighter)
     {
-        for (var i = fighter.Field.Count - 1; i >= 0; i--)
+        while (fighter.Hand.Count < fighter.HandLimit && fighter.Deck.Count > 0)
         {
-            var card = fighter.Field[i];
-            if (card.Duration > 0)
-            {
-                continue;
-            }
+            var card = fighter.Deck[0];
+            fighter.Deck.RemoveAt(0);
+            fighter.Hand.Add(card);
+        }
 
-            fighter.Field.RemoveAt(i);
-            effects.Resolve(fighter.Side, state.Cards.Get(CardKind.Buff, card.EffectCardId).EndEffect);
+        while (fighter.Hand.Count > fighter.HandLimit)
+        {
+            var last = fighter.Hand.Count - 1;
+            var card = fighter.Hand[last];
+            fighter.Hand.RemoveAt(last);
             fighter.Discard.Add(card);
         }
     }

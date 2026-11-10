@@ -104,6 +104,7 @@ public sealed class CardCatalog
         {
             var id = table.GetIntAt(row, "id");
             var name = table.GetStringAt(row, "name");
+            var description = ReadDescription(table, row);
             var subtype = table.GetIntAt(row, "subtype");
             var cost = table.GetIntAt(row, "cost");
             var maxTake = table.GetIntAt(row, "MaxTake");
@@ -111,7 +112,7 @@ public sealed class CardCatalog
             if (kind == CardKind.Buff)
             {
                 rows.Add(new CardDefinition(
-                    kind, id, name, subtype, cost, maxTake, owner,
+                    kind, id, name, description, subtype, cost, maxTake, owner,
                     table.GetIntAt(row, "duration"),
                     null,
                     table.GetIntArray2At(row, "starteffect"),
@@ -121,7 +122,7 @@ public sealed class CardCatalog
             else
             {
                 rows.Add(new CardDefinition(
-                    kind, id, name, subtype, cost, maxTake, owner,
+                    kind, id, name, description, subtype, cost, maxTake, owner,
                     0,
                     table.GetIntArray2At(row, "effect"),
                     null,
@@ -131,6 +132,28 @@ public sealed class CardCatalog
         }
 
         return rows;
+    }
+
+    // 表头沿用了工作表里的拼写 discription。测试用的临时表可以没有这一列。
+    static string ReadDescription(TableData table, int row)
+    {
+        for (var i = 0; i < table.Fields.Count; i++)
+        {
+            if (table.Fields[i].Name != "discription")
+            {
+                continue;
+            }
+
+            var text = table.GetStringAt(row, "discription");
+            if (string.IsNullOrEmpty(text) || text == "null")
+            {
+                return string.Empty;
+            }
+
+            return text.Replace("\r\n", "\n").Replace('\r', '\n').Trim();
+        }
+
+        return string.Empty;
     }
 
     static void LinkVariants(List<CardDefinition> rows)

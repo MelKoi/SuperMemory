@@ -7,6 +7,7 @@ public sealed class CardDefinition
         CardKind kind,
         int id,
         string name,
+        string description,
         int subtype,
         int cost,
         int maxTake,
@@ -20,6 +21,7 @@ public sealed class CardDefinition
         Kind = kind;
         Id = id;
         Name = name ?? string.Empty;
+        Description = description ?? string.Empty;
         Subtype = subtype;
         Cost = cost;
         MaxTake = maxTake;
@@ -34,6 +36,7 @@ public sealed class CardDefinition
     public CardKind Kind { get; }
     public int Id { get; }
     public string Name { get; }
+    public string Description { get; }
     public int Subtype { get; }
     public int Cost { get; }
     public int MaxTake { get; }

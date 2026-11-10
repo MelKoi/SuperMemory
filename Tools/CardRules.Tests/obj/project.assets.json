@@ -935,7 +935,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\d8967b0beb47eb92da4e834d0e7076a7\\nuget": {},
+    "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\d84f5afe954eef94c176917084ec68e3\\nuget": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -944,7 +944,7 @@
       "projectUniqueName": "D:\\Card\\My project\\Tools\\CardRules.Tests\\CardRules.Tests.csproj",
       "projectName": "CardRules.Tests",
       "projectPath": "D:\\Card\\My project\\Tools\\CardRules.Tests\\CardRules.Tests.csproj",
-      "packagesPath": "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\d8967b0beb47eb92da4e834d0e7076a7\\nuget",
+      "packagesPath": "C:\\Users\\wepie\\AppData\\Local\\Temp\\cursor-sandbox-cache\\d84f5afe954eef94c176917084ec68e3\\nuget",
       "outputPath": "D:\\Card\\My project\\Tools\\CardRules.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [

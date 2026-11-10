@@ -4,7 +4,7 @@ using CardTables;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 点击 Play 后组卡、站位、起手，然后走到先手的主要阶段。
+// 点击 Play 后组卡、站位、起手。先手的第一个主要阶段直接结束，然后停在你的主要阶段。之后每点一次结束，就走完对方的回合，再回到你的主要阶段。
 public sealed class BattleDeckSelect : MonoBehaviour
 {
     private static readonly Color Panel = new Color(0.94f, 0.95f, 0.96f, 1f);
@@ -148,14 +148,14 @@ public sealed class BattleDeckSelect : MonoBehaviour
         var characterY = 0f;
         for (var row = 0; row < characterTable.RowCount; row++)
         {
+            var name = characterTable.GetStringAt(row, "name");
             var handLimit = characterTable.GetIntAt(row, "cardnum");
-            if (handLimit <= 0)
+            if (handLimit <= 0 || name.StartsWith("标准角色", System.StringComparison.Ordinal))
             {
                 continue;
             }
 
             var id = characterTable.GetIntAt(row, "id");
-            var name = characterTable.GetStringAt(row, "name");
             var count = DeckBuilder.Collect(cards, DeckBuilder.CharacterOwner(id)).Count + weaponCards;
             var choice = AddChoice(characterColumn, name + "  " + count.ToString(CultureInfo.InvariantCulture) + "张", characterY, () => PickCharacter(id, handLimit));
             choice.Id = id;
@@ -257,7 +257,7 @@ public sealed class BattleDeckSelect : MonoBehaviour
         resultText.text = you + "\n" + them
             + "\n我方在近端中间路，对方在远端同一路"
             + "\n距离 " + seating.Distance.ToString(CultureInfo.InvariantCulture);
-        status.text = "下一步会一路走到先手的主要阶段。";
+        status.text = "下一步会进入你的主要阶段。对方没有行动的回合会直接过去。";
         hud.SetPlayResult(you + "。双方在场地两端，距离 " + seating.Distance.ToString(CultureInfo.InvariantCulture) + "。");
     }
 
@@ -269,36 +269,24 @@ public sealed class BattleDeckSelect : MonoBehaviour
         OpeningHand.Shuffle(Enemy, random);
         OpeningHand.DrawTo(Player, MatchTimingPolicy.OpeningHandCount);
         OpeningHand.DrawTo(Enemy, MatchTimingPolicy.OpeningHandCount);
-        var names = new List<string>(Player.Hand.Count);
-        for (var i = 0; i < Player.Hand.Count; i++)
-        {
-            var card = Player.Hand[i];
-            names.Add(cards.Get(card.Kind, card.CardId).Name);
-        }
-
-        hud.ApplyOpeningHand(Player.Deck.Count, names);
-        ShowOpeningEnergy(names);
+        hud.ShowPlayerHand(cards, Player.Hand, Player.Deck.Count);
+        hud.ShowEnemyHand(Enemy.Hand.Count);
+        ShowOpeningEnergy();
     }
 
-    private void ShowOpeningEnergy(List<string> handNames)
+    private void ShowOpeningEnergy()
     {
         OpeningEnergyGrant.Grant(Player, Enemy, Seating.FirstPlayer);
         hud.ApplyOpeningEnergy(Player.Energy, Enemy.Energy);
-        ShowTurnStart(handNames);
+        ShowTurnStart();
     }
 
-    private void ShowTurnStart(List<string> handNames)
+    private void ShowTurnStart()
     {
-        ActiveSide = Seating.FirstPlayer;
-        var active = ActiveSide == BattleSide.Player ? Player : Enemy;
-        var waiting = ActiveSide == BattleSide.Player ? Enemy : Player;
-        TurnStartEffects.Collect(active);
-        var arrival = TurnToMain.Advance(active, waiting, cards, new System.Random());
-        hud.ApplyTurnState(Player.Energy, Enemy.Energy, Player.Deck.Count, Enemy.Deck.Count);
-        var yours = ActiveSide == BattleSide.Player;
-        var phase = yours ? "你的主要阶段。" : "对方的主要阶段。";
-        var shuffle = arrival.Shuffled ? "牌库已空，弃牌已洗回。" : "牌库还有牌，没有洗牌。";
-        hud.SetPlayResult(phase + shuffle + "能量 " + Player.Energy.ToString(CultureInfo.InvariantCulture) + "。起手 " + handNames.Count.ToString(CultureInfo.InvariantCulture) + " 张。");
+        var rules = MatchPlaytest.ReachPlayerMain(cards, Player, Enemy, Seating.FirstPlayer, new System.Random());
+        ActiveSide = rules.Flow.ActiveSide;
+        hud.BindMatch(rules);
+        hud.AnnouncePlayerMain();
         Close();
     }
 

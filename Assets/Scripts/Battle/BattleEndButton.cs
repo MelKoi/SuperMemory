@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public sealed class BattleEndButton : MonoBehaviour
     private Button button;
     private Text label;
     private MatchRules rules;
+    private Action onDeclaredEnd;
     private bool sandboxMain = true;
 
     public static BattleEndButton Create(RectTransform parent)
@@ -44,9 +46,10 @@ public sealed class BattleEndButton : MonoBehaviour
         return end;
     }
 
-    public void Bind(MatchRules match)
+    public void Bind(MatchRules match, Action afterDeclaredEnd)
     {
         rules = match;
+        onDeclaredEnd = afterDeclaredEnd;
         Apply(CanEnd());
     }
 
@@ -75,6 +78,10 @@ public sealed class BattleEndButton : MonoBehaviour
         if (rules != null)
         {
             rules.EndMainPhase();
+            if (onDeclaredEnd != null)
+            {
+                onDeclaredEnd();
+            }
         }
         else
         {

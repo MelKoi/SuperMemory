@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-// 局前 → 开局 → 回合开始 → 主要阶段 → 回合结束。
-// 回合开始减少场上加成牌的读数。展开中不在这一步结算。回合结束从临时牌离场开始，然后是手牌整理、本回合标记。
-// 洗牌和主要阶段会停住。武器攻击在主要阶段里另走一条时点，对应窗口也会停住。
-// 这里只排时点，不结算牌面。
+// 只排时点：局前、开局，然后双方轮流走回合。洗牌、主要阶段、对应窗口会停住。
+// 牌区和状态由 MatchRules 接走。洗牌停住后的牌库和回合能量由 TurnShuffle 补上。
+// 展开中不在回合结束里结算。回合结束从临时牌离场开始。
 public sealed class MatchFlow
 {
     private readonly IMatchTimingHandler handler;
@@ -83,6 +82,37 @@ public sealed class MatchFlow
         segment = Segment.BeforeMatch;
         segmentIndex = 0;
         EnterCurrent();
+    }
+
+    // 局前和开局已经由对局外走完时，直接停在这一方的主要阶段。
+    public void OpenAtMain(BattleSide activeSide)
+    {
+        if (started)
+        {
+            throw new InvalidOperationException("这一局已经开始。");
+        }
+
+        started = true;
+        FirstPlayer = activeSide;
+        ActiveSide = activeSide;
+        TurnIndex = 1;
+        ResetTurnCounters();
+        segment = Segment.Turn;
+        segmentIndex = MainIndex();
+        EnterCurrent();
+    }
+
+    static int MainIndex()
+    {
+        for (var i = 0; i < MatchTimingOrder.Turn.Count; i++)
+        {
+            if (MatchTimingOrder.Turn[i] == MatchTiming.Main)
+            {
+                return i;
+            }
+        }
+
+        throw new InvalidOperationException("回合里没有主要阶段。");
     }
 
     public void ResolveShuffle(bool shuffled)
@@ -299,15 +329,20 @@ public sealed class MatchFlow
 
         ActiveSide = side;
         TurnIndex++;
+        ResetTurnCounters();
+        segment = Segment.Turn;
+        segmentIndex = 0;
+        EnterCurrent();
+    }
+
+    private void ResetTurnCounters()
+    {
         MainActionCount = 0;
         TraitActionsThisTurn = 0;
         AttacksRemaining = MatchTimingPolicy.AttacksPerTurn;
         WeaponAttacksThisTurn = 0;
         PendingAllOut = false;
         HasMainEndReason = false;
-        segment = Segment.Turn;
-        segmentIndex = 0;
-        EnterCurrent();
     }
 
     private void EnterAttackStep()

@@ -64,6 +64,24 @@ public static class CardEffects
         return step == null || step.Length == 0 || step[0] == None;
     }
 
+    public static bool IsEmpty(int[][] effects)
+    {
+        if (effects == null)
+        {
+            return true;
+        }
+
+        for (var i = 0; i < effects.Length; i++)
+        {
+            if (!IsEmpty(effects[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static BattleSide TargetSide(BattleSide source, int[] step)
     {
         return step[step.Length - 1] == TargetSelf ? source : MatchFlow.Opposite(source);

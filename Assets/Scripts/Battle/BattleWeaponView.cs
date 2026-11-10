@@ -13,12 +13,24 @@ public sealed class BattleWeaponView : MonoBehaviour
 
     public int Charge => charge;
 
+    public void AllowChargeDrop(int weaponSlot)
+    {
+        var target = GetComponent<CardDropTarget>();
+        if (target == null)
+        {
+            target = gameObject.AddComponent<CardDropTarget>();
+        }
+
+        target.Charge = true;
+        target.WeaponSlot = weaponSlot;
+    }
+
     public void Initialize()
     {
         var frame = gameObject.AddComponent<Image>();
         frame.sprite = BattleUiSprites.Square;
         frame.color = new Color(0.78f, 0.78f, 0.8f, 1f);
-        frame.raycastTarget = false;
+        frame.raycastTarget = true;
 
         var plateRect = BattleUiFactory.Create("Plate", transform);
         BattleUiFactory.Stretch(plateRect, Vector2.zero, Vector2.one);

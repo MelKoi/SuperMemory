@@ -254,6 +254,85 @@ public class CardRulesTests
         Assert.Equal(20, empty.Health);
     }
 
+    [Fact]
+    public void OpenAtMain_StopsInMain()
+    {
+        var flow = new MatchFlow();
+        flow.OpenAtMain(BattleSide.Enemy);
+        Assert.Equal(MatchTiming.Main, flow.Timing);
+        Assert.True(flow.IsWaiting);
+        Assert.Equal(BattleSide.Enemy, flow.ActiveSide);
+        Assert.Equal(1, flow.AttacksRemaining);
+        flow.CompleteCharge(0);
+        Assert.Equal(MatchTiming.Main, flow.Timing);
+        Assert.Throws<InvalidOperationException>(() => flow.OpenAtMain(BattleSide.Player));
+    }
+
+    [Fact]
+    public void FirstMain_EndsIntoTheSecondPlayersMain()
+    {
+        var cards = LoadCards();
+        var player = new FighterState(BattleSide.Player, "c_0", 4);
+        var enemy = new FighterState(BattleSide.Enemy, string.Empty, 0);
+        player.Energy = 8;
+        enemy.Energy = 5;
+        var temporary = new CardInstance(CardKind.Attack, 8);
+        player.Hand.Add(temporary);
+        player.Hand.Add(new CardInstance(CardKind.Action, 1));
+        player.Hand.Add(new CardInstance(CardKind.Action, 2));
+        for (var i = 0; i < 6; i++)
+        {
+            player.Deck.Add(new CardInstance(CardKind.Action, 20 + i));
+        }
+
+        var rules = MatchRules.Create(cards, player, enemy);
+        rules.OpenAtMain(BattleSide.Player);
+        rules.EndMainPhase();
+        Assert.Equal(MatchTiming.Shuffle, rules.Flow.Timing);
+        Assert.Equal(BattleSide.Enemy, rules.Flow.ActiveSide);
+        Assert.Equal(4, player.Hand.Count);
+        Assert.DoesNotContain(player.Hand, card => ReferenceEquals(card, temporary));
+        Assert.Contains(player.Removed, card => ReferenceEquals(card, temporary));
+        Assert.Equal(4, player.Deck.Count);
+        Assert.Equal(5, enemy.Energy);
+
+        rules.Flow.ResolveShuffle(false);
+        Assert.Equal(MatchTiming.Main, rules.Flow.Timing);
+        Assert.True(rules.Flow.IsWaiting);
+        Assert.Equal(BattleSide.Enemy, rules.Flow.ActiveSide);
+        Assert.Equal(8, player.Energy);
+    }
+
+    [Fact]
+    public void SecondRound_ReturnsToTheFirstPlayersMain()
+    {
+        var cards = LoadCards();
+        var player = new FighterState(BattleSide.Player, "c_0", 4);
+        var enemy = new FighterState(BattleSide.Enemy, string.Empty, 0);
+        player.Energy = 8;
+        enemy.Energy = 5;
+        var rules = MatchRules.Create(cards, player, enemy);
+        var random = new Random(1);
+        rules.OpenAtMain(BattleSide.Player);
+        rules.EndMainPhase();
+        MatchCycle.ContinueUntil(rules, BattleSide.Player, random);
+        Assert.Equal(MatchTiming.Main, rules.Flow.Timing);
+        Assert.True(rules.Flow.IsWaiting);
+        Assert.Equal(BattleSide.Player, rules.Flow.ActiveSide);
+        Assert.Equal(3, rules.Flow.TurnIndex);
+        Assert.Equal(13, player.Energy);
+        Assert.Equal(10, enemy.Energy);
+
+        rules.EndMainPhase();
+        MatchCycle.ContinueUntil(rules, BattleSide.Player, random);
+        Assert.Equal(MatchTiming.Main, rules.Flow.Timing);
+        Assert.True(rules.Flow.IsWaiting);
+        Assert.Equal(BattleSide.Player, rules.Flow.ActiveSide);
+        Assert.Equal(5, rules.Flow.TurnIndex);
+        Assert.Equal(18, player.Energy);
+        Assert.Equal(15, enemy.Energy);
+    }
+
     static FighterState DeckOf(params int[] cardIds)
     {
         var fighter = new FighterState(BattleSide.Player, "c_0", 0);

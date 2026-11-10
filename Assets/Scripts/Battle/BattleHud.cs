@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -26,6 +27,9 @@ public sealed class BattleHud : MonoBehaviour
 
     private BattleArea playerArea;
     private BattleArea enemyArea;
+    private MatchRules match;
+    private BattleEndButton endButton;
+    private readonly System.Random random = new System.Random();
     private Button playerActionButton;
     private Text playResult;
     private bool editorBuildQueued;
@@ -103,6 +107,7 @@ public sealed class BattleHud : MonoBehaviour
         canvasRect.gameObject.AddComponent<GraphicRaycaster>();
 
         EnsureEventSystem();
+        CreatePlayDrop(canvasRect);
         playerArea = CreateArea(canvasRect, BattleSide.Player);
         enemyArea = CreateArea(canvasRect, BattleSide.Enemy);
         Apply();
@@ -112,7 +117,7 @@ public sealed class BattleHud : MonoBehaviour
             playerActionButton.onClick.AddListener(menu.ShowActions);
         }
 
-        BattleEndButton.Create(canvasRect);
+        endButton = BattleEndButton.Create(canvasRect);
         if (Application.isPlaying)
         {
             CreatePlayButton(canvasRect);
@@ -120,7 +125,7 @@ public sealed class BattleHud : MonoBehaviour
         }
     }
 
-    public void ApplyOpeningHand(int deckCount, IReadOnlyList<string> handNames)
+    public void ShowPlayerHand(CardCatalog catalog, IReadOnlyList<CardInstance> hand, int deckCount)
     {
         if (playerArea == null)
         {
@@ -130,8 +135,118 @@ public sealed class BattleHud : MonoBehaviour
         playerArea.SetDeckCount(deckCount);
         if (playerArea.Hand != null)
         {
-            playerArea.Hand.Present(handNames);
+            playerArea.Hand.Present(catalog, hand, OnCardDrop);
         }
+    }
+
+    public void ShowEnemyHand(int count)
+    {
+        if (enemyArea != null && enemyArea.Hand != null)
+        {
+            enemyArea.Hand.PresentBacks(count);
+        }
+    }
+
+    public void BindMatch(MatchRules rules)
+    {
+        match = rules;
+        if (endButton != null)
+        {
+            endButton.Bind(rules, OnDeclaredEnd);
+        }
+
+        RefreshMatchView();
+    }
+
+    public void AnnouncePlayerMain()
+    {
+        if (match == null)
+        {
+            return;
+        }
+
+        var turn = (match.Flow.TurnIndex + 1) / 2;
+        SetPlayResult("你的第 " + turn.ToString(CultureInfo.InvariantCulture) + " 回合，主要阶段。能量 " + match.Player.Energy.ToString(CultureInfo.InvariantCulture) + "。");
+    }
+
+    void OnDeclaredEnd()
+    {
+        ResumeUntilPlayerMain();
+    }
+
+    void ResumeUntilPlayerMain()
+    {
+        MatchCycle.ContinueUntil(match, BattleSide.Player, random);
+        RefreshMatchView();
+        AnnouncePlayerMain();
+    }
+
+    public void RefreshMatchView()
+    {
+        if (match == null || playerArea == null)
+        {
+            return;
+        }
+
+        ShowPlayerHand(match.Cards, match.Player.Hand, match.Player.Deck.Count);
+        ShowEnemyHand(match.Enemy.Hand.Count);
+        ApplyOpeningEnergy(match.Player.Energy, match.Enemy.Energy);
+        if (match.Player.Weapons.Count > 0)
+        {
+            playerArea.SetWeaponCharge(1, match.Player.Weapons[0].Charge);
+        }
+
+        if (match.Player.Weapons.Count > 1)
+        {
+            playerArea.SetWeaponCharge(2, match.Player.Weapons[1].Charge);
+        }
+    }
+
+    bool OnCardDrop(CardInstance card, CardDropTarget target)
+    {
+        if (match == null)
+        {
+            SetPlayResult("还没到主要阶段。");
+            return false;
+        }
+
+        var hand = match.Player.Hand;
+        var index = -1;
+        for (var i = 0; i < hand.Count; i++)
+        {
+            if (ReferenceEquals(hand[i], card))
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index < 0)
+        {
+            return false;
+        }
+
+        var charging = target != null && target.Charge;
+        string error;
+        var ok = charging
+            ? match.TryCharge(BattleSide.Player, index, target.WeaponSlot, out error)
+            : match.TryPlay(BattleSide.Player, index, false, out error);
+        if (!ok)
+        {
+            SetPlayResult(error);
+            return false;
+        }
+
+        var flow = match.Flow;
+        if (flow.Timing != MatchTiming.Main || flow.ActiveSide != BattleSide.Player || !flow.IsWaiting)
+        {
+            ResumeUntilPlayerMain();
+            return true;
+        }
+
+        RefreshMatchView();
+        SetPlayResult(charging ? "已蓄能。" : "已打出。");
+        return true;
     }
 
     public void ApplyTurnState(int playerEnergy, int enemyEnergy, int playerDeck, int enemyDeck)
@@ -172,7 +287,7 @@ public sealed class BattleHud : MonoBehaviour
     {
         if (playerArea != null && playerArea.Hand != null)
         {
-            playerArea.Hand.Present(null);
+            playerArea.Hand.Clear();
         }
     }
 
@@ -335,6 +450,11 @@ public sealed class BattleHud : MonoBehaviour
         var secondWeapon = weapon2Rect.gameObject.AddComponent<BattleWeaponView>();
         firstWeapon.Initialize();
         secondWeapon.Initialize();
+        if (player)
+        {
+            firstWeapon.AllowChargeDrop(0);
+            secondWeapon.AllowChargeDrop(1);
+        }
         var firstReadout = CreateWeaponReadout(weapon1Rect, !player);
         var secondReadout = CreateWeaponReadout(weapon2Rect, !player);
         firstWeapon.SetReadout(firstReadout[0], firstReadout[1]);
@@ -383,16 +503,27 @@ public sealed class BattleHud : MonoBehaviour
         var handRect = BattleUiFactory.Create("HandZone", areaRect);
         if (player)
         {
-            BattleUiFactory.Stretch(handRect, new Vector2(0.338f, 0.012f), new Vector2(0.743f, 0.173f));
+            BattleUiFactory.Place(handRect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), Vector2.zero, new Vector2(1280f, 380f));
         }
         else
         {
-            BattleUiFactory.Stretch(handRect, new Vector2(0.257f, 0.829f), new Vector2(0.661f, 0.990f));
+            BattleUiFactory.Place(handRect, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), Vector2.zero, new Vector2(760f, 160f));
         }
 
         var hand = handRect.gameObject.AddComponent<HandZone>();
         area.Initialize(side, portrait, health, toughness, energy, firstWeapon, secondWeapon, hand, deckLabel);
         return area;
+    }
+
+    private static void CreatePlayDrop(RectTransform canvasRect)
+    {
+        var play = BattleUiFactory.Create("PlayDrop", canvasRect);
+        BattleUiFactory.Stretch(play, Vector2.zero, Vector2.one);
+        var image = play.gameObject.AddComponent<Image>();
+        image.sprite = BattleUiSprites.Square;
+        image.color = new Color(0f, 0f, 0f, 0f);
+        image.raycastTarget = true;
+        play.gameObject.AddComponent<CardDropTarget>();
     }
 
     private static Text[] CreateWeaponReadout(RectTransform weapon, bool above)

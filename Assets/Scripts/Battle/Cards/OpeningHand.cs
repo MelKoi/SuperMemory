@@ -5,24 +5,7 @@ public static class OpeningHand
 {
     public static void Shuffle(FighterState fighter, Random random)
     {
-        if (fighter == null)
-        {
-            throw new ArgumentNullException(nameof(fighter));
-        }
-
-        if (random == null)
-        {
-            throw new ArgumentNullException(nameof(random));
-        }
-
-        var deck = fighter.Deck;
-        for (var i = deck.Count - 1; i > 0; i--)
-        {
-            var swap = random.Next(i + 1);
-            var card = deck[i];
-            deck[i] = deck[swap];
-            deck[swap] = card;
-        }
+        DeckOrder.Shuffle(fighter, random);
     }
 
     public static void DrawTo(FighterState fighter, int targetCount)

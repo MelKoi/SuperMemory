@@ -46,6 +46,11 @@ public sealed class MatchRules : IMatchTimingHandler
         state.Flow.Begin(firstPlayer);
     }
 
+    public void OpenAtMain(BattleSide activeSide)
+    {
+        state.Flow.OpenAtMain(activeSide);
+    }
+
     public bool TryPlay(BattleSide side, int handIndex, bool asResponse, out string error)
     {
         return !IsBlocked(out error) && plays.TryPlay(side, handIndex, asResponse, out error);
