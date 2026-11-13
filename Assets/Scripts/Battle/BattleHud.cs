@@ -29,6 +29,9 @@ public sealed class BattleHud : MonoBehaviour
     private BattleArea enemyArea;
     private MatchRules match;
     private BattleEndButton endButton;
+    private BattleActionMenu actionMenu;
+    private GameObject shufflePrompt;
+    private Text shufflePromptText;
     private readonly System.Random random = new System.Random();
     private Button playerActionButton;
     private Text playResult;
@@ -111,13 +114,14 @@ public sealed class BattleHud : MonoBehaviour
         playerArea = CreateArea(canvasRect, BattleSide.Player);
         enemyArea = CreateArea(canvasRect, BattleSide.Enemy);
         Apply();
-        var menu = BattleActionMenu.Create(canvasRect, playerArea, enemyArea, GetComponent<BattleActionSettings>());
+        actionMenu = BattleActionMenu.Create(canvasRect, playerArea, enemyArea, GetComponent<BattleActionSettings>());
         if (playerActionButton != null)
         {
-            playerActionButton.onClick.AddListener(menu.ShowActions);
+            playerActionButton.onClick.AddListener(actionMenu.ShowActions);
         }
 
         endButton = BattleEndButton.Create(canvasRect);
+        CreateShufflePrompt(canvasRect);
         if (Application.isPlaying)
         {
             CreatePlayButton(canvasRect);
@@ -155,7 +159,16 @@ public sealed class BattleHud : MonoBehaviour
             endButton.Bind(rules, OnDeclaredEnd);
         }
 
+        if (actionMenu != null)
+        {
+            actionMenu.UseMatch(AttackWithRules, MoveWithRules);
+        }
+
         RefreshMatchView();
+        if (WaitingForShuffleChoice())
+        {
+            ShowShufflePrompt();
+        }
     }
 
     public void AnnouncePlayerMain()
@@ -176,9 +189,182 @@ public sealed class BattleHud : MonoBehaviour
 
     void ResumeUntilPlayerMain()
     {
-        MatchCycle.ContinueUntil(match, BattleSide.Player, random);
+        var stop = MatchCycle.ContinueUntil(match, BattleSide.Player, random);
+        if (stop.WaitingForShuffle)
+        {
+            ShowShufflePrompt();
+            return;
+        }
+
         RefreshMatchView();
         AnnouncePlayerMain();
+    }
+
+    bool WaitingForShuffleChoice()
+    {
+        return match != null
+            && match.Flow.IsWaiting
+            && match.Flow.Timing == MatchTiming.Shuffle
+            && match.Flow.ActiveSide == BattleSide.Player
+            && match.Player.Deck.Count > 0;
+    }
+
+    void ShowShufflePrompt()
+    {
+        if (shufflePrompt == null || match == null)
+        {
+            return;
+        }
+
+        var cost = MatchTimingPolicy.ShuffleLifeCost;
+        shufflePromptText.text = "牌库还有 "
+            + match.Player.Deck.Count.ToString(CultureInfo.InvariantCulture)
+            + " 张。主动洗牌支付 "
+            + cost.ToString(CultureInfo.InvariantCulture)
+            + " 点生命，只洗当前牌库。";
+        shufflePrompt.SetActive(true);
+        shufflePrompt.transform.SetAsLastSibling();
+        SetPlayResult("要不要主动洗牌？");
+    }
+
+    void AnswerShuffle(bool shuffle)
+    {
+        if (shufflePrompt != null)
+        {
+            shufflePrompt.SetActive(false);
+        }
+
+        if (match == null)
+        {
+            return;
+        }
+
+        MatchCycle.AnswerShuffle(match, BattleSide.Player, shuffle, random);
+        RefreshMatchView();
+        if (match.Flow.IsFinished)
+        {
+            SetPlayResult("支付了 1 点生命，这局结束。");
+            return;
+        }
+
+        var done = shuffle ? "已主动洗牌。" : "没有洗牌。";
+        AnnouncePlayerMain();
+        SetPlayResult(done + playResult.text);
+    }
+
+    void AttackWithRules(int weaponNumber)
+    {
+        if (match == null)
+        {
+            return;
+        }
+
+        var board = FindFirstObjectByType<BattleBoardPerspective>();
+        if (board == null)
+        {
+            SetPlayResult("没有场地。");
+            return;
+        }
+
+        var distance = BoardGeometry.Distance(
+            board.PlayerColumn,
+            board.PlayerRow,
+            board.EnemyColumn,
+            board.EnemyRow);
+        var openedWindow = false;
+        if (!match.TryAttack(BattleSide.Player, weaponNumber - 1, distance, out var error))
+        {
+            SetPlayResult(error);
+            return;
+        }
+
+        var attack = match.Flow.CurrentAttack;
+        if (attack != null && attack.WaitingForResponses)
+        {
+            openedWindow = true;
+            match.CloseResponseWindow();
+        }
+
+        RefreshMatchView();
+        if (match.Flow.IsFinished)
+        {
+            SetPlayResult("生命归零，这局结束。");
+            return;
+        }
+
+        var last = match.Flow.LastAttack;
+        if (last != null && last.Negated)
+        {
+            SetPlayResult("攻击被打消。");
+            return;
+        }
+
+        SetPlayResult(openedWindow ? "攻击已结算。对方没有打出对应。" : "攻击已结算。");
+    }
+
+    void MoveWithRules(int rowDelta)
+    {
+        if (match == null)
+        {
+            return;
+        }
+
+        var board = FindFirstObjectByType<BattleBoardPerspective>();
+        if (board == null || !board.CanMovePlayer(rowDelta))
+        {
+            SetPlayResult("无法移动。");
+            return;
+        }
+
+        if (!match.TryMove(BattleSide.Player, out var error))
+        {
+            SetPlayResult(error);
+            return;
+        }
+
+        board.TryMovePlayer(rowDelta);
+        SetPlayResult("已移动。");
+    }
+
+    void CreateShufflePrompt(RectTransform parent)
+    {
+        var root = BattleUiFactory.Create("ShufflePrompt", parent);
+        BattleUiFactory.Stretch(root, Vector2.zero, Vector2.one);
+        var dim = root.gameObject.AddComponent<Image>();
+        dim.sprite = BattleUiSprites.Square;
+        dim.color = new Color(0.08f, 0.09f, 0.1f, 0.45f);
+        dim.raycastTarget = true;
+
+        var panel = BattleUiFactory.Create("Panel", root);
+        BattleUiFactory.Place(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(520f, 220f));
+        var panelImage = panel.gameObject.AddComponent<Image>();
+        panelImage.sprite = BattleUiSprites.Square;
+        panelImage.color = new Color(0.94f, 0.95f, 0.96f, 1f);
+
+        shufflePromptText = BattleUiFactory.CreateText("Text", panel, string.Empty, 24, TextAnchor.MiddleCenter);
+        shufflePromptText.color = new Color(0.16f, 0.16f, 0.18f, 1f);
+        shufflePromptText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        BattleUiFactory.Place(shufflePromptText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -24f), new Vector2(460f, 96f));
+
+        CreatePromptButton(panel, "洗牌", new Vector2(-110f, 28f), () => AnswerShuffle(true));
+        CreatePromptButton(panel, "不洗", new Vector2(110f, 28f), () => AnswerShuffle(false));
+        shufflePrompt = root.gameObject;
+        shufflePrompt.SetActive(false);
+    }
+
+    static void CreatePromptButton(RectTransform parent, string label, Vector2 position, UnityEngine.Events.UnityAction onClick)
+    {
+        var rect = BattleUiFactory.Create(label, parent);
+        BattleUiFactory.Place(rect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), position, new Vector2(160f, 48f));
+        var image = rect.gameObject.AddComponent<Image>();
+        image.sprite = BattleUiSprites.Square;
+        image.color = new Color(0.22f, 0.26f, 0.32f, 1f);
+        var button = rect.gameObject.AddComponent<Button>();
+        button.targetGraphic = image;
+        button.onClick.AddListener(onClick);
+        var text = BattleUiFactory.CreateText("Text", rect, label, 22, TextAnchor.MiddleCenter);
+        text.color = Color.white;
+        BattleUiFactory.Stretch(text.rectTransform, Vector2.zero, Vector2.one);
     }
 
     public void RefreshMatchView()
@@ -190,6 +376,14 @@ public sealed class BattleHud : MonoBehaviour
 
         ShowPlayerHand(match.Cards, match.Player.Hand, match.Player.Deck.Count);
         ShowEnemyHand(match.Enemy.Hand.Count);
+        playerArea.SetHealth(match.Player.Health);
+        playerArea.SetToughness(match.Player.Toughness);
+        if (enemyArea != null)
+        {
+            enemyArea.SetHealth(match.Enemy.Health);
+            enemyArea.SetToughness(match.Enemy.Toughness);
+        }
+
         ApplyOpeningEnergy(match.Player.Energy, match.Enemy.Energy);
         if (match.Player.Weapons.Count > 0)
         {
@@ -381,6 +575,9 @@ public sealed class BattleHud : MonoBehaviour
         playerArea = null;
         enemyArea = null;
         playerActionButton = null;
+        actionMenu = null;
+        shufflePrompt = null;
+        shufflePromptText = null;
         playResult = null;
     }
 

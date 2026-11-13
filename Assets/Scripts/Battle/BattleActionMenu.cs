@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,6 +24,8 @@ public sealed class BattleActionMenu : MonoBehaviour
     private Text backwardLabel;
     private Text firstWeaponLabel;
     private Text secondWeaponLabel;
+    private Action<int> matchAttack;
+    private Action<int> matchMove;
 
     public static BattleActionMenu Create(RectTransform parent, BattleArea playerArea, BattleArea enemyArea, BattleActionSettings actionSettings)
     {
@@ -42,6 +45,13 @@ public sealed class BattleActionMenu : MonoBehaviour
         SetOpen(actionPanel, weaponPanel);
     }
 
+    public void UseMatch(Action<int> attack, Action<int> move)
+    {
+        matchAttack = attack;
+        matchMove = move;
+        Refresh();
+    }
+
     public void Refresh()
     {
         if (settings == null || player == null)
@@ -51,18 +61,23 @@ public sealed class BattleActionMenu : MonoBehaviour
 
         var energy = player.Vitals != null ? player.Vitals.Energy : 0;
         var arena = Board();
+        var rulesMove = matchMove != null;
         var canForward = arena != null && arena.CanMovePlayer(settings.ForwardCells);
         var canBackward = arena != null && arena.CanMovePlayer(-settings.BackwardCells);
         SetChoice(
             forwardButton,
             forwardLabel,
-            MoveCaption("前进", settings.ForwardEnergyCost, settings.ForwardCells, energy >= settings.ForwardEnergyCost, canForward),
-            canForward && energy >= settings.ForwardEnergyCost);
+            rulesMove
+                ? MoveCaption("前进", -1, settings.ForwardCells, true, canForward)
+                : MoveCaption("前进", settings.ForwardEnergyCost, settings.ForwardCells, energy >= settings.ForwardEnergyCost, canForward),
+            rulesMove ? canForward : canForward && energy >= settings.ForwardEnergyCost);
         SetChoice(
             backwardButton,
             backwardLabel,
-            MoveCaption("后退", settings.BackwardEnergyCost, settings.BackwardCells, energy >= settings.BackwardEnergyCost, canBackward),
-            canBackward && energy >= settings.BackwardEnergyCost);
+            rulesMove
+                ? MoveCaption("后退", -1, settings.BackwardCells, true, canBackward)
+                : MoveCaption("后退", settings.BackwardEnergyCost, settings.BackwardCells, energy >= settings.BackwardEnergyCost, canBackward),
+            rulesMove ? canBackward : canBackward && energy >= settings.BackwardEnergyCost);
         SetChoice(firstWeaponButton, firstWeaponLabel, WeaponCaption(1), WeaponReady(1));
         SetChoice(secondWeaponButton, secondWeaponLabel, WeaponCaption(2), WeaponReady(2));
     }
@@ -137,6 +152,13 @@ public sealed class BattleActionMenu : MonoBehaviour
 
     private void Move(int rowDelta, int cost)
     {
+        if (matchMove != null)
+        {
+            matchMove(rowDelta);
+            Refresh();
+            return;
+        }
+
         var arena = Board();
         if (player == null || settings == null || arena == null)
         {
@@ -160,6 +182,13 @@ public sealed class BattleActionMenu : MonoBehaviour
 
     private void Attack(int weaponNumber)
     {
+        if (matchAttack != null)
+        {
+            matchAttack(weaponNumber);
+            Refresh();
+            return;
+        }
+
         if (player == null || enemy == null || settings == null || !WeaponReady(weaponNumber))
         {
             Refresh();
@@ -236,11 +265,13 @@ public sealed class BattleActionMenu : MonoBehaviour
 
     private static string MoveCaption(string title, int cost, int cells, bool affordable, bool reachable)
     {
-        var detail = cost.ToString(CultureInfo.InvariantCulture)
-            + " 能量 · "
-            + cells.ToString(CultureInfo.InvariantCulture)
-            + " 格";
-        if (!affordable)
+        var detail = cells.ToString(CultureInfo.InvariantCulture) + " 格";
+        if (cost >= 0)
+        {
+            detail = cost.ToString(CultureInfo.InvariantCulture) + " 能量 · " + detail;
+        }
+
+        if (cost >= 0 && !affordable)
         {
             detail = "能量不足";
         }

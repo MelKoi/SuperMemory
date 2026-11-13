@@ -163,6 +163,8 @@ sealed class AttackRules
         {
             defender.SetToughness(defender.Toughness - attack.ToughnessDamage);
         }
+
+        defender.TookWeaponAttack = true;
     }
 
     // 攻击消耗这把武器的全部蓄能，并用掉攻击方身上的全部滞留。
@@ -183,5 +185,7 @@ sealed class AttackRules
         {
             attacker.Linger.Clear();
         }
+
+        GainRates.Energy(attacker, MatchTimingPolicy.AttackEnergyGain);
     }
 }

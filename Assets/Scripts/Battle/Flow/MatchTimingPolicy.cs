@@ -4,16 +4,16 @@ public static class MatchTimingPolicy
     public const int FirstPlayerEnergy = 3;
     public const int SecondPlayerEnergy = 5;
     public const int TurnEnergyGain = 5;
+    public const int AttackEnergyGain = 1;
+    public const int ToughnessRecovery = 1;
     public const int ShuffleLifeCost = 1;
-    public const int BoardColumns = 12;
+    public const int BoardColumns = 10;
     public const int BoardRows = 3;
-    public const int OpeningDistance = 10;
+    public const int OpeningDistance = 8;
 
-    // 表里没有这些数。流程不读取它们，定值之前不要当成正式规则。
-    public const int PlaceholderMoveEnergyCost = 0;
-    public const int PlaceholderToughnessRecovery = 0;
-    public const int PlaceholderVulnerabilityNumerator = 1;
-    public const int PlaceholderVulnerabilityDenominator = 1;
+    // 表里没有这些数。破绽时获能和蓄能按这个比例向下取整。
+    public const int VulnerabilityNumerator = 1;
+    public const int VulnerabilityDenominator = 2;
 
     // 蓄能是弃一张手牌，指定一把武器，蓄能 +1，限制牌可以这样用。
     public const bool RestrictedCardCanCharge = true;

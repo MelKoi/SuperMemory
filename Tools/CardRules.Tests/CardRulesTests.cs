@@ -59,7 +59,7 @@ public class CardRulesTests
     }
 
     [Fact]
-    public void OpeningSeats_StandAtTheEnds_WithDistance10()
+    public void OpeningSeats_StandAtTheEnds_WithDistance8()
     {
         Assert.Equal(0, BoardGeometry.Distance(1, 0, 1, 0));
         Assert.Equal(0, BoardGeometry.Distance(1, 0, 1, 1));
@@ -75,9 +75,9 @@ public class CardRulesTests
         Assert.Equal(1, playerFirst.PlayerColumn);
         Assert.Equal(0, playerFirst.PlayerRow);
         Assert.Equal(1, playerFirst.EnemyColumn);
-        Assert.Equal(11, playerFirst.EnemyRow);
+        Assert.Equal(9, playerFirst.EnemyRow);
         Assert.Equal(MatchTimingPolicy.OpeningDistance, playerFirst.Distance);
-        Assert.Equal(10, playerFirst.Distance);
+        Assert.Equal(8, playerFirst.Distance);
         Assert.Equal(playerFirst.Distance, enemyFirst.Distance);
         Assert.Equal(
             playerFirst.Distance,
@@ -183,24 +183,7 @@ public class CardRulesTests
     }
 
     [Fact]
-    public void TurnStart_LeavesBurningHeartForTurnEnd()
-    {
-        var active = new FighterState(BattleSide.Player, "c_0", 4);
-        var heart = new CardInstance(CardKind.Buff, 0);
-        heart.Duration = 4;
-        active.Field.Add(heart);
-        active.Energy = 3;
-
-        Assert.False(TurnStartEffects.IsBound(CardKind.Buff, 0));
-        Assert.Empty(TurnStartEffects.Collect(active));
-        Assert.Equal(4, heart.Duration);
-        Assert.Equal(3, active.Energy);
-        Assert.Empty(active.Hand);
-        Assert.Single(active.Field);
-    }
-
-    [Fact]
-    public void TurnToMain_TicksExpiresAndGivesEnergy_WithoutToughnessOrOptionalShuffle()
+    public void FirstTurn_TicksExpiresGivesEnergyAndRecoversToughness()
     {
         var cards = LoadCards();
         var heart = cards.Get(CardKind.Buff, 0);
@@ -225,10 +208,11 @@ public class CardRulesTests
         }
 
         var before = active.Deck.Select(card => card.CardId).ToArray();
-        var arrival = TurnToMain.Advance(active, other, cards, new Random(3));
-        Assert.False(arrival.Shuffled);
-        Assert.False(arrival.ShuffleRequired);
-        Assert.Equal(1, arrival.Expired);
+        var rules = MatchRules.Create(cards, active, other);
+        rules.OpenAtTurnStart(BattleSide.Player);
+        MatchCycle.PassShuffle(rules, new Random(3));
+        Assert.Equal(MatchTiming.Main, rules.Flow.Timing);
+        Assert.False(rules.Flow.LastShuffleDidShuffle);
         Assert.Equal(3, staying.Duration);
         Assert.Single(active.Field);
         Assert.Empty(other.Field);
@@ -237,17 +221,19 @@ public class CardRulesTests
         Assert.Equal(8, active.Energy);
         Assert.Equal(5, other.Energy);
         Assert.Equal(20, active.Health);
-        Assert.Equal(18, active.Toughness);
+        Assert.Equal(19, active.Toughness);
         Assert.Equal(17, other.Toughness);
 
         var empty = new FighterState(BattleSide.Enemy, string.Empty, 0);
+        var idle = new FighterState(BattleSide.Player, "c_0", 4);
         empty.Energy = 3;
         empty.SetHealth(20);
         empty.Discard.Add(new CardInstance(CardKind.Action, 4));
         empty.Discard.Add(new CardInstance(CardKind.Action, 5));
-        var forced = TurnToMain.Advance(empty, new FighterState(BattleSide.Player, "c_0", 4), cards, new Random(1));
-        Assert.True(forced.ShuffleRequired);
-        Assert.True(forced.Shuffled);
+        var forced = MatchRules.Create(cards, idle, empty);
+        forced.OpenAtTurnStart(BattleSide.Enemy);
+        MatchCycle.PassShuffle(forced, new Random(1));
+        Assert.True(forced.Flow.LastShuffleDidShuffle);
         Assert.Equal(2, empty.Deck.Count);
         Assert.Empty(empty.Discard);
         Assert.Equal(8, empty.Energy);
@@ -331,6 +317,101 @@ public class CardRulesTests
         Assert.Equal(5, rules.Flow.TurnIndex);
         Assert.Equal(18, player.Energy);
         Assert.Equal(15, enemy.Energy);
+    }
+
+    [Fact]
+    public void ShuffleChoice_WaitsWhenTheDeckHasCards()
+    {
+        var cards = LoadCards();
+        var player = new FighterState(BattleSide.Player, "c_0", 0);
+        var enemy = new FighterState(BattleSide.Enemy, string.Empty, 0);
+        player.Energy = 8;
+        player.Deck.Add(new CardInstance(CardKind.Action, 1));
+        player.Deck.Add(new CardInstance(CardKind.Action, 2));
+        player.Deck.Add(new CardInstance(CardKind.Action, 3));
+        var rules = MatchRules.Create(cards, player, enemy);
+        var random = new Random(1);
+        rules.OpenAtMain(BattleSide.Player);
+        rules.EndMainPhase();
+
+        var waiting = MatchCycle.ContinueUntil(rules, BattleSide.Player, random);
+        Assert.True(waiting.WaitingForShuffle);
+        Assert.Equal(MatchTiming.Shuffle, rules.Flow.Timing);
+        Assert.Equal(BattleSide.Player, rules.Flow.ActiveSide);
+        Assert.Equal(20, player.Health);
+        Assert.Equal(8, player.Energy);
+        Assert.Equal(new[] { 1, 2, 3 }, player.Deck.Select(card => card.CardId));
+
+        var declined = MatchCycle.AnswerShuffle(rules, BattleSide.Player, false, random);
+        Assert.False(declined.WaitingForShuffle);
+        Assert.Equal(MatchTiming.Main, rules.Flow.Timing);
+        Assert.False(rules.Flow.LastShuffleDidShuffle);
+        Assert.Equal(20, player.Health);
+        Assert.Equal(13, player.Energy);
+        Assert.Equal(new[] { 1, 2, 3 }, player.Deck.Select(card => card.CardId));
+    }
+
+    [Fact]
+    public void ShuffleChoice_YesPaysOneLife_AndShufflesOnlyTheDeck()
+    {
+        var cards = LoadCards();
+        var player = new FighterState(BattleSide.Player, "c_0", 0);
+        var enemy = new FighterState(BattleSide.Enemy, string.Empty, 0);
+        player.Energy = 8;
+        player.Deck.Add(new CardInstance(CardKind.Action, 1));
+        player.Deck.Add(new CardInstance(CardKind.Action, 2));
+        player.Deck.Add(new CardInstance(CardKind.Action, 3));
+        var rules = MatchRules.Create(cards, player, enemy);
+        rules.OpenAtMain(BattleSide.Player);
+        rules.EndMainPhase();
+        Assert.True(MatchCycle.ContinueUntil(rules, BattleSide.Player, new Random(1)).WaitingForShuffle);
+
+        player.SetHealth(1);
+        var finished = MatchCycle.AnswerShuffle(rules, BattleSide.Player, true, new Random(1));
+        Assert.False(finished.WaitingForShuffle);
+        Assert.True(rules.Flow.IsFinished);
+        Assert.Equal(0, player.Health);
+        Assert.Equal(8, player.Energy);
+
+        var again = MatchRules.Create(cards, DeckWithThree(), enemy);
+        again.OpenAtMain(BattleSide.Player);
+        again.EndMainPhase();
+        Assert.True(MatchCycle.ContinueUntil(again, BattleSide.Player, new Random(1)).WaitingForShuffle);
+        var accepted = MatchCycle.AnswerShuffle(again, BattleSide.Player, true, new Random(4));
+        Assert.False(accepted.WaitingForShuffle);
+        Assert.Equal(MatchTiming.Main, again.Flow.Timing);
+        Assert.True(again.Flow.LastShuffleDidShuffle);
+        Assert.Equal(19, again.Player.Health);
+        Assert.Equal(13, again.Player.Energy);
+        Assert.Equal(3, again.Player.Deck.Count);
+        Assert.Empty(again.Player.Discard);
+    }
+
+    [Fact]
+    public void Move_RecordsAMainAction_WithoutSpendingEnergy()
+    {
+        var cards = LoadCards();
+        var player = new FighterState(BattleSide.Player, "c_0", 4);
+        var enemy = new FighterState(BattleSide.Enemy, string.Empty, 0);
+        player.Energy = 4;
+        var rules = MatchRules.Create(cards, player, enemy);
+        rules.OpenAtMain(BattleSide.Player);
+
+        Assert.True(rules.TryMove(BattleSide.Player, out var error), error);
+        Assert.True(rules.TryMove(BattleSide.Player, out error), error);
+        Assert.Equal(4, player.Energy);
+        Assert.Equal(2, rules.Flow.MainActionCount);
+        Assert.Equal(0, rules.Flow.TraitActionsThisTurn);
+    }
+
+    static FighterState DeckWithThree()
+    {
+        var player = new FighterState(BattleSide.Player, "c_0", 0);
+        player.Energy = 8;
+        player.Deck.Add(new CardInstance(CardKind.Action, 1));
+        player.Deck.Add(new CardInstance(CardKind.Action, 2));
+        player.Deck.Add(new CardInstance(CardKind.Action, 3));
+        return player;
     }
 
     static FighterState DeckOf(params int[] cardIds)
@@ -457,7 +538,7 @@ public class CardRulesTests
         Assert.Equal(0, player.Energy);
         Assert.True(rules.TryAttack(BattleSide.Player, 1, 0, out error), error);
         rules.CloseResponseWindow();
-        Assert.Equal(2, player.Energy);
+        Assert.Equal(3, player.Energy);
         WeaponChargeTier.Resolve(1, player.Weapons[1].Light, player.Weapons[1].Heavy, out var life, out _, out _);
         Assert.Equal(20 - life, enemy.Health);
     }
@@ -527,9 +608,9 @@ public class CardRulesTests
     {
         var player = NewFighter(BattleSide.Player);
         player.Energy = 2;
-        player.SetToughness(10);
         player.Hand.Add(new CardInstance(CardKind.Action, 1));
         var rules = Start(player, NewFighter(BattleSide.Enemy));
+        player.SetToughness(10);
 
         Assert.True(rules.TryPlay(BattleSide.Player, 0, false, out var error), error);
         Assert.Equal(0, player.Energy);
@@ -561,7 +642,7 @@ public class CardRulesTests
     }
 
     [Fact]
-    public void BuffCard_TurnStartTicksWithoutResolvingOngoing()
+    public void BuffCard_OngoingAddsTheEnergyCardAtTurnEnd()
     {
         var player = NewFighter(BattleSide.Player);
         player.Energy = 3;
@@ -574,18 +655,18 @@ public class CardRulesTests
         Assert.Empty(player.Hand);
         rules.EndMainPhase();
         Assert.Equal(3, player.Field[0].Duration);
-        Assert.Empty(player.Hand);
+        Assert.Equal(13, Assert.Single(player.Hand).CardId);
 
         player.Field[0].Duration = 1;
         rules.Flow.ResolveShuffle(false);
         rules.EndMainPhase();
         Assert.Empty(player.Field);
         Assert.Equal(0, player.Discard[0].CardId);
-        Assert.Empty(player.Hand);
+        Assert.Equal(13, Assert.Single(player.Hand).CardId);
     }
 
     [Fact]
-    public void BuffCard_ComboRowIsSelectedWithoutResolvingOngoing()
+    public void BuffCard_OngoingUsesTheComboRowWhenComboIsActive()
     {
         var player = NewFighter(BattleSide.Player);
         player.Energy = 3;
@@ -598,7 +679,9 @@ public class CardRulesTests
         Assert.Equal(1, player.Energy);
         Assert.Empty(player.Hand);
         rules.EndMainPhase();
-        Assert.Empty(player.Hand);
+        Assert.Equal(2, player.Hand.Count);
+        Assert.Equal(13, player.Hand[0].CardId);
+        Assert.Equal(13, player.Hand[1].CardId);
         Assert.Equal(3, player.Field[0].Duration);
     }
 

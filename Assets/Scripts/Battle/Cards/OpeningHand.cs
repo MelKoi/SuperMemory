@@ -20,11 +20,12 @@ public static class OpeningHand
             throw new ArgumentOutOfRangeException(nameof(targetCount));
         }
 
-        while (fighter.Hand.Count < targetCount && fighter.Deck.Count > 0)
+        while (fighter.Hand.Count < targetCount)
         {
-            var card = fighter.Deck[0];
-            fighter.Deck.RemoveAt(0);
-            fighter.Hand.Add(card);
+            if (DeckOrder.DrawOne(fighter) == null)
+            {
+                return;
+            }
         }
     }
 }

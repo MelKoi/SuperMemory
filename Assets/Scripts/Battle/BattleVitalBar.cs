@@ -22,7 +22,7 @@ public sealed class BattleVitalBar : MonoBehaviour
         fill.type = Image.Type.Filled;
         fill.fillMethod = Image.FillMethod.Horizontal;
         fill.fillOrigin = fillFromRight ? (int)Image.OriginHorizontal.Right : (int)Image.OriginHorizontal.Left;
-        fill.fillAmount = 1f;
+        fill.fillAmount = 0f;
         fill.color = fillColor;
         fill.raycastTarget = false;
     }

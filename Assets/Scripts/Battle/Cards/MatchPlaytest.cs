@@ -1,7 +1,7 @@
 using System;
 
-// 战斗测试的入场。局前和开局已经在流程外做完，这里从先手回合走到我方主要阶段。
-// 不调用 MatchFlow.Begin，避免把已经走过的局前和开局再走一遍。
+// 战斗测试的入场。局前和开局已经在流程外做完，这里从先手回合开始走到我方主要阶段。
+// 先手的第一个主要阶段直接结束，不询问洗牌。不调用 Begin，避免把局前和开局再走一遍。
 public static class MatchPlaytest
 {
     public static MatchRules ReachPlayerMain(
@@ -31,11 +31,9 @@ public static class MatchPlaytest
             throw new ArgumentNullException(nameof(random));
         }
 
-        var active = firstPlayer == BattleSide.Player ? player : enemy;
-        var waiting = firstPlayer == BattleSide.Player ? enemy : player;
-        TurnToMain.Advance(active, waiting, cards, random);
         var rules = MatchRules.Create(cards, player, enemy);
-        rules.OpenAtMain(firstPlayer);
+        rules.OpenAtTurnStart(firstPlayer);
+        MatchCycle.PassShuffle(rules, random);
         rules.EndMainPhase();
         MatchCycle.ContinueUntil(rules, BattleSide.Player, random);
         return rules;

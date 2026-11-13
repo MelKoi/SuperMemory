@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 // 只排时点：局前、开局，然后双方轮流走回合。洗牌、主要阶段、对应窗口会停住。
 // 牌区和状态由 MatchRules 接走。洗牌停住后的牌库和回合能量由 TurnShuffle 补上。
-// 展开中不在回合结束里结算。回合结束从临时牌离场开始。
+// 局前和开局已经在流程外做完时，从回合开始进入。回合结束从展开中开始。
 public sealed class MatchFlow
 {
     private readonly IMatchTimingHandler handler;
@@ -84,8 +84,19 @@ public sealed class MatchFlow
         EnterCurrent();
     }
 
+    // 局前和开局已经由对局外走完时，从这一方的回合开始进入，停在洗牌。
+    public void OpenAtTurnStart(BattleSide activeSide)
+    {
+        OpenTurn(activeSide, 0);
+    }
+
     // 局前和开局已经由对局外走完时，直接停在这一方的主要阶段。
     public void OpenAtMain(BattleSide activeSide)
+    {
+        OpenTurn(activeSide, MainIndex());
+    }
+
+    private void OpenTurn(BattleSide activeSide, int index)
     {
         if (started)
         {
@@ -98,7 +109,7 @@ public sealed class MatchFlow
         TurnIndex = 1;
         ResetTurnCounters();
         segment = Segment.Turn;
-        segmentIndex = MainIndex();
+        segmentIndex = index;
         EnterCurrent();
     }
 

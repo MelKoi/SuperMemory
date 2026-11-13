@@ -1,7 +1,7 @@
 using System;
 
 // 洗牌时点停住之后要补的两步：空牌库洗回弃牌，再给当前这一方回合能量。
-// 不放进 TurnCardRules。测试会在流程开始前写好能量，经过回合能量时点时不能再加一次。
+// 不放进 TurnCardRules。直接 ResolveShuffle 的调用方自己决定要不要给能量。
 public static class TurnShuffle
 {
     public static bool Apply(FighterState active, Random random)
@@ -11,8 +11,23 @@ public static class TurnShuffle
             throw new ArgumentNullException(nameof(active));
         }
 
+        if (random == null)
+        {
+            throw new ArgumentNullException(nameof(random));
+        }
+
         var shuffled = DeckOrder.RecycleIfEmpty(active, random);
-        active.Energy += MatchTimingPolicy.TurnEnergyGain;
+        GrantEnergy(active);
         return shuffled;
+    }
+
+    public static void GrantEnergy(FighterState active)
+    {
+        if (active == null)
+        {
+            throw new ArgumentNullException(nameof(active));
+        }
+
+        GainRates.Energy(active, MatchTimingPolicy.TurnEnergyGain);
     }
 }

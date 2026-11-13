@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 
 // 距离是两格中心的直线长度，向下取整后再减 1。相邻一格是 0，同一格也是 0。
-// 场地长边 12 格、短边 3 条路。场景里 BoardCell.Row 是长边，Column 是路。
+// 场地长边 10 格、短边 3 条路。场景里 BoardCell.Row 是长边，Column 是路。
 public static class BoardGeometry
 {
     public static int Distance(int columnA, int rowA, int columnB, int rowB)

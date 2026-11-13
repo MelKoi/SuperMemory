@@ -15,7 +15,7 @@ public sealed class BattleActionSettings : MonoBehaviour
 
     [Header("我方资源")]
     [Tooltip("我方当前能量。行动会改这个数，在这里改也会立刻更新能量环。")]
-    [SerializeField, Min(0)] private int playerEnergy = 10;
+    [SerializeField, Min(0)] private int playerEnergy;
     [Tooltip("武器 1 的当前蓄能。没达到攻击门槛时不能攻击，攻击后清零。")]
     [SerializeField, Min(0)] private int weaponCharge1;
     [Tooltip("武器 2 的当前蓄能。没达到攻击门槛时不能攻击，攻击后清零。")]

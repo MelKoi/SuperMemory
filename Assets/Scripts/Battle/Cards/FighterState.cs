@@ -48,6 +48,7 @@ public sealed class FighterState
     public List<WeaponLoadout> Weapons { get; } = new List<WeaponLoadout>();
     public List<int[]> Linger { get; } = new List<int[]>();
     public int NextCostDelta { get; set; }
+    public bool TookWeaponAttack { get; set; }
 
     public bool HasStatus(int statusId)
     {

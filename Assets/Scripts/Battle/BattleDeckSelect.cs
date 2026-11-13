@@ -257,7 +257,7 @@ public sealed class BattleDeckSelect : MonoBehaviour
         resultText.text = you + "\n" + them
             + "\n我方在近端中间路，对方在远端同一路"
             + "\n距离 " + seating.Distance.ToString(CultureInfo.InvariantCulture);
-        status.text = "下一步会进入你的主要阶段。对方没有行动的回合会直接过去。";
+        status.text = "下一步进入你的回合。牌库还有牌时，会先问要不要主动洗牌。";
         hud.SetPlayResult(you + "。双方在场地两端，距离 " + seating.Distance.ToString(CultureInfo.InvariantCulture) + "。");
     }
 
@@ -286,7 +286,10 @@ public sealed class BattleDeckSelect : MonoBehaviour
         var rules = MatchPlaytest.ReachPlayerMain(cards, Player, Enemy, Seating.FirstPlayer, new System.Random());
         ActiveSide = rules.Flow.ActiveSide;
         hud.BindMatch(rules);
-        hud.AnnouncePlayerMain();
+        if (rules.Flow.Timing == MatchTiming.Main)
+        {
+            hud.AnnouncePlayerMain();
+        }
         Close();
     }
 

@@ -23,6 +23,7 @@ public static class MatchTimingOrder
         MatchTiming.TurnEnergy,
         MatchTiming.ToughnessRecovery,
         MatchTiming.Main,
+        MatchTiming.OngoingEffects,
         MatchTiming.RemoveTemporary,
         MatchTiming.AdjustHand,
         MatchTiming.ClearRoundMarks,

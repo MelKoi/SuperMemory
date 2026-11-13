@@ -46,6 +46,11 @@ public sealed class MatchRules : IMatchTimingHandler
         state.Flow.Begin(firstPlayer);
     }
 
+    public void OpenAtTurnStart(BattleSide activeSide)
+    {
+        state.Flow.OpenAtTurnStart(activeSide);
+    }
+
     public void OpenAtMain(BattleSide activeSide)
     {
         state.Flow.OpenAtMain(activeSide);
@@ -81,6 +86,28 @@ public sealed class MatchRules : IMatchTimingHandler
     {
         EnsureNoDiscard();
         state.Flow.EndMainPhase(state.Flow.PendingAllOut ? MainEndReason.AllOut : MainEndReason.Declared);
+    }
+
+    public bool TryMove(BattleSide side, out string error)
+    {
+        error = state.MainActionError(side, "当前不能移动。");
+        if (error != null)
+        {
+            return false;
+        }
+
+        state.Flow.CompleteMove();
+        return true;
+    }
+
+    public void PayLife(BattleSide side, int amount)
+    {
+        if (amount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        }
+
+        state.ChangeHealth(GetFighter(side), -amount);
     }
 
     public void OnMatchTiming(MatchFlow match, MatchTiming timing)

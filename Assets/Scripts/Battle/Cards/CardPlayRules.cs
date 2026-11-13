@@ -138,7 +138,7 @@ sealed class CardPlayRules
 
         fighter.Hand.RemoveAt(handIndex);
         fighter.Discard.Add(instance);
-        fighter.Weapons[weaponSlot].Charge += MatchTimingPolicy.ChargeGainPerCard;
+        fighter.Weapons[weaponSlot].Charge += GainRates.Scale(fighter, MatchTimingPolicy.ChargeGainPerCard);
         state.Flow.CompleteCharge(weaponSlot);
         return true;
     }
@@ -197,12 +197,7 @@ sealed class CardPlayRules
             return card.Response;
         }
 
-        if (card.Combo != null && fighter.HasStatus(CardStatuses.Combo))
-        {
-            return card.Combo;
-        }
-
-        return card;
+        return CardRows.WithCombo(fighter, card);
     }
 
     static PlayMode ModeOf(CardDefinition card, bool asResponse)

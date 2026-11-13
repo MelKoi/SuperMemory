@@ -12,7 +12,7 @@ public sealed class BattleBoardPerspective : MonoBehaviour
     [SerializeField] private int playerColumn = 1;
     [SerializeField] private int playerRow;
     [SerializeField] private int enemyColumn = 1;
-    [SerializeField] private int enemyRow = 11;
+    [SerializeField] private int enemyRow = 9;
 
     private const string LabelRootName = "BoardLabels";
     private int boardRows;
@@ -139,6 +139,11 @@ public sealed class BattleBoardPerspective : MonoBehaviour
         Apply();
         return true;
     }
+
+    public int PlayerColumn => playerColumn;
+    public int PlayerRow => playerRow;
+    public int EnemyColumn => enemyColumn;
+    public int EnemyRow => enemyRow;
 
     public void PlaceFighters(int nextPlayerColumn, int nextPlayerRow, int nextEnemyColumn, int nextEnemyRow)
     {

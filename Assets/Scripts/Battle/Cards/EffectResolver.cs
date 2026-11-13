@@ -139,7 +139,7 @@ sealed class EffectResolver
                 Draw(target, step[1]);
                 break;
             case CardEffects.Energy:
-                target.Energy = Math.Max(0, target.Energy + step[1]);
+                GainRates.Energy(target, step[1]);
                 break;
             case CardEffects.Toughness:
                 target.SetToughness(target.Toughness + step[1]);
@@ -228,11 +228,14 @@ sealed class EffectResolver
 
     void Draw(FighterState target, int count)
     {
-        for (var i = 0; i < count && target.Deck.Count > 0; i++)
+        for (var i = 0; i < count; i++)
         {
-            var card = target.Deck[0];
-            target.Deck.RemoveAt(0);
-            target.Hand.Add(card);
+            var card = DeckOrder.DrawOne(target);
+            if (card == null)
+            {
+                return;
+            }
+
             addedThisPass.Add(card);
         }
     }
